@@ -21,10 +21,7 @@ RUN apk update && apk add --no-cache git
 WORKDIR /app
 COPY --from=deps /app/ .
 
-# Reuse pnpm installed in deps stage to avoid network flakiness
-COPY --from=deps /usr/local/lib/node_modules/pnpm /usr/local/lib/node_modules/pnpm
-RUN ln -sf ../lib/node_modules/pnpm/bin/pnpm.cjs /usr/local/bin/pnpm \
-  && ln -sf ../lib/node_modules/pnpm/bin/pnpx.cjs /usr/local/bin/pnpx
+RUN npm install -g pnpm
 
 ENV NODE_ENV=production
 ARG BASE_URL
