@@ -24,6 +24,7 @@ COPY --from=deps /app/ .
 RUN npm install -g pnpm
 
 ENV NODE_ENV=production
+ENV NODE_OPTIONS=--max_old_space_size=4096
 ARG BASE_URL
 
 # Build-time secrets - ensure these are passed securely during docker build
@@ -43,7 +44,7 @@ ENV TMDB_API_KEY=${TMDB_API_KEY}
 ENV WEBHOOK_SECRET=${WEBHOOK_SECRET}
 ENV GH_TOKEN=${GH_TOKEN}
 
-RUN pnpm turbo run build --filter=@shiro/web
+RUN pnpm --filter @shiro/web build:ci
 
 FROM base AS runner
 WORKDIR /app
