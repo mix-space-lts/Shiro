@@ -3,7 +3,7 @@ version: '3'
 services:
   shiro:
     container_name: shiro
-    image: innei/shiro:latest
+    image: ghcr.io/mix-space-lts/shiro:latest
     volumes:
       - ./.env:/app/apps/web/.env
       - ./public:/app/apps/web/public
