@@ -25,6 +25,7 @@ RUN npm install -g pnpm
 
 ENV NODE_ENV=production
 ENV NODE_OPTIONS=--max_old_space_size=4096
+ENV NEXT_TURBOPACK=0
 ARG BASE_URL
 
 # Build-time secrets - ensure these are passed securely during docker build
