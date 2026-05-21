@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: ghcr.io/mix-space-lts
+  IMAGE_NAME: shiro
 
 jobs:
   build-and-push:
@@ -36,7 +36,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ghcr.io/mix-space-lts/shiro
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=
