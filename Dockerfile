@@ -45,6 +45,7 @@ ENV TMDB_API_KEY=${TMDB_API_KEY}
 ENV WEBHOOK_SECRET=${WEBHOOK_SECRET}
 ENV GH_TOKEN=${GH_TOKEN}
 
+RUN find node_modules -path "*/rich-editor/dist/rich-editor.css" -exec sed -i 's/::highlight([^)]*)/.__noop_highlight/g' {} +
 RUN pnpm --filter @shiro/web build:ci
 
 FROM base AS runner
