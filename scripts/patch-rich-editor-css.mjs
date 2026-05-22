@@ -11,7 +11,7 @@ function* walk(dir) {
     const entries = readdirSync(dir, { withFileTypes: true })
     for (const entry of entries) {
       const full = join(dir, entry.name)
-      if (entry.name.startsWith('.')) continue
+      if (entry.name.startsWith('.') && entry.name !== '.pnpm') continue
       if (entry.isDirectory()) yield* walk(full)
       else if (entry.name === 'rich-editor.css' || (entry.name.endsWith('.css') && full.includes('rich-kit-shiro')))
         yield full
