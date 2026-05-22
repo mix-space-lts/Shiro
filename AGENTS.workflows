@@ -1,0 +1,8 @@
+# Shiro LTS 维护计划
+## 已完成- [x] 撤销不必要修改
+- [x] .npmrc 入 .gitignore + 镜像源 + node-linker=hoisted
+- [x] README 版本限制 >= 10.x
+- [x] docker. yml 镜像改为 ghcr.io/mix- space-lts/shiro- [x] 添加 CI workflow- [x] 删除不必要 workflows (comment-pr, nextjs_bundle_analysis)
+- [x] 更新 @mx- space/api- client 从 2.3.0 → 4.4.0## 待测试- [ ] 本地运行 pnpm install
+- [ ] 本地运行 pnpm build
+- [ ] 检查 API 兼容性，修复编译错误## 注意事项- pnpm 在 Windows 上有 symlink 权限问题，需本地测试- API 可能存在 breaking changes，需手动修复
