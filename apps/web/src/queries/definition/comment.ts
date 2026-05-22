@@ -1,1 +1,3 @@
-// Comment query definitions (admin features removed)
+/* eslint-disable unicorn/no-empty-file */
+
+// Comment query definitions (patron features removed)
