@@ -5,6 +5,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev --filter @shiro/web",
+    "postinstall": "node scripts/patch-rich-editor-css.mjs",
     "lint": "turbo lint",
     "prepare": "pnpm exec simple-git-hooks",
     "release": "bumpp -r",
