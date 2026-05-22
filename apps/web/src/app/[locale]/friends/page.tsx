@@ -154,7 +154,7 @@ const Card: FC<{ link: LinkModel }> = ({ link }) => {
     >
       <Avatar
         randomColor
-        imageUrl={link.avatar}
+        imageUrl={link.avatar ?? undefined}
         lazy
         radius={8}
         text={link.name[0]}

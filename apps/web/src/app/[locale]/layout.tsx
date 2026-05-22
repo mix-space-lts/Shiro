@@ -54,89 +54,93 @@ export const generateMetadata = async ({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> => {
   const { locale } = await params
-  const fetchedData = await fetchAggregationData()
+  const fetchedData = await fetchAggregationData().catch(() => null)
 
-  const {
-    seo,
-    url,
-    user,
-    theme: { config },
-  } = fetchedData
+  if (fetchedData) {
+    const {
+      seo,
+      url,
+      user,
+      theme: { config },
+    } = fetchedData
 
-  const localeMap: Record<string, string> = {
-    zh: 'zh_CN',
-    en: 'en_US',
-    ja: 'ja_JP',
-  }
+    const localeMap: Record<string, string> = {
+      zh: 'zh_CN',
+      en: 'en_US',
+      ja: 'ja_JP',
+    }
 
-  return {
-    metadataBase: new URL(url.webUrl),
-    title: {
-      template: `%s - ${seo.title}`,
-      default: `${seo.title} - ${seo.description}`,
-    },
-    description: seo.description,
-    keywords: seo.keywords?.join(',') || '',
-    icons: [
-      {
-        url: config.site.favicon,
-        type: 'image/svg+xml',
-        sizes: 'any',
+    return {
+      metadataBase: new URL(url.webUrl),
+      title: {
+        template: `%s - ${seo.title}`,
+        default: `${seo.title} - ${seo.description}`,
       },
-      {
-        rel: 'icon',
-        type: 'image/svg+xml',
-        url: config.site.favicon,
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        rel: 'icon',
-        type: 'image/svg+xml',
-        url: config.site.faviconDark || config.site.favicon,
-        media: '(prefers-color-scheme: dark)',
-      },
-    ],
+      description: seo.description,
+      keywords: seo.keywords?.join(',') || '',
+      icons: [
+        {
+          url: config.site.favicon,
+          type: 'image/svg+xml',
+          sizes: 'any',
+        },
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          url: config.site.favicon,
+          media: '(prefers-color-scheme: light)',
+        },
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          url: config.site.faviconDark || config.site.favicon,
+          media: '(prefers-color-scheme: dark)',
+        },
+      ],
 
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
+      robots: {
         index: true,
         follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
       },
-    },
-    openGraph: {
-      title: {
-        default: seo.title,
-        template: `%s | ${seo.title}`,
+      openGraph: {
+        title: {
+          default: seo.title,
+          template: `%s | ${seo.title}`,
+        },
+        description: seo.description,
+        siteName: `${seo.title}`,
+        locale: localeMap[locale] || 'zh_CN',
+        type: 'website',
+        url: url.webUrl,
+        images: {
+          url: `${url.webUrl}/home-og`,
+          username: user.name,
+        },
       },
-      description: seo.description,
-      siteName: `${seo.title}`,
-      locale: localeMap[locale] || 'zh_CN',
-      type: 'website',
-      url: url.webUrl,
-      images: {
-        url: `${url.webUrl}/home-og`,
-        username: user.name,
+      twitter: {
+        creator: `@${user.socialIds?.twitter || user.socialIds?.x || '__oQuery'}`,
+        card: 'summary_large_image',
+        title: seo.title,
+        description: seo.description,
       },
-    },
-    twitter: {
-      creator: `@${user.socialIds?.twitter || user.socialIds?.x || '__oQuery'}`,
-      card: 'summary_large_image',
-      title: seo.title,
-      description: seo.description,
-    },
 
-    alternates: {
-      canonical: url.webUrl,
-      types: {
-        'application/rss+xml': [{ url: 'feed', title: 'RSS 订阅' }],
+      alternates: {
+        canonical: url.webUrl,
+        types: {
+          'application/rss+xml': [{ url: 'feed', title: 'RSS 订阅' }],
+        },
       },
-    },
-  } satisfies Metadata
+    } satisfies Metadata
+  }
+
+  return {} satisfies Metadata
 }
 export const dynamic = 'force-dynamic'
 

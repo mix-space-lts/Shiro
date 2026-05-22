@@ -13,7 +13,7 @@ import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProv
 import { NoteTopicDetail } from './NoteTopicDetail'
 import { NoteTopicMarkdownRender } from './NoteTopicMarkdownRender'
 
-const textToBigCharOrWord = (name: string | undefined) => {
+const textToBigCharOrWord = (name: string | null | undefined) => {
   if (!name) {
     return ''
   }
@@ -38,7 +38,7 @@ export const NoteBottomTopic: FC = () => {
         <Avatar
           radius="full"
           size={60}
-          imageUrl={icon}
+          imageUrl={icon ?? undefined}
           text={textToBigCharOrWord(name)}
           className="shrink-0"
           shadow={false}
@@ -68,7 +68,7 @@ export const NoteBottomTopic: FC = () => {
           </span>
 
           <div className="line-clamp-2 text-sm opacity-80">
-            <NoteTopicMarkdownRender>{introduce}</NoteTopicMarkdownRender>
+            <NoteTopicMarkdownRender>{introduce ?? ''}</NoteTopicMarkdownRender>
           </div>
         </div>
       </div>

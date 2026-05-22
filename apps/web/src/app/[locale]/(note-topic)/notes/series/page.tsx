@@ -19,7 +19,7 @@ export default definePrerenderPage()({
       <main className="mt-10 text-zinc-950/80 dark:text-zinc-50/80">
         <TimelineList>
           {data.map((item, i) => {
-            const date = new Date(item.created)
+            const date = new Date(item.createdAt)
 
             return (
               <BottomToUpTransitionView

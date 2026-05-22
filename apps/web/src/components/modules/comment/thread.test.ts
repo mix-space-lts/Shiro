@@ -1,27 +1,47 @@
 import type {
   CollectionRefTypes,
   CommentModel,
+  CommentRefSummary,
   CommentThreadItem,
-  PaginateResult,
 } from '@mx-space/api-client'
-import type { InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
 
+import type { CommentThreadInfiniteData } from './thread'
 import { buildCommentTreeItem, mergeThreadRepliesIntoPages } from './thread'
 
 const makeComment = (
   id: string,
-  created: string,
+  createdAt: string,
   overrides: Partial<CommentModel> = {},
 ): CommentModel => ({
   id,
-  created,
+  createdAt,
   refType: 'posts' as CollectionRefTypes,
-  ref: 'post-id',
+  refId: 'post-id',
+  ref: {
+    id: 'post-id',
+    type: 'posts' as CollectionRefTypes,
+  } as CommentRefSummary,
   state: 1,
   author: `author-${id}`,
   text: `text-${id}`,
   avatar: '',
+  url: null,
+  ip: null,
+  agent: null,
+  pin: false,
+  parentCommentId: null,
+  rootCommentId: null,
+  replyCount: 0,
+  latestReplyAt: null,
+  isDeleted: false,
+  deletedAt: null,
+  isWhispers: false,
+  location: null,
+  authProvider: null,
+  readerId: null,
+  editedAt: null,
+  anchor: null,
   ...overrides,
 })
 
@@ -67,12 +87,15 @@ describe('comment thread helpers', () => {
   })
 
   it('merges loaded middle replies back into paginated thread data', () => {
-    const root: CommentThreadItem & { ref: string } = {
+    const root: CommentThreadItem = {
       ...makeComment('root', '2026-03-14T10:00:00.000Z', {
         parentCommentId: null,
         rootCommentId: null,
       }),
-      ref: 'post-id',
+      ref: {
+        id: 'post-id',
+        type: 'posts' as CollectionRefTypes,
+      } as CommentRefSummary,
       replies: [
         makeComment('child-1', '2026-03-14T10:01:00.000Z', {
           parentCommentId: 'root',
@@ -106,11 +129,10 @@ describe('comment thread helpers', () => {
             size: 10,
             total: 1,
           },
+          readers: {},
         },
       ],
-    } satisfies InfiniteData<
-      PaginateResult<CommentThreadItem & { ref: string }>
-    >
+    } satisfies CommentThreadInfiniteData
 
     const next = mergeThreadRepliesIntoPages(data, {
       rootCommentId: 'root',

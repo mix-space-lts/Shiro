@@ -40,7 +40,7 @@ export async function GET() {
       url: `${agg.url.webUrl}/says`,
       author: `${say.source || say.author}`,
       guid: say.id,
-      date: say.created,
+      date: say.createdAt,
     })
   }
 

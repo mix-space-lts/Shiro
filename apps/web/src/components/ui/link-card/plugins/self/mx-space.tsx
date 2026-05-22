@@ -52,7 +52,7 @@ export const mxSpacePlugin: LinkCardPlugin = {
     let data: {
       title: string
       text?: string
-      images?: { src: string }[]
+      images?: { src: string }[] | null
       meta?: Record<string, any> | null
       cover?: string
       summary?: string | null

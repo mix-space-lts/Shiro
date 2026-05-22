@@ -12,9 +12,9 @@ import type { BlockInfo } from './anchor-utils'
 import { buildBlockAnchorFromIndex } from './anchor-utils'
 import { CommentBlockThread } from './CommentBlockThread'
 import { useRichContentElement } from './RichContentElementContext'
-import type { CommentAnchor } from './types'
+import type { CommentAnchor, RangeAnchor } from './types'
 
-type CommentWithAnchor = CommentModel & { anchor?: CommentAnchor }
+type CommentWithAnchor = CommentModel
 
 interface CommentBlockGutterProps {
   blockInfos: BlockInfo[]
@@ -35,10 +35,10 @@ function AvatarStack({
     const seen = new Set<string>()
     const result: { avatar?: string; author: string }[] = []
     for (const c of comments) {
-      const key = c.avatar || c.author
+      const key = c.avatar ?? c.author ?? ''
       if (!seen.has(key)) {
         seen.add(key)
-        result.push({ avatar: c.avatar, author: c.author })
+        result.push({ avatar: c.avatar ?? undefined, author: c.author ?? '' })
       }
     }
     return result.slice(0, 3)
@@ -193,7 +193,10 @@ export function CommentBlockGutter({
         map.set(anchor.blockId, arr)
       } else if (anchor.mode === 'range') {
         // Range anchor with matching lang — check if it falls back to block level
-        const resolved = resolveRangeAnchor(anchor, blockInfos)
+        const resolved = resolveRangeAnchor(
+          anchor as unknown as RangeAnchor,
+          blockInfos,
+        )
         if (
           resolved.status === 'block-fallback' &&
           resolved.blockIndex !== -1

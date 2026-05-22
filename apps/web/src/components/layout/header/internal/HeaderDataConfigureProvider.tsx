@@ -28,8 +28,11 @@ const cloneHeaderMenuConfig = (items: IHeaderMenu[]): IHeaderMenu[] =>
   }))
 
 export const HeaderDataConfigureProvider: Component = ({ children }) => {
-  const pageMeta = useAggregationSelector(
-    (aggregationData) => aggregationData.pageMeta,
+  const pagesMeta = useAggregationSelector(
+    (aggregationData) =>
+      (aggregationData as any).pageMeta as
+        | Array<{ slug: string; title: string }>
+        | undefined,
   )
   const postListViewMode = useAppConfigSelector(
     (appConfig) => appConfig.module?.posts?.mode,
@@ -40,23 +43,18 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
   )
 
   useEffect(() => {
-    if (!pageMeta) return
+    if (!Array.isArray(pagesMeta)) return
     const nextMenuConfig = cloneHeaderMenuConfig(baseHeaderMenuConfig)
-    if (pageMeta) {
-      const homeIndex = nextMenuConfig.findIndex((item) => item.type === 'Home')
-      if (homeIndex !== -1) {
-        nextMenuConfig[homeIndex].subMenu = []
-        for (const page of pageMeta) {
-          nextMenuConfig[homeIndex].subMenu!.push({
-            path: `/${page.slug}`,
-            title: page.title,
-          })
-        }
-      }
+    const homeIndex = nextMenuConfig.findIndex((item) => item.type === 'Home')
+    if (homeIndex !== -1) {
+      nextMenuConfig[homeIndex].subMenu = pagesMeta.map((page) => ({
+        path: `/${page.slug}`,
+        title: page.title,
+      }))
     }
 
     setHeaderMenuConfig(nextMenuConfig)
-  }, [pageMeta])
+  }, [pagesMeta])
 
   useEffect(() => {
     setHeaderMenuConfig((config) => {

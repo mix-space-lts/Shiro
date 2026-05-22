@@ -8,9 +8,9 @@ import { resolveRangeAnchor } from './anchor-resolve'
 import type { BlockInfo } from './anchor-utils'
 import { CommentAnchorPopover } from './CommentAnchorPopover'
 import { useRichContentElement } from './RichContentElementContext'
-import type { CommentAnchor, RangeAnchor } from './types'
+import type { RangeAnchor } from './types'
 
-type CommentWithAnchor = CommentModel & { anchor?: CommentAnchor }
+type CommentWithAnchor = CommentModel
 
 function anchorKey(anchor: RangeAnchor): string {
   return `${anchor.blockId}:${anchor.startOffset}:${anchor.endOffset}`
@@ -19,7 +19,8 @@ function anchorKey(anchor: RangeAnchor): string {
 function collectRangeAnchors(comments: CommentWithAnchor[]): RangeAnchor[] {
   const result: RangeAnchor[] = []
   for (const c of comments) {
-    if (c.anchor?.mode === 'range') result.push(c.anchor)
+    if (c.anchor?.mode === 'range')
+      result.push(c.anchor as unknown as RangeAnchor)
   }
   return result
 }
@@ -34,12 +35,12 @@ function groupCommentsByRangeAnchor(
   for (const c of comments) {
     const { anchor } = c
     if (anchor?.mode !== 'range') continue
-    const key = anchorKey(anchor)
+    const key = anchorKey(anchor as unknown as RangeAnchor)
     const existing = map.get(key)
     if (existing) {
       existing.comments.push(c)
     } else {
-      map.set(key, { anchor, comments: [c] })
+      map.set(key, { anchor: anchor as unknown as RangeAnchor, comments: [c] })
     }
   }
   return map

@@ -72,9 +72,13 @@ export const PageTitle = () => {
 export const PagePaginator = () => {
   const t = useTranslations('note')
   const currentPageTitle = useCurrentPageDataSelector((d) => d?.title)
-  const pageMeta = useAggregationSelector((d) => d.pageMeta)
-  const pages = useMemo(() => pageMeta || [], [pageMeta])
-  const indexInPages = pages.findIndex((i) => i.title === currentPageTitle)
+  const pageMeta = useAggregationSelector((d) => (d as any).pageMeta)
+  const pages = useMemo(() => {
+    const meta = pageMeta
+    if (!meta || !Array.isArray(meta)) return []
+    return meta as Array<{ title: string; slug: string }>
+  }, [pageMeta])
+  const indexInPages = pages.findIndex((i: any) => i.title === currentPageTitle)
   const n = pages.length
   const hasNext = indexInPages + 1 < n
   const hasPrev = indexInPages - 1 >= 0
@@ -116,7 +120,7 @@ export const PagePaginator = () => {
 export const MarkdownSelection: Component = (props) => {
   const id = useCurrentPageDataSelector((data) => data?.id)!
   const title = useCurrentPageDataSelector((data) => data?.title)!
-  const canComment = useCurrentPageDataSelector((data) => data?.allowComment)!
+  const canComment = useCurrentPageDataSelector((data) => true)!
   return (
     <WithArticleSelectionAction
       refId={id}

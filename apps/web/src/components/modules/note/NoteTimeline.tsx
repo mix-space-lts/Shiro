@@ -34,7 +34,7 @@ const NoteTimelineImpl = () => {
       id: note.id,
       nid: note.nid,
       title: note.title,
-      created: note.created,
+      createdAt: note.createdAt,
       isPublished: note.isPublished,
     }
   })
@@ -65,7 +65,7 @@ const NoteTimelineImpl = () => {
           title: note.title,
           nid: note.nid,
           id: note.id,
-          created: note.created,
+          createdAt: note.createdAt,
           isPublished: note.isPublished,
         },
       ]

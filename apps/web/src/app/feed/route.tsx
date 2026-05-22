@@ -21,8 +21,8 @@ interface RSSProps {
   author: string
   description: string
   data: {
-    created: Date | null
-    modified: Date | null
+    createdAt: string
+    modifiedAt: string | null
     link: string
     title: string
     text: string
@@ -207,7 +207,7 @@ export async function GET() {
       author,
       title: item.title,
       url: item.link,
-      date: item.created!,
+      date: item.createdAt!,
       description: render(),
     })
   })

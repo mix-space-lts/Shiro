@@ -130,40 +130,41 @@ export const GET = async (
     switch (data.type) {
       case 'post': {
         const { category, slug } = data
-        document = await apiClient.post
-          .getPost(category, slug, { lang: locale })
-          .then((r) => ({
-            title: r.title,
-            subtitle: r.category.name,
-            meta: r.meta,
-            images: r.images,
-            id: r.id,
-          }))
+        const r = await apiClient.post.getPost(category, slug, {
+          lang: locale,
+        })
+        document = {
+          title: r.title,
+          subtitle: r.category.name,
+          meta: r.meta,
+          images: r.images ?? undefined,
+          id: r.id,
+        }
         break
       }
 
       case 'note': {
         const { nid } = data
-        document = await apiClient.note
-          .getNoteByNid(+nid, { lang: locale })
-          .then((r) => ({
-            title: r.data.title,
-            subtitle: messages.nav_notes,
-            meta: r.data.meta,
-            images: r.data.images,
-            id: r.data.id,
-          }))
+        const r = await apiClient.note.getNoteByNid(+nid, { lang: locale })
+        document = {
+          title: r.data.title,
+          subtitle: messages.nav_notes,
+          meta: r.data.meta,
+          images: r.data.images ?? undefined,
+          id: r.data.id,
+        }
         break
       }
       case 'page': {
         const { slug } = data
-        document = await apiClient.page.getBySlug(slug).then((data) => ({
-          title: data.title,
-          subtitle: data.subtitle || '',
-          meta: data.meta,
-          images: data.images,
-          id: data.id,
-        }))
+        const pageData = await apiClient.page.getBySlug(slug)
+        document = {
+          title: pageData.title,
+          subtitle: pageData.subtitle || '',
+          meta: pageData.meta,
+          images: pageData.images ?? undefined,
+          id: pageData.id,
+        }
         break
       }
     }

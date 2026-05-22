@@ -7,10 +7,7 @@ import type {
 } from '@mx-space/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 
-import type { CommentAnchor } from './types'
-
 export type CommentWithAnchor = CommentModel & {
-  anchor?: CommentAnchor
   new?: boolean
 }
 
@@ -20,9 +17,7 @@ export type CommentThreadViewItem = CommentWithAnchor & {
   replyWindow?: CommentReplyWindow
 }
 
-export type CommentThreadPage = PaginateResult<
-  CommentThreadItem & { ref: string }
->
+export type CommentThreadPage = PaginateResult<CommentThreadItem>
 export type CommentThreadInfiniteData = InfiniteData<
   CommentThreadPage & {
     readers?: Record<string, ReaderModel>
@@ -32,9 +27,9 @@ export type CommentThreadInfiniteData = InfiniteData<
 const toTimestamp = (date: string) => new Date(date).getTime()
 
 const byCreatedAsc = (
-  a: Pick<CommentModel, 'created'>,
-  b: Pick<CommentModel, 'created'>,
-) => toTimestamp(a.created) - toTimestamp(b.created)
+  a: Pick<CommentModel, 'createdAt'>,
+  b: Pick<CommentModel, 'createdAt'>,
+) => toTimestamp(a.createdAt) - toTimestamp(b.createdAt)
 
 const getParentCommentId = (
   parentCommentId: CommentModel['parentCommentId'],

@@ -7,6 +7,7 @@ import {
   shift,
   useFloating,
 } from '@floating-ui/react-dom'
+import type { CommentModel } from '@mx-space/api-client'
 import clsx from 'clsx'
 import { m } from 'motion/react'
 import { useEffect, useMemo, useRef } from 'react'
@@ -15,11 +16,9 @@ import { RootPortal } from '~/components/ui/portal'
 import useClickAway from '~/hooks/common/use-click-away'
 
 import { CommentBlockThread } from './CommentBlockThread'
-import type { CommentAnchor, RangeAnchor } from './types'
+import type { RangeAnchor } from './types'
 
-type CommentWithAnchor = import('@mx-space/api-client').CommentModel & {
-  anchor?: CommentAnchor
-}
+type CommentWithAnchor = CommentModel
 
 export function CommentAnchorPopover({
   refId,

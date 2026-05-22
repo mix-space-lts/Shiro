@@ -18,7 +18,7 @@ import { routeBuilder, Routes } from '~/lib/route-builder'
 
 import { postsViewModeAtom, usePostViewMode } from '../atom'
 
-type SortBy = 'default' | 'created' | 'modified'
+type SortBy = 'default' | 'created' | 'modifiedAt'
 type OrderBy = 'asc' | 'desc'
 
 type SortByValues = {
@@ -50,7 +50,7 @@ const SortingAndOrdering = () => {
     },
     {
       label: t('sort_modified'),
-      value: 'modified',
+      value: 'modifiedAt',
     },
   ] as SortByValues
 

@@ -1,7 +1,6 @@
 'use client'
 
 import type {
-  CommentModel,
   CommentThreadItem,
   PaginateResult,
 } from '@mx-space/api-client'
@@ -18,12 +17,11 @@ import { extractBlockInfos } from './anchor-utils'
 import { CommentAnchorHighlight } from './CommentAnchorHighlight'
 import { CommentBlockGutter } from './CommentBlockGutter'
 import { RichContentElementProvider } from './RichContentElementContext'
+import type { CommentWithAnchor } from './thread'
 import { flattenThreadComments } from './thread'
-import type { CommentAnchor } from './types'
 
-type CommentWithAnchor = CommentModel & { anchor?: CommentAnchor }
 type CommentsQueryData = InfiniteData<
-  PaginateResult<CommentThreadItem & { anchor?: CommentAnchor; ref: string }>
+  PaginateResult<CommentThreadItem & { ref: string }>
 >
 
 function useAnchorCommentsQuery(refId: string): CommentWithAnchor[] {
@@ -32,11 +30,7 @@ function useAnchorCommentsQuery(refId: string): CommentWithAnchor[] {
     queryFn: async () => {
       const data = await apiClient.comment.proxy
         .ref(refId)
-        .get<
-          PaginateResult<
-            CommentThreadItem & { anchor?: CommentAnchor; ref: string }
-          >
-        >({
+        .get<PaginateResult<CommentThreadItem & { ref: string }>>({
           params: { hasAnchor: 'true', size: 50 },
         })
 
@@ -85,7 +79,7 @@ function useMergedAnchorComments(refId: string): CommentWithAnchor[] {
     const map = new Map<string, CommentWithAnchor>()
     for (const c of eagerComments) map.set(c.id, c)
     for (const c of cachedComments) {
-      if ((c as CommentWithAnchor).anchor) map.set(c.id, c)
+      if (c.anchor) map.set(c.id, c)
     }
     return [...map.values()]
   }, [eagerComments, cachedComments])

@@ -1,10 +1,6 @@
 'use client'
 
-import type {
-  CommentDto,
-  CommentModel,
-  RequestError,
-} from '@mx-space/api-client'
+import type { CommentModel, RequestError } from '@mx-space/api-client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ExtractAtomValue } from 'jotai'
 import { atom, useAtomValue } from 'jotai'
@@ -20,7 +16,6 @@ import { jotaiStore } from '~/lib/store'
 import { toast } from '~/lib/toast'
 import { buildCommentsQueryKey } from '~/queries/keys'
 
-import type { CommentAnchor } from '../types'
 import { MAX_COMMENT_TEXT_LENGTH } from './constants'
 import type { createInitialValue } from './providers'
 import {
@@ -146,14 +141,13 @@ export const useSendComment = () => {
       const url = jotaiStore.get(urlAtom)
       const anchor = jotaiStore.get(anchorAtom)
 
-      const commentDto: CommentDto & { anchor?: CommentAnchor } = {
+      const commentDto: Record<string, any> = {
         text,
         author,
         mail,
-        avatar,
-        source,
         url,
       }
+      if (avatar) commentDto.avatar = avatar
       if (anchor) commentDto.anchor = anchor
 
       if (isLogged) {
@@ -162,7 +156,6 @@ export const useSendComment = () => {
 
       // Omit empty string key
       Object.keys(commentDto).forEach((key) => {
-        // @ts-expect-error
         if (commentDto[key] === '') delete commentDto[key]
       })
 
@@ -174,13 +167,12 @@ export const useSendComment = () => {
             .post<CommentModel>({
               data: {
                 text,
-                source,
               },
             })
             .then(wrappedCompletedCallback)
         } else {
           return apiClient.comment
-            .reply(refId, commentDto)
+            .guestReply(refId, commentDto as any)
             .then(wrappedCompletedCallback)
         }
       }
@@ -193,7 +185,7 @@ export const useSendComment = () => {
         return apiClient.comment.proxy.owner
           .comment(refId)
           .post<CommentModel>({
-            data: { text, source, ...(anchor ? { anchor } : {}) },
+            data: { text, ...(anchor ? { anchor } : {}) },
           })
           .then(async (res) => {
             if (syncToRecently)
@@ -215,7 +207,7 @@ export const useSendComment = () => {
       // @ts-ignore
       commentDto.isWhispers = isWhisper
       return apiClient.comment
-        .comment(refId, commentDto)
+        .guestComment(refId, commentDto as any)
         .then(wrappedCompletedCallback)
     },
     mutationKey: [commentRefId, 'comment'],

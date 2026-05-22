@@ -53,7 +53,12 @@ export default function Page() {
       </header>
       <main>
         <BottomToUpTransitionView>
-          <ProjectList projects={data || noopArr} />
+          <ProjectList
+            projects={(data || noopArr).map((p) => ({
+              ...p,
+              avatar: p.avatar ?? undefined,
+            }))}
+          />
         </BottomToUpTransitionView>
       </main>
     </div>
