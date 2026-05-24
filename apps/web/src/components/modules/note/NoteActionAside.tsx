@@ -63,10 +63,12 @@ const NoteAsideCommentButton = () => {
   const { title, id, allowComment } =
     useCurrentNoteDataSelector((_data) => {
       const { data } = _data || {}
+      const disableComment = (data as any)?.disableComment
       return {
         title: data?.title,
         id: data?.id,
-        allowComment: (data as any)?.allowComment ?? false,
+        allowComment:
+          disableComment === undefined ? true : !disableComment,
       }
     }) || {}
 

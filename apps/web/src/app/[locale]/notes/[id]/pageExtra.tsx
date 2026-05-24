@@ -28,9 +28,10 @@ import { queries } from '~/queries/definition'
 export const MarkdownSelection: Component = (props) => {
   const id = useCurrentNoteDataSelector((data) => data?.data?.id)!
   const title = useCurrentNoteDataSelector((data) => data?.data?.title)!
-  const canComment = useCurrentNoteDataSelector(
-    (data) => (data?.data as any)?.allowComment ?? false,
-  )!
+  const canComment = useCurrentNoteDataSelector((data) => {
+    const disableComment = (data?.data as any)?.disableComment
+    return disableComment === undefined ? true : !disableComment
+  })!
   return (
     <WithArticleSelectionAction
       refId={id}

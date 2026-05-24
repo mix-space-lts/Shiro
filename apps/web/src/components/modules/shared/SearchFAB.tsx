@@ -127,11 +127,7 @@ const SearchPanelImpl = () => {
       if (!keyword) {
         return
       }
-      return apiClient.search.proxy('algolia').get({
-        params: {
-          keyword,
-        },
-      })
+      return apiClient.search.searchAll(keyword)
     },
     select: useCallback(
       (data: any) => {

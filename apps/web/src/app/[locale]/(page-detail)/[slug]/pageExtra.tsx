@@ -116,9 +116,10 @@ export const PagePaginator = () => {
 export const MarkdownSelection: Component = (props) => {
   const id = useCurrentPageDataSelector((data) => data?.id)!
   const title = useCurrentPageDataSelector((data) => data?.title)!
-  const canComment = useCurrentPageDataSelector(
-    (data) => (data as any)?.allowComment ?? false,
-  )!
+  const canComment = useCurrentPageDataSelector((data) => {
+    const disableComment = (data as any)?.disableComment
+    return disableComment === undefined ? true : !disableComment
+  })!
   return (
     <WithArticleSelectionAction
       refId={id}

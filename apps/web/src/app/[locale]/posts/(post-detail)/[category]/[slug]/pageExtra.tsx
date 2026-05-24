@@ -61,9 +61,10 @@ export const PostTitle = () => {
 export const MarkdownSelection: Component = (props) => {
   const id = useCurrentPostDataSelector((data) => data?.id)!
   const title = useCurrentPostDataSelector((data) => data?.title)!
-  const allowComment = useCurrentPostDataSelector(
-    (data) => (data as any)?.allowComment ?? false,
-  )!
+  const allowComment = useCurrentPostDataSelector((data) => {
+    const disableComment = (data as any)?.disableComment
+    return disableComment === undefined ? true : !disableComment
+  })!
   return (
     <WithArticleSelectionAction
       refId={id}

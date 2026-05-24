@@ -212,7 +212,11 @@ export default definePrerenderPage<PageParams>()<PostDataResult>({
             <BottomToUpSoftScaleTransitionView delay={500}>
               <CommentAreaRootLazy
                 refId={data.id}
-                allowComment={(data as any)?.allowComment ?? false}
+                allowComment={
+                  (data as any)?.disableComment === undefined
+                    ? true
+                    : !(data as any)?.disableComment
+                }
               />
             </BottomToUpSoftScaleTransitionView>
           </BottomToUpTransitionView>

@@ -70,11 +70,15 @@ const SubscribeButton = () => {
 
 const PostAsideCommentButton = () => {
   const { title, id, allowComment } =
-    useCurrentPostDataSelector((data) => ({
-      title: data?.title,
-      id: data?.id,
-      allowComment: (data as any)?.allowComment ?? false,
-    })) || {}
+    useCurrentPostDataSelector((data) => {
+      const disableComment = (data as any)?.disableComment
+      return {
+        title: data?.title,
+        id: data?.id,
+        allowComment:
+          disableComment === undefined ? true : !disableComment,
+      }
+    }) || {}
   const isEof = useIsEoFWrappedElement()
   if (!id) return null
   if (isEof) return null
