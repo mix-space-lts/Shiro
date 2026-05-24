@@ -32,7 +32,7 @@ interface RSSProps {
 }
 
 export async function GET() {
-  const ReactDOM = (await import('react-dom/server')).default
+  const { renderToString } = await import('react-dom/server')
 
   const [{ author, data, url }, agg] = await Promise.all([
     apiClient.aggregate.proxy.feed.get<RSSProps>(),
@@ -42,11 +42,9 @@ export async function GET() {
   const { title, description } = agg.seo
 
   const now = new Date()
-  const custom_elements = get(
-    agg.$raw.theme as AppConfig,
-    'config.module.rss.custom_elements',
-  )
-  const noRSS = get(agg.$raw.theme as AppConfig, 'config.module.rss.noRSS')
+  const themeRaw = (agg.$raw?.theme as AppConfig) || {}
+  const custom_elements = get(themeRaw, 'config.module.rss.custom_elements')
+  const noRSS = get(themeRaw, 'config.module.rss.noRSS')
 
   const followChallengeIndex = custom_elements
     ? custom_elements.findIndex((item: any) => item.follow_challenge)
@@ -69,9 +67,10 @@ export async function GET() {
     ]
   }
 
-  const imageUrl = agg.theme?.config?.site?.favicon.startsWith('/')
-    ? `${url}${agg.theme?.config?.site?.favicon}`
-    : agg.theme?.config?.site?.favicon
+  const favicon = agg.theme?.config?.site?.favicon || ''
+  const imageUrl = favicon.startsWith('/')
+    ? `${url}${favicon}`
+    : favicon
 
   const feed = new RSS({
     title,
@@ -89,7 +88,7 @@ export async function GET() {
   data.forEach((item) => {
     const render = () => {
       if (noRSS) {
-        return ReactDOM.renderToString(
+        return renderToString(
           <p>
             前往原站查看：
             <a href={`${xss(item.link)}`}>{xss(item.link)}</a>
@@ -97,7 +96,7 @@ export async function GET() {
         )
       }
       try {
-        return ReactDOM.renderToString(
+        return renderToString(
           <div>
             <blockquote>
               该渲染由 Shiro API 生成，可能存在排版问题，最佳体验请前往：
@@ -195,7 +194,7 @@ export async function GET() {
           </div>,
         )
       } catch {
-        return ReactDOM.renderToString(
+        return renderToString(
           <p>
             当前内容无法在 RSS 阅读器中正确渲染，请前往：
             <a href={`${xss(item.link)}`}>{xss(item.link)}</a>
