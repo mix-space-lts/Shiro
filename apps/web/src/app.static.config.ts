@@ -4,7 +4,7 @@ const getEnvNumber = (
 ): number => {
   const value = process.env[key]
   if (value === undefined) return fallback
-  const parsed = parseInt(value, 10)
+  const parsed = Number.parseInt(value, 10)
   return Number.isNaN(parsed) ? fallback : parsed
 }
 
