@@ -234,8 +234,6 @@
   "view_compact": "コンパクト表示",
   "view_preview": "プレビュー表示",
   "sitemap": "サイトマップ",
-  "shiroi_closed_source": "これは <link>Shiro</link> のクローズドソース版です。",
-  "shiroi_get_via": "<link>Sponsor</link> から入手できます",
   "version_hash": "バージョンハッシュ：{hash}",
   "build_time": "ビルド時間：{time}",
 

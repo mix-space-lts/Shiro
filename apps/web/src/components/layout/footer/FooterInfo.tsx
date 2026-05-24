@@ -6,8 +6,6 @@ import type { JSX } from 'react'
 import { fetchAggregationData } from '~/app/[locale]/api'
 import { IonIosArrowDown } from '~/components/icons/arrow'
 import { SubscribeTextButton } from '~/components/modules/subscribe/SubscribeTextButton'
-import { FloatPopover } from '~/components/ui/float-popover'
-import { MarkdownLink } from '~/components/ui/link'
 import { Link } from '~/i18n/navigation'
 import { clsxm } from '~/lib/helper'
 
@@ -97,64 +95,9 @@ const PoweredBy = async ({ className }: { className?: string }) => {
         Mix Space
       </StyledLink>
       <span className="mx-1">&</span>
-      <FloatPopover
-        mobileAsSheet
-        type="tooltip"
-        triggerElement={
-          <StyledLink
-            className="cursor-help"
-            href="https://github.com/innei/Shiro"
-            target="_blank"
-          >
-            白
-          </StyledLink>
-        }
-      >
-        <div className="space-y-2">
-          <p>
-            {t.rich('shiroi_closed_source', {
-              link: (chunks) => (
-                <StyledLink
-                  className="underline"
-                  href="https://github.com/innei/Shiro"
-                  target="_blank"
-                >
-                  {chunks}
-                </StyledLink>
-              ),
-            })}
-          </p>
-          <p>
-            {t.rich('shiroi_get_via', {
-              link: (chunks) => (
-                <MarkdownLink
-                  popper={false}
-                  noIcon
-                  href="https://github.com/sponsors/Innei"
-                >
-                  {chunks}
-                </MarkdownLink>
-              ),
-            })}
-          </p>
-          {process.env.COMMIT_HASH && process.env.COMMIT_URL && (
-            <p>
-              <MarkdownLink popper={false} noIcon href={process.env.COMMIT_URL}>
-                {t('version_hash', {
-                  hash: process.env.COMMIT_HASH.slice(0, 8),
-                })}
-              </MarkdownLink>
-            </p>
-          )}
-          {process.env.BUILD_TIME && (
-            <p>
-              {t('build_time', {
-                time: new Date(process.env.BUILD_TIME).toLocaleDateString(),
-              })}
-            </p>
-          )}
-        </div>
-      </FloatPopover>
+      <StyledLink href="https://github.com/innei/Shiro" target="_blank">
+        白
+      </StyledLink>
       .
     </span>
   )

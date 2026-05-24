@@ -241,8 +241,6 @@
   "view_preview": "Preview mode",
 
   "sitemap": "Sitemap",
-  "shiroi_closed_source": "This is the closed-source version of <link>Shiro</link>.",
-  "shiroi_get_via": "Available via <link>Sponsor</link>",
   "version_hash": "Version hash: {hash}",
   "build_time": "Build time: {time}",
 
