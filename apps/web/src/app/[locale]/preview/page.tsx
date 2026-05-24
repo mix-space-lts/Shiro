@@ -203,12 +203,7 @@ const PostPreview = () => {
       <CurrentPostDataAtomProvider overrideAtom={overrideAtom}>
         <CurrentPostDataProvider data={data} />
         <div className="relative flex min-h-[120px] grid-cols-[auto_200px] lg:grid">
-          <article
-            className={clsx(
-              'relative w-full min-w-0',
-               'prose',
-            )}
-          >
+          <article className={clsx('relative w-full min-w-0', 'prose')}>
             <header className="mb-8">
               <h1 className="text-balance text-center">{data.title}</h1>
 
@@ -248,12 +243,10 @@ const NotePreview = () => {
         next: undefined,
         data: {
           ...rawData,
-          created: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
           images: rawData.images ?? [],
-          count: rawData.count ?? {
-            read: 0,
-            like: 0,
-          },
+          readCount: (rawData as any).readCount ?? 0,
+          likeCount: (rawData as any).likeCount ?? 0,
           isTranslated: false,
           liked: false,
         },
@@ -304,9 +297,7 @@ const PagePreview = () => {
       <CurrentPageDataAtomProvider overrideAtom={overrideAtom}>
         <CurrentPageDataProvider data={data} />
         <div className="relative w-full min-w-0">
-          <article
-            className={'prose'}
-          >
+          <article className={'prose'}>
             <header className="mb-8">
               <PageTitle />
 

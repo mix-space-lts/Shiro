@@ -60,11 +60,27 @@ export const mxSpacePlugin: LinkCardPlugin = {
 
     if (type === 'posts') {
       const [cate, slug] = rest
-      data = await apiClient.post.getPost(cate, slug)
+      const post = await apiClient.post.getPost(cate, slug)
+      data = {
+        title: post.title,
+        text: post.text,
+        images: post.images?.map((img) => ({ src: img.src })),
+        meta: post.meta,
+        cover: post.images?.[0]?.src,
+        summary: post.summary,
+      }
     } else if (type === 'notes') {
       const [nid] = rest
       const response = await apiClient.note.getNoteById(+nid)
-      data = response.data
+      const note = response.data
+      data = {
+        title: note.title,
+        text: note.text,
+        images: note.images?.map((img) => ({ src: img.src })),
+        meta: note.meta,
+        cover: note.images?.[0]?.src,
+        summary: note.summary,
+      }
     }
 
     const coverImage = data.cover || data.meta?.cover

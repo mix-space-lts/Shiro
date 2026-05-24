@@ -66,7 +66,7 @@ const NoteAsideCommentButton = () => {
       return {
         title: data?.title,
         id: data?.id,
-        allowComment: data?.allowComment,
+        allowComment: (data as any)?.allowComment ?? false,
       }
     }) || {}
 
@@ -82,7 +82,7 @@ const LikeButton = () => {
   const control = useAnimationControls()
   const [update] = useForceUpdate()
 
-  const likeCount = useCurrentNoteDataSelector((data) => data?.data.count.like)
+  const likeCount = useCurrentNoteDataSelector((data) => data?.data.likeCount)
   const id = useCurrentNoteDataSelector((data) => data?.data.id)
   const nid = useCurrentNoteNid()
 
@@ -94,7 +94,7 @@ const LikeButton = () => {
     apiClient.activity.likeIt('Note', id).then(() => {
       setLikeId(id)
       setCurrentNoteData((draft) => {
-        draft.data.count.like += 1
+        draft.data.likeCount += 1
       })
       update()
     })

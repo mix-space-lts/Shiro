@@ -13,13 +13,13 @@ import { useCurrentNoteDataSelector } from '~/providers/note/CurrentNoteDataProv
 import { NoteTopicDetail } from './NoteTopicDetail'
 import { NoteTopicMarkdownRender } from './NoteTopicMarkdownRender'
 
-const textToBigCharOrWord = (name: string | undefined) => {
+const textToBigCharOrWord = (name: string | null | undefined) => {
   if (!name) {
     return ''
   }
   const splitOnce = name.split(' ')[0]
   const bigChar = splitOnce.length > 4 ? name[0] : splitOnce
-  return bigChar
+  return bigChar ?? ''
 }
 
 export const NoteBottomTopic: FC = () => {
@@ -39,10 +39,10 @@ export const NoteBottomTopic: FC = () => {
           radius="full"
           size={60}
           imageUrl={icon}
-          text={textToBigCharOrWord(name)}
+          text={textToBigCharOrWord(name ?? undefined) ?? undefined}
           className="shrink-0"
           shadow={false}
-          alt={`专栏 ${name} 的头像`}
+          alt={`专栏 ${name ?? ''} 的头像`}
         />
         <div className="flex grow flex-col self-start">
           <span className="mb-2 font-medium">
@@ -68,7 +68,7 @@ export const NoteBottomTopic: FC = () => {
           </span>
 
           <div className="line-clamp-2 text-sm opacity-80">
-            <NoteTopicMarkdownRender>{introduce}</NoteTopicMarkdownRender>
+            <NoteTopicMarkdownRender>{introduce ?? ''}</NoteTopicMarkdownRender>
           </div>
         </div>
       </div>

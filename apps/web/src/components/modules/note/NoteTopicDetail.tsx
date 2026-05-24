@@ -67,14 +67,16 @@ export const NoteTopicDetail: FC<{ topic: TopicModel }> = (props) => {
       </Link>
 
       <div className="line-clamp-2 break-all text-neutral">
-        <NoteTopicMarkdownRender>{topic.introduce}</NoteTopicMarkdownRender>
+        <NoteTopicMarkdownRender>
+          {topic.introduce ?? ''}
+        </NoteTopicMarkdownRender>
       </div>
       {topic.description && (
         <>
           <Divider />
           <div className="leading-8 opacity-90">
             <NoteTopicMarkdownRender>
-              {topic.description}
+              {topic.description ?? ''}
             </NoteTopicMarkdownRender>
           </div>
         </>
@@ -100,7 +102,7 @@ export const NoteTopicDetail: FC<{ topic: TopicModel }> = (props) => {
               <span className="shrink-0">
                 （
                 <RelativeTime
-                  date={data?.data[0].modified || data?.data[0].created}
+                  date={data?.data[0].modifiedAt || data?.data[0].createdAt}
                   displayAbsoluteTimeAfterDay={Infinity}
                 />
                 ）

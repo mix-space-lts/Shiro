@@ -1,7 +1,6 @@
 'use client'
 
 import type {
-  CommentDto,
   CommentModel,
   RequestError,
 } from '@mx-space/api-client'
@@ -20,7 +19,6 @@ import { jotaiStore } from '~/lib/store'
 import { toast } from '~/lib/toast'
 import { buildCommentsQueryKey } from '~/queries/keys'
 
-import type { CommentAnchor } from '../types'
 import { MAX_COMMENT_TEXT_LENGTH } from './constants'
 import type { createInitialValue } from './providers'
 import {
@@ -146,7 +144,7 @@ export const useSendComment = () => {
       const url = jotaiStore.get(urlAtom)
       const anchor = jotaiStore.get(anchorAtom)
 
-      const commentDto: CommentDto & { anchor?: CommentAnchor } = {
+      const commentDto: any = {
         text,
         author,
         mail,
@@ -162,16 +160,15 @@ export const useSendComment = () => {
 
       // Omit empty string key
       Object.keys(commentDto).forEach((key) => {
-        // @ts-expect-error
         if (commentDto[key] === '') delete commentDto[key]
       })
 
       // Reply Comment
       if (isReply) {
         if (isLogged) {
-          return apiClient.comment.proxy.owner
+          return (apiClient.comment as any).proxy.owner
             .reply(refId)
-            .post<CommentModel>({
+            .post({
               data: {
                 text,
                 source,
@@ -179,7 +176,7 @@ export const useSendComment = () => {
             })
             .then(wrappedCompletedCallback)
         } else {
-          return apiClient.comment
+          return (apiClient.comment as any)
             .reply(refId, commentDto)
             .then(wrappedCompletedCallback)
         }
@@ -190,12 +187,12 @@ export const useSendComment = () => {
       const syncToRecently = jotaiStore.get(syncToRecentlyAtom)
 
       if (isLogged) {
-        return apiClient.comment.proxy.owner
+        return (apiClient.comment as any).proxy.owner
           .comment(refId)
-          .post<CommentModel>({
+          .post({
             data: { text, source, ...(anchor ? { anchor } : {}) },
           })
-          .then(async (res) => {
+          .then(async (res: any) => {
             if (syncToRecently)
               apiClient.recently.proxy
                 .post({
@@ -214,7 +211,7 @@ export const useSendComment = () => {
       }
       // @ts-ignore
       commentDto.isWhispers = isWhisper
-      return apiClient.comment
+      return (apiClient.comment as any)
         .comment(refId, commentDto)
         .then(wrappedCompletedCallback)
     },

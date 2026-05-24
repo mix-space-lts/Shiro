@@ -37,7 +37,7 @@ export async function GET() {
 
   for (const t of thinking.data) {
     feed.item({
-      title: new Date(t.created).toLocaleDateString(),
+      title: new Date(t.createdAt).toLocaleDateString(),
       description:
         `${t.content}\n\n${t.ref?.title ? `引用：${t.ref.title}` : ''}\n\n` +
         ` <p style='text-align: right'>
@@ -45,7 +45,7 @@ export async function GET() {
       </p>`,
       url: `${agg.url.webUrl}/thinking`,
       guid: t.id,
-      date: t.created,
+      date: t.createdAt,
     })
   }
 

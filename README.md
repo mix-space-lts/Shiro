@@ -5,7 +5,7 @@
 >
 > 如果你正在寻找一个全新的个人博客前端，请关注 **[余白 / Yohaku](https://github.com/Innei/Yohaku)** — 一个独立的新项目，拥有全新的设计语言与视觉体系。完整代码需 [赞助](https://github.com/sponsors/Innei) 获取访问权限。
 >
-> **Shiro LTS 要求 Mix Space Core 版本 >= 10.x**。
+> **Shiro 支持 Mix Space Core 版本 >= 10.x**。
 
 一个极简主义的个人网站主题，如纸的纯净，似雪的清新。
 

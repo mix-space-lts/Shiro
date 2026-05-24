@@ -244,7 +244,7 @@ export default definePrerenderPage<NoteDetailPageParams>()<NoteDataResult>({
           <BottomToUpSoftScaleTransitionView delay={500}>
             <CommentAreaRootLazy
               refId={data.data.id}
-              allowComment={data.data.allowComment}
+              allowComment={(data.data as any).allowComment ?? false}
             />
           </BottomToUpSoftScaleTransitionView>
         </Transition>

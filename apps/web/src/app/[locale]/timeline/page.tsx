@@ -91,13 +91,8 @@ export default function TimelinePage() {
     note: TimelineType.Note,
   }[type]
 
-  const { data: initialData } = useQuery<TimelineData>({
-    queryKey: ['timeline'],
-    enabled: false,
-  })
   const { data, refetch } = useQuery<TimelineData>({
     queryKey: ['timeline', nextType, year],
-    initialData,
     queryFn: async ({ queryKey }) => {
       const [, nextType, year] = queryKey as [string, TimelineType, string]
       return await apiClient.aggregate
@@ -126,7 +121,7 @@ export default function TimelinePage() {
 
   if (!memory) {
     posts.forEach((post) => {
-      const date = new Date(post.created)
+      const date = new Date(post.createdAt)
       const year = date.getFullYear()
       const data: MapType = {
         title: post.title,
@@ -147,7 +142,7 @@ export default function TimelinePage() {
   notes
     .filter((n) => (memory ? n.bookmark : true))
     .forEach((note) => {
-      const date = new Date(note.created)
+      const date = new Date(note.createdAt)
       const year = date.getFullYear()
       const data: MapType = {
         title: note.title,

@@ -188,8 +188,8 @@ export default definePrerenderPage<PageParams>()<PostDataResult>({
       headline: data.title,
       image: data.meta?.cover ? [data.meta.cover] : undefined,
       description: data.summary || (data.text ?? '').slice(0, 200),
-      datePublished: data.created,
-      dateModified: data.modified || undefined,
+      datePublished: data.createdAt,
+      dateModified: data.modifiedAt || undefined,
     }
 
     return (
@@ -212,7 +212,7 @@ export default definePrerenderPage<PageParams>()<PostDataResult>({
             <BottomToUpSoftScaleTransitionView delay={500}>
               <CommentAreaRootLazy
                 refId={data.id}
-                allowComment={data.allowComment}
+                allowComment={(data as any)?.allowComment ?? false}
               />
             </BottomToUpSoftScaleTransitionView>
           </BottomToUpTransitionView>

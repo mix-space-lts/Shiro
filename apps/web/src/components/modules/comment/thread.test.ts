@@ -11,19 +11,22 @@ import { buildCommentTreeItem, mergeThreadRepliesIntoPages } from './thread'
 
 const makeComment = (
   id: string,
-  created: string,
+  createdAt: string,
   overrides: Partial<CommentModel> = {},
-): CommentModel => ({
-  id,
-  created,
-  refType: 'posts' as CollectionRefTypes,
-  ref: 'post-id',
-  state: 1,
-  author: `author-${id}`,
-  text: `text-${id}`,
-  avatar: '',
-  ...overrides,
-})
+): CommentModel =>
+  ({
+    id,
+    createdAt,
+    refType: 'posts' as CollectionRefTypes,
+    ref: 'ref-id',
+    state: 1,
+    author: `author-${id}`,
+    text: `text-${id}`,
+    avatar: '',
+    isWhispers: false,
+    pin: false,
+    ...overrides,
+  }) as CommentModel
 
 describe('comment thread helpers', () => {
   it('rebuilds nested children from flat replies using parentCommentId', () => {
@@ -55,24 +58,24 @@ describe('comment thread helpers', () => {
       },
     }
 
-    const tree = buildCommentTreeItem(root)
+    const tree = buildCommentTreeItem(root) as any
 
-    expect(tree.children.map((comment) => comment.id)).toEqual([
+    expect(tree.children.map((comment: any) => comment.id)).toEqual([
       'child-1',
       'orphan',
     ])
-    expect(tree.children[0]?.children.map((comment) => comment.id)).toEqual([
-      'child-2',
-    ])
+    expect(
+      tree.children[0]?.children.map((comment: any) => comment.id),
+    ).toEqual(['child-2'])
   })
 
   it('merges loaded middle replies back into paginated thread data', () => {
-    const root: CommentThreadItem & { ref: string } = {
+    const root: CommentThreadItem & { ref: { text: string } } = {
       ...makeComment('root', '2026-03-14T10:00:00.000Z', {
         parentCommentId: null,
         rootCommentId: null,
       }),
-      ref: 'post-id',
+      ref: { text: 'post-id', id: 'ref-id', type: 'posts' } as any,
       replies: [
         makeComment('child-1', '2026-03-14T10:01:00.000Z', {
           parentCommentId: 'root',
@@ -109,7 +112,7 @@ describe('comment thread helpers', () => {
         },
       ],
     } satisfies InfiniteData<
-      PaginateResult<CommentThreadItem & { ref: string }>
+      PaginateResult<CommentThreadItem & { ref: { text: string } }>
     >
 
     const next = mergeThreadRepliesIntoPages(data, {
@@ -118,7 +121,7 @@ describe('comment thread helpers', () => {
         makeComment('child-2', '2026-03-14T10:02:00.000Z', {
           parentCommentId: 'child-1',
           rootCommentId: 'root',
-        }),
+        }) as any,
       ],
       replyWindow: {
         total: 3,

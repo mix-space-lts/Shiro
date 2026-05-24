@@ -73,7 +73,7 @@ const PostAsideCommentButton = () => {
     useCurrentPostDataSelector((data) => ({
       title: data?.title,
       id: data?.id,
-      allowComment: data?.allowComment,
+      allowComment: (data as any)?.allowComment ?? false,
     })) || {}
   const isEof = useIsEoFWrappedElement()
   if (!id) return null
@@ -89,7 +89,7 @@ const LikeButton = () => {
   const [update] = useForceUpdate()
 
   const id = useCurrentPostDataSelector((data) => data?.id)
-  const likeCount = useCurrentPostDataSelector((data) => data?.count.like)
+  const likeCount = useCurrentPostDataSelector((data) => data?.likeCount)
 
   if (!id) return null
   const handleLike = () => {
@@ -98,7 +98,7 @@ const LikeButton = () => {
     apiClient.activity.likeIt('Post', id).then(() => {
       setLikeId(id)
       setGlobalCurrentPostData((draft) => {
-        draft.count.like += 1
+        draft.likeCount += 1
       })
       update()
     })

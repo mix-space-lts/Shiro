@@ -7,10 +7,18 @@ import type {
 } from '@mx-space/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 
-import type { CommentAnchor } from './types'
+import type { CommentAnchor as CommentAnchorType } from './types'
 
-export type CommentWithAnchor = CommentModel & {
-  anchor?: CommentAnchor
+export type { CommentAnchor } from './types'
+
+export type CommentWithAnchor = Omit<
+  CommentModel,
+  'anchor' | 'source' | 'location' | 'isWhispers'
+> & {
+  anchor?: CommentAnchorType
+  source?: string
+  location?: string
+  isWhispers?: boolean
   new?: boolean
 }
 
@@ -21,7 +29,7 @@ export type CommentThreadViewItem = CommentWithAnchor & {
 }
 
 export type CommentThreadPage = PaginateResult<
-  CommentThreadItem & { ref: string }
+  CommentThreadItem & { ref: { text: string } }
 >
 export type CommentThreadInfiniteData = InfiniteData<
   CommentThreadPage & {
@@ -31,10 +39,8 @@ export type CommentThreadInfiniteData = InfiniteData<
 
 const toTimestamp = (date: string) => new Date(date).getTime()
 
-const byCreatedAsc = (
-  a: Pick<CommentModel, 'created'>,
-  b: Pick<CommentModel, 'created'>,
-) => toTimestamp(a.created) - toTimestamp(b.created)
+const byCreatedAsc = (a: { createdAt: string }, b: { createdAt: string }) =>
+  toTimestamp(a.createdAt) - toTimestamp(b.createdAt)
 
 const getParentCommentId = (
   parentCommentId: CommentModel['parentCommentId'],
@@ -61,9 +67,9 @@ const sortChildrenDeep = (comment: CommentThreadViewItem) => {
 export const buildCommentTreeItem = (
   rootComment: CommentThreadItem | (CommentThreadViewItem & { ref?: string }),
 ): CommentThreadViewItem => {
-  const rootView = createViewComment(rootComment)
+  const rootView = createViewComment(rootComment as CommentWithAnchor)
   const replyViews = (rootComment.replies ?? []).map((reply) =>
-    createViewComment(reply),
+    createViewComment(reply as CommentWithAnchor),
   )
 
   const commentMap = new Map<string, CommentThreadViewItem>([
@@ -81,7 +87,7 @@ export const buildCommentTreeItem = (
 
   return {
     ...rootView,
-    replies: dedupeRepliesById(rootComment.replies ?? []),
+    replies: dedupeRepliesById((rootComment.replies as any) ?? []),
     replyWindow: rootComment.replyWindow,
   }
 }
@@ -93,15 +99,15 @@ export const flattenThreadComments = (
 ): CommentWithAnchor[] => {
   const result: CommentWithAnchor[] = []
   for (const comment of comments) {
-    result.push(comment)
+    result.push(comment as CommentWithAnchor)
     if (comment.replies) {
-      result.push(...comment.replies)
+      result.push(...(comment.replies as CommentWithAnchor[]))
     }
   }
   return dedupeRepliesById(result)
 }
 
-export const dedupeRepliesById = <T extends Pick<CommentModel, 'id'>>(
+export const dedupeRepliesById = <T extends { id: string }>(
   comments: readonly T[],
 ): T[] => {
   const seen = new Set<string>()
@@ -134,12 +140,14 @@ export const mergeThreadRepliesIntoPages = (
 
       return {
         ...comment,
-        replies: dedupeRepliesById([
-          ...(comment.replies ?? []),
-          ...replies,
-        ]).sort(byCreatedAsc),
+        replies: (
+          dedupeRepliesById([
+            ...(comment.replies ?? []),
+            ...replies,
+          ] as any) as any[]
+        ).sort(byCreatedAsc),
         replyWindow,
-      }
-    }),
+      } as any
+    }) as any,
   })),
 })

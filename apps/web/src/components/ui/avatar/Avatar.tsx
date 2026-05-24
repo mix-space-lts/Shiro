@@ -13,13 +13,13 @@ import { FlexText } from '../text'
 
 interface AvatarProps {
   url?: string
-  imageUrl?: string
+  imageUrl?: string | null
   size?: number
 
   wrapperProps?: JSX.IntrinsicElements['div']
 
   shadow?: boolean
-  text?: string
+  text?: string | null
   randomColor?: boolean
   radius?: number | 'full'
 

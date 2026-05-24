@@ -47,13 +47,13 @@ export const CommentProvider: FC<{
   refId: string
   children: (
     data: InfiniteData<
-      PaginateResult<CommentModel & { ref: string }> & {
+      PaginateResult<CommentModel & { ref: { text: string } }> & {
         readers: Record<string, ReaderModel>
       }
     >,
     commentAtom: PrimitiveAtom<Record<string, CommentThreadViewItem>>,
   ) => ReactNode
-}> = ({ children, refId }) => {
+}> = ({ children, refId }: any) => {
   const t = useTranslations('comment')
   const commentAtom = useRefValue(() =>
     atom({} as Record<string, CommentThreadViewItem>),
@@ -154,7 +154,7 @@ export const useUpdateComment = () => {
             ...prev[comment.id],
             ...comment,
             editedAt: new Date().toISOString(),
-          },
+          } as any,
         }
 
         return newComments

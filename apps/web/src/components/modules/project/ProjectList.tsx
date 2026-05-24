@@ -7,7 +7,7 @@ import { ProjectIcon } from './ProjectIcon'
 
 export type Project = {
   id: string
-  avatar?: string
+  avatar?: string | null
   name: string
   description?: string
 }

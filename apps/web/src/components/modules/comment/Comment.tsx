@@ -1,6 +1,5 @@
 import './Comment.css'
 
-import type { CommentModel } from '@mx-space/api-client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { atom, useAtomValue } from 'jotai'
@@ -78,7 +77,7 @@ const CommentRender: Component<{
 
     return isSingleLine && isURL
   }, [comment.text])
-  const reader = useCommentReader(comment.readerId)
+  const reader = useCommentReader(comment.readerId ?? undefined)
 
   const {
     id: cid,
@@ -88,20 +87,20 @@ const CommentRender: Component<{
     isWhispers,
     url,
     source,
-  } = comment
+  } = comment as any
 
-  const avatar = reader?.image || comment.avatar
+  const avatar = reader?.image ?? comment.avatar ?? undefined
   const author = reader?.name || comment.author
   const parentId = comment.parentCommentId ?? null
   const displayText = comment.isDeleted ? t('deleted_placeholder') : text
 
   const authorUrl = useMemo(() => {
-    if (url) return url
+    if (url) return url ?? undefined
     if (source === 'github' && reader?.handle) {
       return `https://github.com/${reader.handle}`
     }
-    return null
-  }, [url, source, reader?.handle])
+    return
+  }, [url, source, reader?.handle]) as string | undefined
 
   const authorElement = authorUrl ? (
     <a
@@ -116,7 +115,7 @@ const CommentRender: Component<{
     <span className="max-w-full shrink-0 break-all">{author}</span>
   )
 
-  const { anchor } = comment as CommentModel & { anchor?: CommentAnchor }
+  const { anchor } = comment as any as { anchor?: CommentAnchor }
 
   const CommentNormalContent = (
     <div
@@ -184,7 +183,7 @@ const CommentRender: Component<{
               )}
             >
               <Avatar
-                alt={t('avatar_alt', { author })}
+                alt={t('avatar_alt', { author: author ?? '' })}
                 className="size-6 select-none rounded-full bg-neutral-200 ring-2 ring-neutral-200 dark:bg-neutral-800 dark:ring-neutral-800 md:size-9"
                 imageUrl={avatar}
                 shadow={false}
@@ -218,7 +217,7 @@ const CommentRender: Component<{
                   {authorElement}
                   <span className="-mt-1 flex min-w-0 shrink select-none flex-wrap items-center space-x-2 md:mt-0 md:self-end">
                     <span className="inline-flex shrink-0 text-[0.71rem] font-medium opacity-40">
-                      <RelativeTime date={comment.created} />
+                      <RelativeTime date={comment.createdAt} />
                     </span>
                     {!!location && (
                       <span className="min-w-0 max-w-full truncate break-all text-[0.71rem] opacity-35">
@@ -307,7 +306,7 @@ const LoadMoreRepliesButton: FC<{
           if (!oldData) return oldData
           return mergeThreadRepliesIntoPages(oldData, {
             rootCommentId: comment.id,
-            replies: result.replies,
+            replies: result.replies as any,
             replyWindow,
           })
         },

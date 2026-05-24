@@ -29,7 +29,7 @@ const cloneHeaderMenuConfig = (items: IHeaderMenu[]): IHeaderMenu[] =>
 
 export const HeaderDataConfigureProvider: Component = ({ children }) => {
   const pageMeta = useAggregationSelector(
-    (aggregationData) => aggregationData.pageMeta,
+    (aggregationData) => (aggregationData as any).pageMeta,
   )
   const postListViewMode = useAppConfigSelector(
     (appConfig) => appConfig.module?.posts?.mode,

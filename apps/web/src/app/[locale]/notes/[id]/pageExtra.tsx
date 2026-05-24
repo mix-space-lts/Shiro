@@ -29,7 +29,7 @@ export const MarkdownSelection: Component = (props) => {
   const id = useCurrentNoteDataSelector((data) => data?.data?.id)!
   const title = useCurrentNoteDataSelector((data) => data?.data?.title)!
   const canComment = useCurrentNoteDataSelector(
-    (data) => data?.data.allowComment,
+    (data) => (data?.data as any)?.allowComment ?? false,
   )!
   return (
     <WithArticleSelectionAction
@@ -63,7 +63,7 @@ export const NoteTitle = () => {
 }
 
 export const NoteDateMeta = () => {
-  const created = useCurrentNoteDataSelector((data) => data?.data.created)
+  const created = useCurrentNoteDataSelector((data) => data?.data.createdAt)
   const format = useFormatter()
 
   if (!created) return null
@@ -83,17 +83,17 @@ export const NoteDateMeta = () => {
 }
 export const NoteHeaderDate = withClientOnly(() => {
   const date = useCurrentNoteDataSelector((data) => ({
-    created: data?.data.created,
-    modified: data?.data.modified,
+    createdAt: data?.data.createdAt,
+    modifiedAt: data?.data.modifiedAt,
   }))
   const format = useFormatter()
   const t = useTranslations('common')
 
-  if (!date?.created) return null
+  if (!date?.createdAt) return null
 
-  const tips = date.modified
+  const tips = date.modifiedAt
     ? t('modified_at', {
-        date: format.dateTime(new Date(date.modified), {
+        date: format.dateTime(new Date(date.modifiedAt), {
           year: 'numeric',
           month: 'long',
           day: 'numeric',

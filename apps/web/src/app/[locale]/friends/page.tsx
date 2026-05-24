@@ -157,8 +157,8 @@ const Card: FC<{ link: LinkModel }> = ({ link }) => {
         imageUrl={link.avatar}
         lazy
         radius={8}
-        text={link.name[0]}
-        alt={`Avatar of ${link.name}`}
+        text={link.name?.[0] ?? undefined}
+        alt={`Avatar of ${link.name ?? ''}`}
         size={64}
         className="ring-2 ring-zinc-400/30 dark:ring-zinc-50"
       />

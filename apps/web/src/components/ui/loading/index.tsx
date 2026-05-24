@@ -15,7 +15,10 @@ export const Loading: Component<LoadingProps> = ({
   useDefaultLoadingText = false,
 }) => {
   const t = useTranslations('common')
-  const defaultLoadingText = t('loading_default')
+  const rawLoadingText = t.raw('loading_default')
+  const defaultLoadingText = Array.isArray(rawLoadingText)
+    ? rawLoadingText[Math.floor(Math.random() * rawLoadingText.length)]
+    : rawLoadingText
   const nextLoadingText = useDefaultLoadingText
     ? defaultLoadingText
     : loadingText

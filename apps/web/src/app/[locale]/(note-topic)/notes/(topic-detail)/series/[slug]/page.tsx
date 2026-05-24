@@ -69,7 +69,7 @@ export default function Page() {
         <TimelineList>
           {notes?.pages.map((page) =>
             page.data.map((child, i) => {
-              const date = new Date(child.created)
+              const date = new Date(child.createdAt)
 
               return (
                 <BottomToUpTransitionView

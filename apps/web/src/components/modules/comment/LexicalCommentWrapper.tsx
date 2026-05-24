@@ -1,7 +1,6 @@
 'use client'
 
 import type {
-  CommentModel,
   CommentThreadItem,
   PaginateResult,
 } from '@mx-space/api-client'
@@ -18,12 +17,13 @@ import { extractBlockInfos } from './anchor-utils'
 import { CommentAnchorHighlight } from './CommentAnchorHighlight'
 import { CommentBlockGutter } from './CommentBlockGutter'
 import { RichContentElementProvider } from './RichContentElementContext'
-import { flattenThreadComments } from './thread'
+import { type CommentWithAnchor,flattenThreadComments } from './thread'
 import type { CommentAnchor } from './types'
 
-type CommentWithAnchor = CommentModel & { anchor?: CommentAnchor }
 type CommentsQueryData = InfiniteData<
-  PaginateResult<CommentThreadItem & { anchor?: CommentAnchor; ref: string }>
+  PaginateResult<
+    CommentThreadItem & { anchor?: CommentAnchor; ref: { text: string } }
+  >
 >
 
 function useAnchorCommentsQuery(refId: string): CommentWithAnchor[] {
