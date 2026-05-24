@@ -29,7 +29,7 @@ export async function GET() {
     site_url: agg.url.webUrl,
     feed_url: `${agg.url.webUrl}/says/feed`,
     language: 'zh-CN',
-    generator: 'Shiro (https://github.com/Innei/Shiro)',
+    generator: 'Shiro (https://github.com/mix-space-lts/Shiro)',
     pubDate: now.toUTCString(),
   })
 

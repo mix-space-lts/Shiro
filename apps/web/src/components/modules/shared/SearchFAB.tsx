@@ -18,9 +18,7 @@ import {
 
 import { useIsOwnerLogged } from '~/atoms/hooks/owner'
 import { EmptyIcon } from '~/components/icons/empty'
-import { MotionButtonBase } from '~/components/ui/button'
 import { FABPortable } from '~/components/ui/fab'
-import { FloatPopover } from '~/components/ui/float-popover'
 import { microDampingPreset } from '~/constants/spring'
 import useDebounceValue from '~/hooks/common/use-debounce-value'
 import { useIsClient } from '~/hooks/common/use-is-client'
@@ -290,25 +288,8 @@ const SearchPanelImpl = () => {
       </div>
 
       <div className="flex shrink-0 items-center justify-between px-4 py-2">
-        {isLogged ? (
-          <MotionButtonBase
-            onClick={() => {
-              window.open(
-                apiClient.search.proxy('algolia')('import-json').toString(true),
-              )
-            }}
-          >
-            <FloatPopover
-              mobileAsSheet
-              type="tooltip"
-              triggerElement={<i className="i-mingcute-download-2-line" />}
-            >
-              {t('search_download_index')}
-            </FloatPopover>
-          </MotionButtonBase>
-        ) : (
-          <div />
-        )}
+        {/* NOTE: Algolia import-json 端点在新版后端已移除，此按钮已隐藏 */}
+        {isLogged ? <div /> : <div />}
         <a
           href="https://www.algolia.com"
           target="_blank"

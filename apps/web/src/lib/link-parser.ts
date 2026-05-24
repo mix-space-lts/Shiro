@@ -170,8 +170,8 @@ export const parseGithubGistUrl = (url: URL) => {
 }
 
 export const parseGithubTypedUrl = (url: URL) => {
-  // https://github.com/Innei/sprightly/blob/14234594f44956e6f56f1f92952ce82db37ef4df/src/socket/handler.ts
-  // https://github.com/mx-space/core/commit/e1b4d881cf18e1cb66294d2620eada35937d9a12
+  // Example: https://github.com/Innei/sprightly/blob/14234594f44956e6f56f1f92952ce82db37ef4df/src/socket/handler.ts
+  // Example: https://github.com/mix-space-lts/core/commit/e1b4d881cf18e1cb66294d2620eada35937d9a12
   const split = url.pathname.split('/')
   const [_, owner, repo, type, id] = split
 

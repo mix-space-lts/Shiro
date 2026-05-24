@@ -9,7 +9,7 @@
 
 一个极简主义的个人网站主题，如纸的纯净，似雪的清新。
 
-专为 [Mix Space](https://github.com/mx-space) 生态系统设计的现代化个人站点前端。
+专为 [Mix Space](https://github.com/mx-space) 生态系统设计的现代化个人站点前端。（LTS 维护版）
 
 ## :sparkles: 示例站点
 

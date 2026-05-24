@@ -91,11 +91,11 @@ const PoweredBy = async ({ className }: { className?: string }) => {
   return (
     <span className={className}>
       Powered by{' '}
-      <StyledLink href="https://github.com/mx-space" target="_blank">
+      <StyledLink href="https://github.com/mix-space-lts" target="_blank">
         Mix Space
       </StyledLink>
       <span className="mx-1">&</span>
-      <StyledLink href="https://github.com/innei/Shiro" target="_blank">
+      <StyledLink href="https://github.com/mix-space-lts/Shiro" target="_blank">
         白
       </StyledLink>
       .

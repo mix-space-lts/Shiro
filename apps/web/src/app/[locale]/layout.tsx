@@ -266,12 +266,12 @@ const SayHi = () => (
       __html: `var version = "${version}";
     (${function () {
       console.info(
-        `%c Mix Space %c https://github.com/mx-space`,
+        `%c Mix Space %c https://github.com/mix-space-lts`,
         'color: #fff; margin: 1em 0; padding: 5px 0; background: #2980b9;',
         'margin: 1em 0; padding: 5px 0; background: #efefef;',
       )
       console.info(
-        `%c Shiro ${window.version} %c https://github.com/Innei/Shiro`,
+        `%c Shiro ${window.version} %c https://github.com/mix-space-lts/Shiro`,
         'color: #fff; margin: 1em 0; padding: 5px 0; background: #39C5BB;',
         'margin: 1em 0; padding: 5px 0; background: #efefef;',
       )

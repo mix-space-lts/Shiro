@@ -68,9 +68,7 @@ export async function GET() {
   }
 
   const favicon = agg.theme?.config?.site?.favicon || ''
-  const imageUrl = favicon.startsWith('/')
-    ? `${url}${favicon}`
-    : favicon
+  const imageUrl = favicon.startsWith('/') ? `${url}${favicon}` : favicon
 
   const feed = new RSS({
     title,
@@ -79,7 +77,7 @@ export async function GET() {
     feed_url: `${url}/feed`,
     language: 'zh-CN',
     image_url: imageUrl,
-    generator: 'Shiro (https://github.com/Innei/Shiro)',
+    generator: 'Shiro (https://github.com/mix-space-lts/Shiro)',
     pubDate: now.toUTCString(),
 
     custom_elements,
