@@ -4,19 +4,18 @@
  *
  * 脚本:
  * - pnpm run release        递归 bump 所有 workspace 包 → commit → tag → push
- * - pnpm run release:rich   同上，且在 commit 前执行 build:rich + publish:rich（发布 @haklex/*）
  * - pnpm run release:dry    bump 所有包，不 commit/tag/push（仅看版本变化）
  *
- * 基准版本以 packages/rich-editor 的 version 为准。
+ * 基准版本以 packages/types 的 version 为准。
  */
 import { defineConfig } from 'bumpp'
 
-import richEditorPkg from './packages/rich-editor/package.json'
+import typesPkg from './packages/types/package.json'
 
 export default defineConfig({
-  /** 基准版本：与 packages/rich-editor 保持一致 */
-  currentVersion: (richEditorPkg as { version: string }).version,
-  commit: 'chore(rich-editor): bump version v%s',
+  /** 基准版本：与 packages/types 保持一致 */
+  currentVersion: (typesPkg as { version: string }).version,
+  commit: 'chore: bump version v%s',
   tag: false,
   push: true,
   /** 允许有未提交改动时 bump（CI 或本地试跑时有用） */
