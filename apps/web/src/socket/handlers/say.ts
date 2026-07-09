@@ -1,4 +1,4 @@
-import type { PaginateResult, SayModel } from '@mx-space/api-client'
+import type { PaginateResult, SayModel } from '@mix-space-lts/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 import { produce } from 'immer'
 

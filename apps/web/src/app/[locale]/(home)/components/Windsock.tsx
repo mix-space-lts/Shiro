@@ -23,9 +23,13 @@ import { Link } from '~/i18n/navigation'
 import { preventDefault } from '~/lib/dom'
 import { apiClient } from '~/lib/request'
 import { toast } from '~/lib/toast'
+import { useAppConfigSelector } from '~/providers/root/aggregation-data-provider'
 
 export const Windsock = () => {
   const t = useTranslations('common')
+  const travelEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.travel?.enable ?? true,
+  )
 
   const windsock = useMemo(
     () => [
@@ -70,13 +74,17 @@ export const Windsock = () => {
         path: '/says',
         icon: FaSolidComments,
       },
-      {
-        title: t('windsock_travel'),
-        icon: RMixPlanet,
-        path: 'https://travel.moe/go.html',
-      },
+      ...(travelEnabled
+        ? [
+            {
+              title: t('windsock_travel'),
+              icon: RMixPlanet,
+              path: 'https://travel.moe/go.html',
+            },
+          ]
+        : []),
     ],
-    [t],
+    [t, travelEnabled],
   )
   const likeQueryKey = ['site-like']
   const { data: count } = useQuery({

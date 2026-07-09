@@ -1,15 +1,15 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-import type { Image } from '@mx-space/api-client'
+import type { Image } from '@mix-space-lts/api-client'
 import {
   AggregateController,
   createClient,
   NoteController,
   PageController,
   PostController,
-} from '@mx-space/api-client'
-import { fetchAdaptor } from '@mx-space/api-client/dist/adaptors/fetch'
+} from '@mix-space-lts/api-client'
+import { fetchAdaptor } from '@mix-space-lts/api-client/dist/adaptors/fetch'
 import { ImageResponse } from 'next/og'
 import type { NextRequest } from 'next/server'
 

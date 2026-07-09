@@ -1,6 +1,6 @@
 'use client'
 
-import type { PageModel } from '@mx-space/api-client'
+import type { PageModel } from '@mix-space-lts/api-client'
 import { createModelDataProvider } from 'jojoo/react'
 
 import { isClientSide, isDev } from '~/lib/env'

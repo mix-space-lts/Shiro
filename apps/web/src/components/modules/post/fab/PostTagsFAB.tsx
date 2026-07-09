@@ -1,6 +1,6 @@
 'use client'
 
-import type { TagModel } from '@mx-space/api-client'
+import type { TagModel } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import { memo, useCallback } from 'react'
 

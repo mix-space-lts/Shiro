@@ -1,9 +1,14 @@
-import type { AggregateRoot } from '@mx-space/api-client'
+import type { AggregateRoot } from '@mix-space-lts/api-client'
 import { isServer } from '@tanstack/react-query'
 
+import { appStaticConfig } from '~/app.static.config'
 import { apiClient } from '~/lib/request'
 
 import { defineQuery } from '../helper'
+
+const cacheTime = appStaticConfig.cache.enabled
+  ? appStaticConfig.cache.ttl.aggregation * 1000
+  : 1000 * 60 * 10
 
 export const aggregation = {
   root: () =>
@@ -16,7 +21,7 @@ export const aggregation = {
               theme: AppThemeConfig
             },
         ),
-      gcTime: 1000 * 60 * 10,
-      staleTime: isServer ? 1000 * 60 * 10 : undefined,
+      gcTime: cacheTime,
+      staleTime: isServer ? cacheTime : undefined,
     }),
 }

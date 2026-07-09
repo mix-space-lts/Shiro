@@ -1,4 +1,4 @@
-import { TimelineType } from '@mx-space/api-client'
+import { TimelineType } from '@mix-space-lts/api-client'
 import { dehydrate } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'

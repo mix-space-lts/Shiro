@@ -1,6 +1,6 @@
 'use client'
 
-import type { SubscribeTypeToBitMap } from '@mx-space/api-client'
+import type { SubscribeTypeToBitMap } from '@mix-space-lts/api-client'
 import type { FC } from 'react'
 
 import { MotionButtonBase } from '~/components/ui/button'

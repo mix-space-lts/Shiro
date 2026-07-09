@@ -1,6 +1,6 @@
 'use client'
 
-import type { AggregateRoot } from '@mx-space/api-client'
+import type { AggregateRoot } from '@mix-space-lts/api-client'
 import { atom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import type { FC, PropsWithChildren } from 'react'

@@ -1,6 +1,6 @@
 'use client'
 
-import type { CommentModel } from '@mx-space/api-client'
+import type { CommentModel } from '@mix-space-lts/api-client'
 import { AnimatePresence } from 'motion/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 

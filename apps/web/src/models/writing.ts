@@ -1,4 +1,4 @@
-import type { PostModel } from '@mx-space/api-client'
+import type { PostModel } from '@mix-space-lts/api-client'
 
 export interface Count {
   read: number
@@ -72,4 +72,4 @@ export type NoteDto = {
   topicId: string | null | undefined
 } & WriteBaseType
 
-export { type Pager, type PaginateResult } from '@mx-space/api-client'
+export { type Pager, type PaginateResult } from '@mix-space-lts/api-client'

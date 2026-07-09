@@ -1,4 +1,4 @@
-import type { NoteWrappedWithLikedPayload } from '@mx-space/api-client'
+import type { NoteWrappedWithLikedPayload } from '@mix-space-lts/api-client'
 import { notFound } from 'next/navigation'
 
 import type { Locale } from '~/i18n/config'

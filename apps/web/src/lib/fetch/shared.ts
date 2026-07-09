@@ -1,5 +1,5 @@
-import type { IRequestAdapter } from '@mx-space/api-client'
-import createClient, { allControllers } from '@mx-space/api-client'
+import type { IRequestAdapter } from '@mix-space-lts/api-client'
+import createClient, { allControllers } from '@mix-space-lts/api-client'
 import type { $fetch } from 'ofetch'
 
 import { API_URL } from '~/constants/env'

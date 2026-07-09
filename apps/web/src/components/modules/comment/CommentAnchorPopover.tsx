@@ -17,7 +17,7 @@ import useClickAway from '~/hooks/common/use-click-away'
 import { CommentBlockThread } from './CommentBlockThread'
 import type { CommentAnchor, RangeAnchor } from './types'
 
-type CommentWithAnchor = import('@mx-space/api-client').CommentModel & {
+type CommentWithAnchor = import('@mix-space-lts/api-client').CommentModel & {
   anchor?: CommentAnchor
 }
 

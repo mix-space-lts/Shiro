@@ -2,7 +2,7 @@
 
 import 'jotai'
 
-import type { PostListItem } from '@mx-space/api-client'
+import type { PostListItem } from '@mix-space-lts/api-client'
 import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 

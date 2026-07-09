@@ -213,7 +213,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <head>
             <PublicEnvScript />
             <Global />
-            <SayHi />
+            <SayHi motto={themeConfig.footer?.otherInfo?.motto} />
             <HydrationEndDetector />
             {themeConfig.config?.color && (
               <AccentColorStyleInjector color={themeConfig.config.color} />
@@ -260,36 +260,45 @@ export default async function LocaleLayout({ children, params }: Props) {
   )
 }
 
-const SayHi = () => (
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `var version = "${version}";
-    (${function () {
-      console.info(
-        `%c Mix Space %c https://github.com/mx-space`,
-        'color: #fff; margin: 1em 0; padding: 5px 0; background: #2980b9;',
-        'margin: 1em 0; padding: 5px 0; background: #efefef;',
-      )
-      console.info(
-        `%c Shiro ${window.version} %c https://github.com/Innei/Shiro`,
-        'color: #fff; margin: 1em 0; padding: 5px 0; background: #39C5BB;',
-        'margin: 1em 0; padding: 5px 0; background: #efefef;',
-      )
+const SayHi = ({ motto }: { motto?: string }) => {
+  const fn = function () {
+    console.info(
+      '%c Mix Space %c https://github.com/mx-space',
+      'color: #fff; margin: 1em 0; padding: 5px 0; background: #2980b9;',
+      'margin: 1em 0; padding: 5px 0; background: #efefef;',
+    )
+    console.info(
+      '%c Shiro ' +
+        window.version +
+        ' %c https://github.com/mix-space-lts/Shiro',
+      'color: #fff; margin: 1em 0; padding: 5px 0; background: #39C5BB;',
+      'margin: 1em 0; padding: 5px 0; background: #efefef;',
+    )
 
-      const motto = `
-This Personal Space Powered By Mix Space.
-Written by TypeScript, Coding with Love.
---------
-Stay hungry. Stay foolish. --Steve Jobs
-`
+    var motto = "%%MOTTO%%"
+    var comment =
+      "\nThis Personal Space Powered By Mix Space.\nWritten by TypeScript, Coding with Love.\n--------\n" +
+      motto +
+      "\n"
 
-      if (document.firstChild?.nodeType !== Node.COMMENT_NODE) {
-        document.prepend(document.createComment(motto))
-      }
-    }.toString()})();`,
-    }}
-  />
-)
+    if (document.firstChild?.nodeType !== Node.COMMENT_NODE) {
+      document.prepend(document.createComment(comment))
+    }
+  }
+  const fnStr = fn
+    .toString()
+    .replace(
+      '"%%MOTTO%%"',
+      JSON.stringify(motto || 'Stay hungry. Stay foolish. --Steve Jobs'),
+    )
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: 'var version = "' + version + '";\n(' + fnStr + ')();',
+      }}
+    />
+  )
+}
 
 declare global {
   interface Window {

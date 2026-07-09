@@ -2,7 +2,7 @@
 
 import '~/components/modules/post'
 
-import type { Pager } from '@mx-space/api-client'
+import type { Pager } from '@mix-space-lts/api-client'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { useLocale } from 'next-intl'

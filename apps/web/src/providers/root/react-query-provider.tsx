@@ -1,6 +1,6 @@
 'use client'
 
-import { RequestError } from '@mx-space/api-client'
+import { RequestError } from '@mix-space-lts/api-client'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { PersistQueryClientOptions } from '@tanstack/react-query-persist-client'

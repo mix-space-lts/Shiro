@@ -1,6 +1,6 @@
 import './Comment.css'
 
-import type { CommentModel } from '@mx-space/api-client'
+import type { CommentModel } from '@mix-space-lts/api-client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { atom, useAtomValue } from 'jotai'

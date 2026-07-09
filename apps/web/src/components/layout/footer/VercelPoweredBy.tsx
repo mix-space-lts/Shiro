@@ -23,7 +23,7 @@ export const VercelPoweredBy = () => {
       alt={t('powered_by_vercel')}
       tabIndex={0}
       onClick={() => {
-        window.open('https://vercel.com/?utm_source=innei&utm_campaign=oss')
+        window.open('https://vercel.com/?utm_source=mix-space-lts&utm_campaign=oss')
       }}
     />
   )

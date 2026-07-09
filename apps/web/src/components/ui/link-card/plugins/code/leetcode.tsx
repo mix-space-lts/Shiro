@@ -1,4 +1,4 @@
-import { simpleCamelcaseKeys as camelcaseKeys } from '@mx-space/api-client'
+import { simpleCamelcaseKeys as camelcaseKeys } from '@mix-space-lts/api-client'
 
 import type { LinkCardData, LinkCardPlugin, UrlMatchResult } from '../../types'
 

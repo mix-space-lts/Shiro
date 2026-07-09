@@ -1,4 +1,4 @@
-import type { NoteModel } from '@mx-space/api-client'
+import type { NoteModel } from '@mix-space-lts/api-client'
 import * as React from 'react'
 
 import {

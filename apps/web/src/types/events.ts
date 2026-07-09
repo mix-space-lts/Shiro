@@ -1,4 +1,4 @@
-import type { NoteModel } from '@mx-space/api-client'
+import type { NoteModel } from '@mix-space-lts/api-client'
 
 export const enum EventTypes {
   GATEWAY_CONNECT = 'GATEWAY_CONNECT',
@@ -34,8 +34,6 @@ export const enum EventTypes {
   TRANSLATION_CREATE = 'TRANSLATION_CREATE',
   TRANSLATION_UPDATE = 'TRANSLATION_UPDATE',
 
-  ACTIVITY_UPDATE_PRESENCE = 'ACTIVITY_UPDATE_PRESENCE',
-  ACTIVITY_LEAVE_PRESENCE = 'ACTIVITY_LEAVE_PRESENCE',
   ARTICLE_READ_COUNT_UPDATE = 'ARTICLE_READ_COUNT_UPDATE',
 }
 

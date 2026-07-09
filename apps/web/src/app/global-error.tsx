@@ -3,7 +3,6 @@
 import { domAnimation, LazyMotion } from 'motion/react'
 import { useEffect } from 'react'
 
-// import { captureException } from '@sentry/nextjs'
 import { NormalContainer } from '~/components/layout/container/Normal'
 import { StyledButton } from '~/components/ui/button'
 
@@ -16,7 +15,6 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     console.error(error)
-    // captureException(error)
   }, [error])
   return (
     <html>

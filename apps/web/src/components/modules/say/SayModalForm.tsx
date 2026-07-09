@@ -1,4 +1,4 @@
-import type { SayModel } from '@mx-space/api-client'
+import type { SayModel } from '@mix-space-lts/api-client'
 import { useTranslations } from 'next-intl'
 import type { FC } from 'react'
 import { useRef } from 'react'

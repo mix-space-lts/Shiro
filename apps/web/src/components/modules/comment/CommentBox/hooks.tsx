@@ -4,7 +4,7 @@ import type {
   CommentDto,
   CommentModel,
   RequestError,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ExtractAtomValue } from 'jotai'
 import { atom, useAtomValue } from 'jotai'

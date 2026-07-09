@@ -1,4 +1,4 @@
-import type { SubscribeTypeToBitMap } from '@mx-space/api-client'
+import type { SubscribeTypeToBitMap } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 
 import { useModalStack } from '~/components/ui/modal'

@@ -3,7 +3,7 @@
 import type {
   Image,
   NoteWrappedWithLikedAndTranslationPayload,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import { useQueryClient } from '@tanstack/react-query'
 import { clsx } from 'clsx'
 import { useFormatter, useLocale, useTranslations } from 'next-intl'

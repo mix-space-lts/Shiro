@@ -3,7 +3,6 @@
 import type { FC, PropsWithChildren } from 'react'
 import { ErrorBoundary as ErrorBoundaryLib } from 'react-error-boundary'
 
-// import { captureException } from '@sentry/nextjs'
 import { StyledButton } from '../ui/button'
 
 const FallbackComponent = () => (
@@ -29,10 +28,6 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => (
     FallbackComponent={FallbackComponent}
     onError={(e) => {
       console.error(e)
-
-      // TODO  sentry
-
-      // captureException(e)
     }}
   >
     {children}

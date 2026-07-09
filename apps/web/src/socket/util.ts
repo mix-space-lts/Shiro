@@ -1,4 +1,4 @@
-import type { BusinessEvents, EventPayloadMapping } from '@mx-space/webhook'
+import type { BusinessEvents, EventPayloadMapping } from '@mix-space-lts/webhook'
 
 export const buildSocketEventType = (type: string) =>
   `ws_event:${type}` as const

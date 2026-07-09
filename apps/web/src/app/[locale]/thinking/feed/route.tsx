@@ -1,5 +1,5 @@
-import type { AggregateRoot } from '@mx-space/api-client'
-import { simpleCamelcaseKeys } from '@mx-space/api-client'
+import type { AggregateRoot } from '@mix-space-lts/api-client'
+import { simpleCamelcaseKeys } from '@mix-space-lts/api-client'
 import RSS from 'rss'
 
 import { apiClient } from '~/lib/request'
@@ -31,7 +31,7 @@ export async function GET() {
     site_url: agg.url.webUrl,
     feed_url: `${agg.url.webUrl}/thinking/feed`,
     language: 'zh-CN',
-    generator: 'Shiro (https://github.com/Innei/Shiro)',
+    generator: 'Shiro (https://github.com/mix-space-lts/Shiro)',
     pubDate: now.toUTCString(),
   })
 

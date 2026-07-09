@@ -1,6 +1,6 @@
 'use client'
 
-import type { CommentModel } from '@mx-space/api-client'
+import type { CommentModel } from '@mix-space-lts/api-client'
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import type { FC, PropsWithChildren } from 'react'

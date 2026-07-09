@@ -3,7 +3,7 @@ import type {
   NoteModel,
   PageModel,
   PostModel,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 
 import { isDev } from '~/lib/env'
 import { getAggregationData } from '~/providers/root/aggregation-data-provider'

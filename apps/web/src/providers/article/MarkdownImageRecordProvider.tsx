@@ -1,4 +1,4 @@
-import type { Image } from '@mx-space/api-client'
+import type { Image } from '@mix-space-lts/api-client'
 import { atom, useAtomValue } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 import { createContext, use, useCallback, useEffect } from 'react'

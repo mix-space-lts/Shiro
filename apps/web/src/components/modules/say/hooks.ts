@@ -1,4 +1,4 @@
-import type { SayModel } from '@mx-space/api-client'
+import type { SayModel } from '@mix-space-lts/api-client'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
 import { createElement, useCallback } from 'react'

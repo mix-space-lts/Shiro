@@ -4,7 +4,7 @@ import type {
   NoteTopicListItem,
   PaginateResult,
   TopicModel,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import { useLocale, useTranslations } from 'next-intl'
 import type { FC } from 'react'

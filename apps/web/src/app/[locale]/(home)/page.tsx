@@ -1,17 +1,12 @@
 'use client'
 
-import { useEffect } from 'react'
 import type { Blog, ItemList, WithContext } from 'schema-dts'
 
-import { registerPushWorker } from '~/lib/push-worker'
 import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
 
 import { useHomeQueryData } from './query'
 
 export default function Home() {
-  useEffect(() => {
-    registerPushWorker()
-  }, [])
   const config = useAggregationSelector((state) => ({
     user: state.user,
     seo: state.seo,

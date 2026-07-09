@@ -1,4 +1,4 @@
-import type { AuthUser } from '@mx-space/api-client'
+import type { AuthUser } from '@mix-space-lts/api-client'
 import { createAtomHooks } from 'jojoo/react'
 import { atom } from 'jotai'
 

@@ -1,6 +1,6 @@
 'use client'
 
-import type { Image } from '@mx-space/api-client'
+import type { Image } from '@mix-space-lts/api-client'
 import { useTranslations } from 'next-intl'
 import type { PropsWithChildren } from 'react'
 import { Fragment, useMemo } from 'react'

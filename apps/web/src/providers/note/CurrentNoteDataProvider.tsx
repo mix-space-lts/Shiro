@@ -1,6 +1,6 @@
 'use client'
 
-import type { NoteWrappedWithLikedAndTranslationPayload } from '@mx-space/api-client'
+import type { NoteWrappedWithLikedAndTranslationPayload } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import { createModelDataProvider } from 'jojoo/react'
 import { useSearchParams } from 'next/navigation'

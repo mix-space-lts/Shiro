@@ -1,6 +1,6 @@
 'use client'
 
-import { BusinessEvents } from '@mx-space/webhook'
+import { BusinessEvents } from '@mix-space-lts/webhook'
 import type { FC } from 'react'
 import { memo, useEffect } from 'react'
 

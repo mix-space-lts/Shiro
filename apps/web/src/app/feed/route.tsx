@@ -1,4 +1,4 @@
-import type { Image } from '@mx-space/api-client'
+import type { Image } from '@mix-space-lts/api-client'
 import type { MarkdownToJSX } from 'markdown-to-jsx'
 import { compiler, RuleType } from 'markdown-to-jsx'
 import RSS from 'rss'
@@ -80,7 +80,7 @@ export async function GET() {
     feed_url: `${url}/feed`,
     language: 'zh-CN',
     image_url: imageUrl,
-    generator: 'Shiro (https://github.com/Innei/Shiro)',
+    generator: 'Shiro (https://github.com/mix-space-lts/Shiro)',
     pubDate: now.toUTCString(),
 
     custom_elements,

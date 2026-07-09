@@ -1,6 +1,6 @@
 'use client'
 
-import type { SayModel } from '@mx-space/api-client'
+import type { SayModel } from '@mix-space-lts/api-client'
 import type { MarkdownToJSX } from 'markdown-to-jsx'
 import Markdown from 'markdown-to-jsx'
 import { m } from 'motion/react'

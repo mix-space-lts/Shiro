@@ -2,7 +2,7 @@ import type {
   CommentModel,
   PaginateResult,
   ReaderModel,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 import { createContextState } from 'foxact/create-context-state'
 import type { PrimitiveAtom } from 'jotai'

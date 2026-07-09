@@ -4,7 +4,7 @@ import type {
   CommentThreadItem,
   PaginateResult,
   ReaderModel,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 
 import type { CommentAnchor } from './types'

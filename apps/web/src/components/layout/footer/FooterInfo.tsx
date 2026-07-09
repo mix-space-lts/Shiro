@@ -103,10 +103,10 @@ const PoweredBy = async ({ className }: { className?: string }) => {
         triggerElement={
           <StyledLink
             className="cursor-help"
-            href="https://github.com/innei/Shiro"
+            href="https://github.com/mix-space-lts/Shiro"
             target="_blank"
           >
-            白
+            Shiro
           </StyledLink>
         }
       >
@@ -130,7 +130,7 @@ const PoweredBy = async ({ className }: { className?: string }) => {
                 <MarkdownLink
                   popper={false}
                   noIcon
-                  href="https://github.com/sponsors/Innei"
+                  href="https://github.com/sponsors/mix-space-lts"
                 >
                   {chunks}
                 </MarkdownLink>
@@ -193,7 +193,7 @@ const FooterBottom = async () => {
           </SubscribeTextButton>
         </span>
         <span className="mt-3 block md:mt-0 md:inline">
-          Stay hungry. Stay foolish.
+          {otherInfo?.motto}
         </span>
       </div>
       <div>

@@ -1,4 +1,4 @@
-import type { PostModel } from '@mx-space/api-client'
+import type { PostModel } from '@mix-space-lts/api-client'
 import * as React from 'react'
 
 import {

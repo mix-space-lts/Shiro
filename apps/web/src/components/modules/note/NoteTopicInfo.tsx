@@ -1,6 +1,6 @@
 'use client'
 
-import type { NoteTopicListItem, PaginateResult } from '@mx-space/api-client'
+import type { NoteTopicListItem, PaginateResult } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import { useLocale, useTranslations } from 'next-intl'
 import type { FC } from 'react'

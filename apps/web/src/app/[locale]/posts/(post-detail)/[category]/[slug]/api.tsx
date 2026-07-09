@@ -2,7 +2,7 @@ import type {
   ModelWithLiked,
   ModelWithTranslation,
   PostModel,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 
 import { attachServerFetch } from '~/lib/attach-fetch'
 import { getQueryClient } from '~/lib/query-client.server'

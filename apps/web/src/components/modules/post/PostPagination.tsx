@@ -1,4 +1,4 @@
-import type { Pager } from '@mx-space/api-client'
+import type { Pager } from '@mix-space-lts/api-client'
 import type { FC } from 'react'
 
 import { MotionButtonBase } from '~/components/ui/button'

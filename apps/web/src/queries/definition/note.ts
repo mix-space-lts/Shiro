@@ -1,4 +1,4 @@
-import type { NoteWrappedWithLikedAndTranslationPayload } from '@mx-space/api-client'
+import type { NoteWrappedWithLikedAndTranslationPayload } from '@mix-space-lts/api-client'
 
 import { apiClient } from '~/lib/request'
 

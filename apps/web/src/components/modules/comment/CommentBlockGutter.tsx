@@ -1,6 +1,6 @@
 'use client'
 
-import type { CommentModel } from '@mx-space/api-client'
+import type { CommentModel } from '@mix-space-lts/api-client'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useIsMobile } from '~/atoms/hooks/viewport'

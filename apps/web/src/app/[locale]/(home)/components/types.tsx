@@ -4,7 +4,7 @@ import type {
   RecentNote,
   RecentPost,
   RecentRecent,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 
 export type ReactActivityType =
   | ({

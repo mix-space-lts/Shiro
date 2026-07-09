@@ -1,4 +1,4 @@
-import { RequestError } from '@mx-space/api-client'
+import { RequestError } from '@mix-space-lts/api-client'
 import type { FetchError } from 'ofetch'
 
 export const getErrorMessageFromRequestError = (error: RequestError) => {

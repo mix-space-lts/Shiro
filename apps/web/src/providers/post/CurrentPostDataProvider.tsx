@@ -4,7 +4,7 @@ import type {
   ModelWithLiked,
   ModelWithTranslation,
   PostModel,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import { createModelDataProvider } from 'jojoo/react'
 
 import { isClientSide, isDev } from '~/lib/env'

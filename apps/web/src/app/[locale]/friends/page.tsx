@@ -1,7 +1,7 @@
 'use client'
 
-import type { LinkModel } from '@mx-space/api-client'
-import { LinkState, LinkType, RequestError } from '@mx-space/api-client'
+import type { LinkModel } from '@mix-space-lts/api-client'
+import { LinkState, LinkType, RequestError } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import Markdown from 'markdown-to-jsx'
 import { useTranslations } from 'next-intl'

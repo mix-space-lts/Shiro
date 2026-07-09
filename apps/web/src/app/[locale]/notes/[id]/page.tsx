@@ -4,7 +4,7 @@ import type {
   ModelWithLiked,
   ModelWithTranslation,
   NoteModel,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 

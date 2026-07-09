@@ -1,9 +1,9 @@
-import type { RequestWithJSONBody } from '@mx-space/webhook'
+import type { RequestWithJSONBody } from '@mix-space-lts/webhook'
 import {
   BusinessEvents,
   InvalidSignatureError,
   readDataFromRequest,
-} from '@mx-space/webhook'
+} from '@mix-space-lts/webhook'
 import type { NextRequest } from 'next/server'
 
 import { NextServerResponse } from '~/lib/edge-function.server'

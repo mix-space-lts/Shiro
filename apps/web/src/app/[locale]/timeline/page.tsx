@@ -1,7 +1,7 @@
 'use client'
 
-import type { TimelineData } from '@mx-space/api-client'
-import { TimelineType } from '@mx-space/api-client'
+import type { TimelineData } from '@mix-space-lts/api-client'
+import { TimelineType } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { m } from 'motion/react'
@@ -93,6 +93,7 @@ export default function TimelinePage() {
 
   const { data: initialData } = useQuery<TimelineData>({
     queryKey: ['timeline'],
+    queryFn: async () => null as unknown as TimelineData,
     enabled: false,
   })
   const { data, refetch } = useQuery<TimelineData>({

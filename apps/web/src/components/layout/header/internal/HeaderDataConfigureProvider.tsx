@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useEffect, useMemo, useState } from 'react'
+import { createContext, use, useMemo } from 'react'
 
 import {
   useAggregationSelector,
@@ -27,6 +27,17 @@ const cloneHeaderMenuConfig = (items: IHeaderMenu[]): IHeaderMenu[] =>
       : undefined,
   }))
 
+/** 递归过滤掉所有 titleKey === 'nav_travel' 的菜单项（含子菜单） */
+const filterNavTravel = (items: IHeaderMenu[]): IHeaderMenu[] =>
+  items
+    .filter((item) => item.titleKey !== 'nav_travel')
+    .map((item) => ({
+      ...item,
+      subMenu: item.subMenu
+        ? filterNavTravel(item.subMenu as IHeaderMenu[])
+        : item.subMenu,
+    }))
+
 export const HeaderDataConfigureProvider: Component = ({ children }) => {
   const pageMeta = useAggregationSelector(
     (aggregationData) => aggregationData.pageMeta,
@@ -34,50 +45,48 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
   const postListViewMode = useAppConfigSelector(
     (appConfig) => appConfig.module?.posts?.mode,
   )
-
-  const [headerMenuConfig, setHeaderMenuConfig] = useState(() =>
-    cloneHeaderMenuConfig(baseHeaderMenuConfig),
+  const travelEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.travel?.enable ?? true,
   )
 
-  useEffect(() => {
-    if (!pageMeta) return
-    const nextMenuConfig = cloneHeaderMenuConfig(baseHeaderMenuConfig)
+  const headerMenuConfig = useMemo(() => {
+    let config = cloneHeaderMenuConfig(baseHeaderMenuConfig)
+
+    // 注入独立页面到"首页"子菜单
     if (pageMeta) {
-      const homeIndex = nextMenuConfig.findIndex((item) => item.type === 'Home')
+      const homeIndex = config.findIndex((item) => item.type === 'Home')
       if (homeIndex !== -1) {
-        nextMenuConfig[homeIndex].subMenu = []
-        for (const page of pageMeta) {
-          nextMenuConfig[homeIndex].subMenu!.push({
-            path: `/${page.slug}`,
-            title: page.title,
-          })
-        }
+        config[homeIndex].subMenu = pageMeta.map((page) => ({
+          path: `/${page.slug}`,
+          title: page.title,
+        }))
       }
     }
 
-    setHeaderMenuConfig(nextMenuConfig)
-  }, [pageMeta])
-
-  useEffect(() => {
-    setHeaderMenuConfig((config) => {
+    // 注入文章列表视图模式
+    if (postListViewMode) {
       const postIndex = config.findIndex((item) => item.type === 'Post')
-
-      if (postIndex === -1 || !postListViewMode) {
-        return config
+      if (postIndex !== -1) {
+        config = config.map((item, index) => {
+          if (index !== postIndex) return item
+          return {
+            ...item,
+            search: {
+              ...item.search,
+              view_mode: postListViewMode,
+            },
+          }
+        })
       }
+    }
 
-      return config.map((item, index) => {
-        if (index !== postIndex) return item
-        return {
-          ...item,
-          search: {
-            ...item.search,
-            view_mode: postListViewMode,
-          },
-        }
-      })
-    })
-  }, [postListViewMode])
+    // 根据配置过滤跃迁入口
+    if (!travelEnabled) {
+      config = filterNavTravel(config)
+    }
+
+    return config
+  }, [pageMeta, postListViewMode, travelEnabled])
 
   return (
     <HeaderMenuConfigContext

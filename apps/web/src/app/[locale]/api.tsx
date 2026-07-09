@@ -1,6 +1,5 @@
-import type { AggregateRoot } from '@mx-space/api-client'
-import { simpleCamelcaseKeys } from '@mx-space/api-client'
-import { $fetch } from 'ofetch'
+import type { AggregateRoot } from '@mix-space-lts/api-client'
+import { simpleCamelcaseKeys } from '@mix-space-lts/api-client'
 
 import { defaultThemeConfig } from '~/app.default.theme-config'
 import { appStaticConfig } from '~/app.static.config'
@@ -16,15 +15,14 @@ export const fetchAggregationData = async () => {
   await attachServerFetch()
   const queryClient = getQueryClient()
   const fetcher = async () => {
-    const data = (await $fetch<
-      AggregateRoot & {
-        theme: AppThemeConfig
-      }
-    >(apiClient.aggregate.proxy.toString(true), {
-      params: {
-        theme: 'shiro',
-      },
-    }).then(simpleCamelcaseKeys)) as AggregateRoot & {
+    const url = new URL(apiClient.aggregate.proxy.toString(true))
+    url.searchParams.set('theme', 'shiro')
+
+    const data = (await fetch(url.toString(), {
+      next: { revalidate: cacheTime },
+    })
+      .then((res) => res.json())
+      .then(simpleCamelcaseKeys)) as AggregateRoot & {
       theme: AppThemeConfig
     }
 
@@ -39,7 +37,7 @@ export const fetchAggregationData = async () => {
   return queryClient.fetchQuery({
     queryKey: ['aggregate', 'shiro'],
     queryFn: fetcher,
-    staleTime: cacheTime,
-    gcTime: cacheTime,
+    staleTime: cacheTime * 1000,
+    gcTime: cacheTime * 1000,
   })
 }

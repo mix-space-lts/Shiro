@@ -1,6 +1,6 @@
 'use client'
 
-import { CollectionRefTypes } from '@mx-space/api-client'
+import { CollectionRefTypes } from '@mix-space-lts/api-client'
 import clsx from 'clsx'
 import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'

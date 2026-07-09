@@ -1,4 +1,4 @@
-import type { BusinessEvents } from '@mx-space/webhook'
+import type { BusinessEvents } from '@mix-space-lts/webhook'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 
 import { isDev } from '~/lib/env'

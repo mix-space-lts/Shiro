@@ -7,8 +7,8 @@ import type {
   NoteWrappedWithLikedAndTranslationPayload,
   PageModel,
   PostModel,
-} from '@mx-space/api-client'
-import { simpleCamelcaseKeys } from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
+import { simpleCamelcaseKeys } from '@mix-space-lts/api-client'
 import { clsx } from 'clsx'
 import { useIsomorphicLayoutEffect } from 'foxact/use-isomorphic-layout-effect'
 import { atom, useAtomValue } from 'jotai'

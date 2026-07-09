@@ -3,7 +3,7 @@ import type {
   CommentModel,
   CommentThreadItem,
   PaginateResult,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
 

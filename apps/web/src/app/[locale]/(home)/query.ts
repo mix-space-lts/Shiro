@@ -1,4 +1,4 @@
-import type { AggregateTop } from '@mx-space/api-client'
+import type { AggregateTop } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 
 export const queryKey = ['home']

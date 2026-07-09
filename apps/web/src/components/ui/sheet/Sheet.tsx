@@ -105,10 +105,12 @@ export const PresentSheet = ({
             <div className="mx-auto mb-8 h-1.5 w-12 shrink-0 rounded-full bg-zinc-300 dark:bg-neutral-800" />
           )}
 
-          {title && (
+          {title ? (
             <Drawer.Title className="-mt-4 mb-4 flex justify-center text-lg font-medium">
               {title}
             </Drawer.Title>
+          ) : (
+            <Drawer.Title className="sr-only">Sheet</Drawer.Title>
           )}
 
           <SheetContext

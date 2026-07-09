@@ -1,6 +1,6 @@
 'use client'
 
-import type { SubscribeTypeToBitMap } from '@mx-space/api-client'
+import type { SubscribeTypeToBitMap } from '@mix-space-lts/api-client'
 import { useTranslations } from 'next-intl'
 import type * as React from 'react'
 import type { FC } from 'react'
@@ -12,7 +12,6 @@ import { Checkbox } from '~/components/ui/checkbox'
 import { Input } from '~/components/ui/input/Input'
 import { useStateToRef } from '~/hooks/common/use-state-ref'
 import { preventDefault } from '~/lib/dom'
-import { registerPushWorker } from '~/lib/push-worker'
 import { apiClient } from '~/lib/request'
 import { toast } from '~/lib/toast'
 import {
@@ -94,10 +93,6 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
         ),
       },
     })
-  }, [])
-
-  useEffect(() => {
-    registerPushWorker()
   }, [])
 
   const query = useSubscribeStatusQuery()

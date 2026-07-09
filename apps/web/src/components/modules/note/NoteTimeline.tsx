@@ -1,6 +1,6 @@
 'use client'
 
-import type { NoteTimelineItem as NoteTimelineItemData } from '@mx-space/api-client'
+import type { NoteTimelineItem as NoteTimelineItemData } from '@mix-space-lts/api-client'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import type { TargetAndTransition } from 'motion/react'
 import { AnimatePresence, m } from 'motion/react'

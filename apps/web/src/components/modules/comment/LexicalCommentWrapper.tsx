@@ -4,7 +4,7 @@ import type {
   CommentModel,
   CommentThreadItem,
   PaginateResult,
-} from '@mx-space/api-client'
+} from '@mix-space-lts/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { PropsWithChildren } from 'react'

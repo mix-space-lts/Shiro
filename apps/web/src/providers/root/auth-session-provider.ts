@@ -1,4 +1,4 @@
-import { simpleCamelcaseKeys } from '@mx-space/api-client'
+import { simpleCamelcaseKeys } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import { nanoid } from 'nanoid'
 import { useEffect } from 'react'

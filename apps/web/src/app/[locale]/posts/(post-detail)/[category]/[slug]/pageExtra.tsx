@@ -1,6 +1,6 @@
 'use client'
 
-import type { Image } from '@mx-space/api-client'
+import type { Image } from '@mix-space-lts/api-client'
 import { useQueryClient } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import type { FC, PropsWithChildren } from 'react'

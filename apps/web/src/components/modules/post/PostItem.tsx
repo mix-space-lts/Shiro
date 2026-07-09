@@ -1,4 +1,4 @@
-import type { PostListItem } from '@mx-space/api-client'
+import type { PostListItem } from '@mix-space-lts/api-client'
 import clsx from 'clsx'
 import { memo } from 'react'
 import RemoveMarkdown from 'remove-markdown'
