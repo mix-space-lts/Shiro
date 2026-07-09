@@ -62,7 +62,7 @@ declare module 'react' {
   }
 }
 
-declare module '@mx-space/api-client' {
+declare module '@mix-space-lts/api-client' {
   export interface BaseArticleMeta {
     /**
      * AI 参与声明：

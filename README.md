@@ -9,7 +9,7 @@
 
 一个极简主义的个人网站主题，如纸的纯净，似雪的清新。
 
-专为 [Mix Space](https://github.com/mx-space) 生态系统设计的现代化个人站点前端。
+专为 [Mix Space LTS](https://github.com/mix-space-lts) 生态系统设计的现代化个人站点前端。
 
 ## :sparkles: 示例站点
 
@@ -55,15 +55,15 @@
 
 ## :camera: 界面预览
 
-<img width="1471" alt="Live Demo" src="https://github.com/Innei/Shiro/assets/41265413/bf8af4ec-0f0c-441a-8c06-4b44e1649597">
+<img width="1471" alt="Live Demo" src="https://github.com/mix-space-lts/Shiro/assets/41265413/bf8af4ec-0f0c-441a-8c06-4b44e1649597">
 
 <details>
 <summary>
 点击查看更多完整页面截图
 </summary>
 
-![页面截图 1](https://github.com/Innei/Shiro/assets/41265413/1b85c9be-0cd3-46b5-a089-a9ab97fdfecb)
-![页面截图 2](https://github.com/Innei/Shiro/assets/41265413/d808d288-c022-42f2-8d74-ad057a588771)
+![页面截图 1](https://github.com/mix-space-lts/Shiro/assets/41265413/1b85c9be-0cd3-46b5-a089-a9ab97fdfecb)
+![页面截图 2](https://github.com/mix-space-lts/Shiro/assets/41265413/d808d288-c022-42f2-8d74-ad057a588771)
 
 </details>
 
@@ -71,13 +71,13 @@
 
 在 M2 MacBook Air 环境下对重负载页面的性能测试结果：
 
-![性能测试结果](https://github.com/Innei/Shiro/assets/41265413/f76152af-4a52-46a2-9b83-20567800ba75)
+![性能测试结果](https://github.com/mix-space-lts/Shiro/assets/41265413/f76152af-4a52-46a2-9b83-20567800ba75)
 
 ## :whale: 快速开始
 
 ### :package: 预构建版本
 
-从 [Releases](https://github.com/Innei/Shiro/releases) 页面下载最新的 `release.zip` 压缩包并解压：
+从 [Releases](https://github.com/mix-space-lts/Shiro/releases) 页面下载最新的 `release.zip` 压缩包并解压：
 
 ```bash
 cd standalone
@@ -90,8 +90,8 @@ node server.js
 
 ```bash
 mkdir shiro && cd shiro
-wget https://raw.githubusercontent.com/Innei/Shiro/main/docker-compose.yml
-wget https://raw.githubusercontent.com/Innei/Shiro/main/.env.template .env
+wget https://raw.githubusercontent.com/mix-space-lts/Shiro/main/docker-compose.yml
+wget https://raw.githubusercontent.com/mix-space-lts/Shiro/main/.env.template .env
 
 vim .env # 配置环境变量
 mkdir public # 放置自定义 Favicon
@@ -168,3 +168,7 @@ docker compose pull
 ---
 
 > [个人网站](https://innei.in/) · GitHub [@Innei](https://github.com/innei/)
+
+---
+
+> **LTS 维护**: This fork is maintained by [mix-space-lts](https://github.com/mix-space-lts)

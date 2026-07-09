@@ -21,15 +21,6 @@ export const defaultThemeConfig: AppThemeConfig = {
       bilibili: {
         liveId: 0,
       },
-      activity: {
-        enable: false,
-        endpoint: '',
-      },
-      openpanel: {
-        enable: false,
-        id: '',
-        url: '',
-      },
       rss: {
         custom_elements: [],
         noRSS: false,
@@ -40,6 +31,10 @@ export const defaultThemeConfig: AppThemeConfig = {
       },
       posts: {
         mode: 'loose',
+        outdated_days: 60,
+      },
+      travel: {
+        enable: true,
       },
     },
   },
@@ -47,6 +42,7 @@ export const defaultThemeConfig: AppThemeConfig = {
     linkSections: [],
     otherInfo: {
       date: '',
+      motto: 'Stay hungry. Stay foolish.',
     },
   },
 }

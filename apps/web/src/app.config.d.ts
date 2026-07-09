@@ -35,6 +35,7 @@ declare global {
 
   export interface OtherInfo {
     date: string
+    motto?: string
     icp?: {
       text: string
       link: string
@@ -79,15 +80,6 @@ declare global {
     }
     donate: Donate
     bilibili: Bilibili
-    activity: {
-      enable: boolean
-      endpoint: string
-    }
-    openpanel: {
-      enable: boolean
-      id: string
-      url: string
-    }
     rss: {
       custom_elements: RSSCustomElements
       noRSS?: boolean
@@ -97,6 +89,14 @@ declare global {
 
     posts: {
       mode: 'loose' | 'compact'
+      /** 文章过期提示阈值（天），超过此天数显示 "这篇文章上次修改于 xxx" 警告。默认 60，填 0 永不显示。 */
+      outdated_days?: number
+    }
+
+    /** 跃迁导航（博客聚合跳转），默认显示 */
+    travel?: {
+      enable?: boolean
+    }
     }
   }
   export interface Donate {

@@ -1,5 +1,90 @@
 # CHANGELOG
 
+## LTS Migration (2026-05-25)
+
+> This is a fork of [Innei/Shiro](https://github.com/Innei/Shiro) maintained under the Mix Space LTS project.
+> See [github.com/mix-space-lts](https://github.com/mix-space-lts) for details.
+
+### CI/CD
+
+- Removed upstream-specific workflows: `trigger.yml` (remote deploy dispatch), `update-hash.yml` (Vercel hash sync), `FUNDING.yml` (Innei's sponsor links)
+- Added `ci.yml`: `pnpm install` → lint → type-check → build on push/PR to `main`
+- Added `docker.yml`: build & push `ghcr.io/mix-space-lts/shiro:latest` on push to `main`, with GHA layer caching
+- `docker-compose.yml`: image updated from `innei/shiro:latest` → `ghcr.io/mix-space-lts/shiro:latest`
+- `package.json`: registered `@haklex/rich-editor@0.0.105` pnpm patch
+
+### Rebranding
+
+- `README.md`: repo URLs, image hotlinks, and ecosystem description updated to `mix-space-lts`
+- All `github.com/Innei/Shiro` → `github.com/mix-space-lts/Shiro` across 8+ source files:
+  - Console banner (`layout.tsx` SayHi)
+  - RSS feed generators (`app/feed/route.tsx`, `app/[locale]/says/feed/route.tsx`, `app/[locale]/thinking/feed/route.tsx`)
+  - Footer "Powered by" link (`FooterInfo.tsx`)
+  - Footer default link sections (`footer/config.ts`)
+- Sponsor link: `github.com/sponsors/Innei` → `github.com/sponsors/mix-space-lts` (`FooterInfo.tsx`)
+- Vercel `utm_source=innei` → `utm_source=mix-space-lts` (`VercelPoweredBy.tsx`)
+- Error page contact: `mailto:i@innei.in` → `https://github.com/mix-space-lts/Shiro/issues` (`error.tsx`)
+
+### Configuration / Upstream API
+
+- **Aggregation cache TTL**: 3600s (1h) → 300s (5min), configurable via `NEXT_PUBLIC_AGGREGATION_CACHE_TTL` env var
+- **ISR stale-while-revalidate**: replaced `$fetch` with native `fetch` + `next: { revalidate }` in `api.tsx` — expired cache returns stale data first, refreshes async in background
+- **CDN host**: `cdn.innei.ren` → configurable via `NEXT_PUBLIC_CDN_HOST` env var, same default
+- All upstream config accesses use `deepMerge(defaultThemeConfig, data.theme)` — missing fields never cause crashes
+
+### Theme Config — New Fields
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `footer.otherInfo.motto` | `string?` | `"Stay hungry. Stay foolish."` | Footer motto text; empty = hidden |
+| `config.module.posts.outdated_days` | `number?` | `60` | Days before "This article was last modified…" warning; `0` = never |
+| `config.module.travel.enable` | `boolean?` | `true` | Show/hide "Warp" (Travel) nav item |
+
+### Theme Config — Hardcoded → Configurable
+
+| Before | After | Source |
+|---|---|---|
+| `Stay hungry. Stay foolish.` in footer & HTML comment | `footer.otherInfo.motto` (same default) | `FooterInfo.tsx`, `layout.tsx` SayHi |
+| `cdn.innei.ren` (hardcoded) | `NEXT_PUBLIC_CDN_HOST` env var | `app.static.config.ts` |
+| Template literal in SayHi broke code-inspector | Placeholder `%%MOTTO%%` substitution | `layout.tsx` |
+
+### Housekeeping
+
+- **Removed dead files (16):**
+  - `.drone.yml` — legacy Drone CI, superseded by GitHub Actions
+  - `.gitmodules` — orphaned `reporter-assets` submodule
+  - `setup-git.sh` — upstream repo references, harmful for LTS
+  - `NOTE.md`, `SAY.md`, `docs/plans/` — historical/migration documents
+  - `apps/web/standalone-bundle.sh`, `apps/web/scripts/{delete-ci-build-artifact,download-latest-ci-build-artifact,fetch-build,vercel-build-pre}.*` — Drone/Vercel deployment scripts
+  - `apps/web/public/innei*.svg` (×3) — upstream brand assets
+  - `packages/types/dist/`, `packages/types/pnpm-lock.yaml` — build artifacts / duplicate lockfile
+  - `apps/web/src/lib/push-worker.ts` — entirely dead (function body was `return` with ~50 commented-out lines)
+- **Removed dead code:**
+  - 5 files: deleted `// import { captureException } from '@sentry/nextjs'` and `// captureException(error)` comments
+  - `next.config.mjs`: removed ~35 lines of commented-out Sentry `withSentryConfig` block
+  - `AccentColorStyleInjector.tsx`: removed ~150 lines of commented-out `AccentColorProvider` / `setIdleTimeout` / color rotation logic
+  - `code-highlighter/index.ts`: removed commented `export * from './Shiki'`
+  - `events.ts`: removed `ACTIVITY_UPDATE_PRESENCE` / `ACTIVITY_LEAVE_PRESENCE` enum values
+- **Removed unused config types:** `activity` (ProcessReporter), `openpanel` (OpenPanel analytics) from `app.config.d.ts`, `app.default.theme-config.ts`, `shiro-theme-config.example.yaml`
+- **Removed unused dependency:** `kbar@0.1.0-beta.48` — zero imports, command palette already removed from UI
+
+### Fixes
+
+- **`@haklex/rich-editor@0.0.105` CSS**: `::highlight()` pseudo-element (CSS Custom Highlight API) not recognized by Turbopack's Lightning CSS. Patched to `.__noop_highlight` via `pnpm patch` → `patches/@haklex__rich-editor@0.0.105.patch`.
+- **SayHi component**: Nested template literal + `.toString()` in `dangerouslySetInnerHTML` caused `@code-inspector/core` parse errors. Replaced with `"%%MOTTO%%"` placeholder + `String.replace()` injection.
+
+### Additions
+
+- `docs/shiro-theme-config.example.yaml` — complete, commented configuration reference covering all fields consumed from `/api/v2/snippets/theme/shiro`
+
+### Backward Compatibility
+
+All new config fields are optional. Existing theme configs (without `motto`, `outdated_days`, `travel`) continue to work — defaults fill in exactly the previous hardcoded behavior.
+
+---
+
+## Previous Changelog (from upstream)
+
 ## [1.2.5](https://github.com/Innei/sprightly/compare/v1.2.4...v1.2.5) (2025-01-08)
 
 

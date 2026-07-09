@@ -1,0 +1,138 @@
+# =============================================================================
+# Shiro 主题配置示例
+# =============================================================================
+# 使用方法：粘贴到 Mix Space 后台「附加功能 → 配置与云函数 → 引用：theme → 名称：shiro」
+# 只写需要覆盖的字段，未写的字段自动使用默认值。
+# =============================================================================
+
+config:
+  # ===== 站点基础设置 =====
+  site:
+    favicon: /favicon.ico          # 浅色模式下的网站图标
+    faviconDark: /favicon.ico       # 深色模式下的网站图标
+
+  # ===== 首页 Hero 区域 =====
+  hero:
+    # ---- 标题模板 ----
+    # type 是 HTML 标签名：h1 h2 h3 h4 h5 h6 span code br div p ...
+    # text 是标签内的文本内容
+    # class 是 Tailwind CSS / 自定义 CSS 类名
+    title:
+      template:
+        - type: h1
+          text: "Hi, I'm "
+          class: font-light text-4xl
+        - type: h1
+          text: Your Name
+          class: font-medium mx-2 text-4xl
+        - type: br     # 换行
+        - type: h1
+          text: "A Full Stack "
+          class: font-light text-4xl
+        - type: code
+          text: "<Developer />"
+          class: font-medium mx-2 text-3xl rounded p-1 bg-gray-200 dark:bg-gray-800/0
+
+    # Hero 下方的简短描述
+    description: A personal space for writing and sharing.
+
+    # 一言（hitokoto），未配则用 description
+    hitokoto:
+      random: true             # true=随机一言 false=固定文本
+      custom: ""               # 自定义固定文本（random=false 时生效）
+
+  # ===== 主题色（可选，不配则用默认） =====
+  # 用于文章标签、链接 hover 等装饰性元素的循环配色
+  color:
+    light:                     # 浅色模式
+      - "#33A6B8"
+      - "#FF6666"
+      - "#26A69A"
+    dark:                      # 深色模式
+      - "#F596AA"
+      - "#A0A7D4"
+      - "#ff7b7b"
+
+  # ===== 自定义 CSS / JS / 外部资源 =====
+  custom:
+    css: []                    # 外部 CSS 样式表链接（<link href="...">）
+    styles: []                 # 内联 <style> 标签中的 CSS 字符串
+    js: []                     # 内联 <script> 标签中的 JS 字符串
+    scripts: []                # 外部 <script> 标签，写法见 Next.js Script Props: https://nextjs.org/docs/app/api-reference/components/script#props
+
+  # ===== 功能模块开关 =====
+  module:
+    # -- 订阅号召（可选） --
+    subscription:
+      tg: ""                   # Telegram 频道链接
+
+    # -- OG 图片（可选） --
+    og:
+      avatar: ""               # 默认 OG 头像 URL，留空则用站点主人头像
+
+    # -- 捐赠弹窗 --
+    donate:
+      enable: false            # 是否启用
+      link: ""                 # 捐赠页面链接
+      qrcode: []               # 收款二维码图片 URL 数组
+
+    # -- B站直播间状态 --
+    bilibili:
+      liveId: 0                # 直播间 ID，填 0 则不启用
+
+    # -- RSS 订阅 --
+    rss:
+      custom_elements: []      # 自定义 RSS 元素（高级用法）
+      noRSS: false             # true=禁用 RSS 订阅
+
+    # -- 底部署名 SVG（可选） --
+    signature:
+      svg: ""                  # SVG 源码字符串，留空不显示
+      animated: true           # 是否播放 SVG 动画
+
+    # -- 文章列表展示模式 --
+    posts:
+      mode: loose              # loose=宽松（大图卡片） | compact=紧凑（小图列表）
+      outdated_days: 60        # 文章过期提示阈值（天）。超过此天数显示 "这篇文章上次修改于 xxx" 警告。填 0 永不显示。默认 60
+
+    # -- 跃迁导航（博客聚合跳转） --
+    travel:
+      enable: true             # 是否在导航栏显示 "跃迁" 入口，默认 true
+
+  # ===== Powered by（可选） =====
+  poweredBy:
+    vercel: false              # 部署在 Vercel 且为 true 时显示 "Powered by Vercel"
+
+# =============================================================================
+# 页脚配置
+# =============================================================================
+footer:
+  # ---- 页脚导航链接组 ----
+  linkSections:
+    - name: 更多
+      links:
+        - name: 时间线
+          href: /timeline
+        - name: 友链
+          href: /friends
+        - name: 状态
+          href: https://stats.uptimerobot.com/xxxxx
+          external: true       # true=外链（新标签页打开） false=站内路由
+    - name: 联系
+      links:
+        - name: 写留言
+          href: /message
+        - name: 发邮件
+          href: mailto:me@example.com
+          external: true
+        - name: GitHub
+          href: https://github.com/you
+          external: true
+
+  # ---- 页脚信息 ----
+  otherInfo:
+    date: "2024-{{now}}"      # {{now}} 自动替换为当前年份
+    motto: Stay hungry. Stay foolish.  # 页脚座右铭，留空则不显示
+    icp:                       # ICP 备案（中国大陆），不配则忽略
+      text: ""
+      link: ""
