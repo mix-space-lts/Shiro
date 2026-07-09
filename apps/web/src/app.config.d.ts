@@ -97,7 +97,6 @@ declare global {
     travel?: {
       enable?: boolean
     }
-    }
   }
   export interface Donate {
     enable: boolean
