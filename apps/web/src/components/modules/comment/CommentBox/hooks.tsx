@@ -1,7 +1,6 @@
 'use client'
 
 import type {
-  CommentDto,
   CommentModel,
   RequestError,
 } from '@mix-space-lts/api-client'
@@ -20,7 +19,6 @@ import { jotaiStore } from '~/lib/store'
 import { toast } from '~/lib/toast'
 import { buildCommentsQueryKey } from '~/queries/keys'
 
-import type { CommentAnchor } from '../types'
 import { MAX_COMMENT_TEXT_LENGTH } from './constants'
 import type { createInitialValue } from './providers'
 import {
@@ -146,14 +144,14 @@ export const useSendComment = () => {
       const url = jotaiStore.get(urlAtom)
       const anchor = jotaiStore.get(anchorAtom)
 
-      const commentDto: CommentDto & { anchor?: CommentAnchor } = {
+      const commentDto = {
         text,
         author,
         mail,
         avatar,
         source,
         url,
-      }
+      } as any
       if (anchor) commentDto.anchor = anchor
 
       if (isLogged) {
@@ -162,7 +160,6 @@ export const useSendComment = () => {
 
       // Omit empty string key
       Object.keys(commentDto).forEach((key) => {
-        // @ts-expect-error
         if (commentDto[key] === '') delete commentDto[key]
       })
 
@@ -179,8 +176,9 @@ export const useSendComment = () => {
             })
             .then(wrappedCompletedCallback)
         } else {
+          // @ts-ignore
           return apiClient.comment
-            .reply(refId, commentDto)
+            .guestReply(refId, commentDto)
             .then(wrappedCompletedCallback)
         }
       }
@@ -214,8 +212,9 @@ export const useSendComment = () => {
       }
       // @ts-ignore
       commentDto.isWhispers = isWhisper
+      // @ts-ignore
       return apiClient.comment
-        .comment(refId, commentDto)
+        .guestComment(refId, commentDto)
         .then(wrappedCompletedCallback)
     },
     mutationKey: [commentRefId, 'comment'],

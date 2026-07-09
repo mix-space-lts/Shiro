@@ -87,7 +87,7 @@ const CommentRender: Component<{
     location,
     isWhispers,
     url,
-    source,
+    authProvider: source,
   } = comment
 
   const avatar = reader?.image || comment.avatar
