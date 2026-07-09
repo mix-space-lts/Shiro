@@ -1,6 +1,6 @@
 'use client'
 
-import type { RecentlyModel } from '@mx-space/api-client'
+import type { RecentlyModel } from '@mix-space-lts/api-client'
 import type { InfiniteData } from '@tanstack/react-query'
 import {
   useInfiniteQuery,
@@ -115,25 +115,26 @@ const PostBox = () => {
 const List = () => {
   const [hasNext, setHasNext] = useState(true)
 
-  const { data, isLoading, fetchNextPage } = useInfiniteQuery({
-    queryKey: QUERY_KEY,
-    queryFn: async ({ pageParam }) => {
-      const { data } = await apiClient.shorthand.getList({
-        before: pageParam,
-        size: FETCH_SIZE,
-      })
+  const { data, isLoading, isFetchingNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      queryKey: QUERY_KEY,
+      queryFn: async ({ pageParam }) => {
+        const { data } = await apiClient.shorthand.getList({
+          before: pageParam,
+          size: FETCH_SIZE,
+        })
 
-      if (data.length < FETCH_SIZE) {
-        setHasNext(false)
-      }
-      return data
-    },
-    enabled: hasNext,
-    refetchOnMount: true,
+        if (data.length < FETCH_SIZE) {
+          setHasNext(false)
+        }
+        return data
+      },
+      enabled: hasNext,
+      refetchOnMount: true,
 
-    getNextPageParam: (l) => (l.length > 0 ? l.at(-1)?.id : undefined),
-    initialPageParam: undefined as undefined | string,
-  })
+      getNextPageParam: (l) => (l.length > 0 ? l.at(-1)?.id : undefined),
+      initialPageParam: undefined as undefined | string,
+    })
 
   const [scope, animate] = useAnimate()
 
@@ -159,7 +160,16 @@ const List = () => {
     )
   }, [data])
 
-  if (isLoading) <Loading useDefaultLoadingText />
+  if (isLoading) return <Loading useDefaultLoadingText />
+
+  const hasData = data && data.pages.some((page) => page.length > 0)
+  if (!hasData) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+        <p>暂无内容</p>
+      </div>
+    )
+  }
 
   return (
     <ul ref={scope}>
@@ -170,7 +180,9 @@ const List = () => {
       {hasNext && (
         <LoadMoreIndicator
           onLoading={() => {
-            fetchNextPage()
+            if (!isFetchingNextPage) {
+              fetchNextPage()
+            }
           }}
         />
       )}

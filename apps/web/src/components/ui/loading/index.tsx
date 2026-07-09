@@ -1,6 +1,7 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
+import { useMessages } from 'next-intl'
 
 import { clsxm } from '~/lib/helper'
 
@@ -9,13 +10,32 @@ export type LoadingProps = {
   useDefaultLoadingText?: boolean
 }
 
+const useRandomLoadingText = (): string | undefined => {
+  const messages = useMessages() as {
+    common?: { loading_default?: string[] }
+  }
+  const loadingMessages = messages?.common?.loading_default
+
+  const [text, setText] = useState<string | undefined>(
+    loadingMessages?.[0],
+  )
+
+  useEffect(() => {
+    if (loadingMessages && loadingMessages.length > 1) {
+      const randomIndex = Math.floor(Math.random() * loadingMessages.length)
+      setText(loadingMessages[randomIndex])
+    }
+  }, [loadingMessages])
+
+  return text
+}
+
 export const Loading: Component<LoadingProps> = ({
   loadingText,
   className,
   useDefaultLoadingText = false,
 }) => {
-  const t = useTranslations('common')
-  const defaultLoadingText = t('loading_default')
+  const defaultLoadingText = useRandomLoadingText()
   const nextLoadingText = useDefaultLoadingText
     ? defaultLoadingText
     : loadingText
