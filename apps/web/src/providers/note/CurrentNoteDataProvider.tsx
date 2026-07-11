@@ -5,12 +5,12 @@ import { useQuery } from '@tanstack/react-query'
 import { createModelDataProvider } from 'jojoo/react'
 import { useSearchParams } from 'next/navigation'
 import { useLocale } from 'next-intl'
+import type { FC, PropsWithChildren } from 'react'
 import { useEffect } from 'react'
 
 import { queries } from '~/queries/definition'
 
 const {
-  ModelDataProvider,
   ModelDataAtomProvider,
   getGlobalModelData: getModelData,
   setGlobalModelData: setModelData,
@@ -18,9 +18,26 @@ const {
   useSetModelData,
 } = createModelDataProvider<NoteWrappedWithLikedAndTranslationPayload>()
 
+/**
+ * Safe wrapper that defers data setting to useEffect instead of render phase,
+ * avoiding React's "Cannot update a component while rendering" warning.
+ */
+const SafeModelDataProvider: FC<
+  PropsWithChildren<{ data: NoteWrappedWithLikedAndTranslationPayload }>
+> = ({ data, children }) => {
+  const setData = useSetModelData()
+  useEffect(() => {
+    setData(data)
+    return () => {
+      setData(null)
+    }
+  }, [data, setData])
+  return <>{children}</>
+}
+
 export {
   ModelDataAtomProvider as CurrentNoteDataAtomProvider,
-  ModelDataProvider as CurrentNoteDataProvider,
+  SafeModelDataProvider as CurrentNoteDataProvider,
   getModelData as getCurrentNoteData,
   setModelData as setCurrentNoteData,
   useModelDataSelector as useCurrentNoteDataSelector,

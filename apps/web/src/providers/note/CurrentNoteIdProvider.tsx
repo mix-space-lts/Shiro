@@ -4,7 +4,6 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import type { FC, PropsWithChildren } from 'react'
 import { memo, useEffect } from 'react'
 
-import { useBeforeMounted } from '~/hooks/common/use-before-mounted'
 import { jotaiStore } from '~/lib/store'
 
 const currentNoteNidAtom = atom<null | string>(null)
@@ -14,13 +13,6 @@ export const CurrentNoteNidProvider: FC<
   } & PropsWithChildren
 > = memo(({ nid, children }) => {
   const setNoteId = useSetAtom(currentNoteNidAtom)
-  // useHydrateAtoms([[currentNoteNidAtom, nid]], {
-  //   dangerouslyForceHydrate: true,
-  // })
-  useBeforeMounted(() => {
-    // setNoteId(noteId)
-    jotaiStore.set(currentNoteNidAtom, nid)
-  })
 
   useEffect(() => {
     setNoteId(nid)
