@@ -35,7 +35,6 @@ const NoteTimelineImpl = () => {
       nid: note.nid,
       title: note.title,
       created: note.created,
-      isPublished: note.isPublished,
     }
   })
   const noteNid = useCurrentNoteNid()
@@ -66,7 +65,6 @@ const NoteTimelineImpl = () => {
           nid: note.nid,
           id: note.id,
           created: note.created,
-          isPublished: note.isPublished,
         },
       ]
     : []

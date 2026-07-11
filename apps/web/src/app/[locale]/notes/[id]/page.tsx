@@ -89,7 +89,7 @@ function PageInner({
         </span>
 
         <NoteRootBanner />
-        {!data.isPublished && (
+        {data.hide && (
           <NoteBanner type="warning" message={privateLoginOnlyMessage} />
         )}
       </div>
