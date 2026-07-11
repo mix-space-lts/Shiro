@@ -15,7 +15,10 @@ export function urlBuilder(path = '') {
 
 export function isPostModel(model: any): model is PostModel {
   return (
-    isDefined(model.title) && isDefined(model.slug) && !isDefined(model.order)
+    isDefined(model.title) &&
+    isDefined(model.slug) &&
+    isDefined(model.category) &&
+    !isDefined(model.order)
   )
 }
 
