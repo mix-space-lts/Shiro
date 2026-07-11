@@ -28,7 +28,20 @@ function setupIo(config: {
   })
   if (!ws) return
 
-  ws.on('disconnect', () => {
+  ws.on('connect_error', (err) => {
+    console.error('[ws] connect_error:', err)
+    boardcast({
+      type: 'error',
+      payload: err.message || 'Connection failed',
+    })
+  })
+
+  ws.on('error', (err) => {
+    console.error('[ws] error:', err)
+  })
+
+  ws.on('disconnect', (reason) => {
+    console.info('[ws] disconnect:', reason)
     boardcast({
       type: 'disconnect',
     })
