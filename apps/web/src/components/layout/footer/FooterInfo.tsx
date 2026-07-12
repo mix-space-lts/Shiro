@@ -93,8 +93,8 @@ const PoweredBy = async ({ className }: { className?: string }) => {
   return (
     <span className={className}>
       Powered by{' '}
-      <StyledLink href="https://github.com/mx-space" target="_blank">
-        Mix Space
+      <StyledLink href="https://github.com/mix-space-lts" target="_blank">
+        Mix Space LTS
       </StyledLink>
       <span className="mx-1">&</span>
       <FloatPopover
@@ -192,9 +192,7 @@ const FooterBottom = async () => {
             <Divider className="hidden md:inline" />
           </SubscribeTextButton>
         </span>
-        <span className="mt-3 block md:mt-0 md:inline">
-          {otherInfo?.motto}
-        </span>
+        <span className="mt-3 block md:mt-0 md:inline">{otherInfo?.motto}</span>
       </div>
       <div>
         <PoweredBy className="my-3 block md:my-0 md:inline" />
