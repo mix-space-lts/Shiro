@@ -1,6 +1,7 @@
 FROM node:lts-alpine AS base
 
-RUN npm install -g --arch=x64 --platform=linux sharp
+ARG TARGETARCH
+RUN npm install -g --arch=${TARGETARCH} --platform=linux sharp
 
 FROM base AS deps
 
