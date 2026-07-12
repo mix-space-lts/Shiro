@@ -7,8 +7,10 @@ import { useTranslations } from 'next-intl'
 import { createElement, useMemo } from 'react'
 
 import {
+  FaSolidBrain,
   FaSolidComments,
   FaSolidFeatherAlt,
+  FaSolidHashtag,
   FaSolidHistory,
   FaSolidUserFriends,
   IcTwotoneSignpost,
@@ -39,6 +41,9 @@ export const Windsock = () => {
   const thinkingEnabled = useAppConfigSelector(
     (appConfig) => appConfig.module?.thinking?.enable ?? true,
   )
+  const noteTopicsEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.noteTopics?.enable ?? true,
+  )
   const saysEnabled = useAppConfigSelector(
     (appConfig) => appConfig.module?.says?.enable ?? true,
   )
@@ -48,30 +53,64 @@ export const Windsock = () => {
   const timelineEnabled = useAppConfigSelector(
     (appConfig) => appConfig.module?.timeline?.enable ?? true,
   )
+  const windsockItems = useAppConfigSelector(
+    (appConfig) => appConfig.module?.windsock?.items,
+  )
+  const windsockAutoFromNav = useAppConfigSelector(
+    (appConfig) => appConfig.module?.windsock?.autoFromNav ?? false,
+  )
+  const navItems = useAppConfigSelector(
+    (appConfig) => appConfig.module?.nav?.items,
+  )
 
-  const windsock = useMemo(
-    () => [
+  const windsock = useMemo(() => {
+    // 从 nav 自动生成
+    if (windsockAutoFromNav && navItems?.length) {
+      return navItems
+        .filter(
+          (item) =>
+            !item.subMenu?.length &&
+            item.path !== '/' &&
+            !item.path.startsWith('#'),
+        )
+        .map((item) => ({
+          title: item.titleKey
+            ? t(item.titleKey as any)
+            : item.title || item.path,
+          path: item.path,
+        }))
+    }
+
+    // 手动指定
+    if (windsockItems?.length) {
+      return windsockItems.map((item) => ({
+        title: item.titleKey
+          ? t(item.titleKey as any)
+          : item.title || item.path,
+        path: item.path,
+      }))
+    }
+
+    // 默认
+    return [
       {
         title: t('windsock_posts'),
         path: '/posts',
-        type: 'Post',
-        subMenu: [],
         icon: IcTwotoneSignpost,
         do() {
           window.__POST_LIST_ANIMATED__ = true
         },
       },
-      ...(notesEnabled
+      ...(notesEnabled !== false
         ? [
             {
               title: t('windsock_notes'),
-              type: 'Note',
               path: '/notes',
               icon: FaSolidFeatherAlt,
             },
           ]
         : []),
-      ...(timelineEnabled
+      ...(timelineEnabled !== false
         ? [
             {
               title: t('windsock_timeline'),
@@ -80,34 +119,7 @@ export const Windsock = () => {
             },
           ]
         : []),
-      ...(friendsEnabled
-        ? [
-            {
-              title: t('windsock_friends'),
-              icon: FaSolidUserFriends,
-              path: '/friends',
-            },
-          ]
-        : []),
-      ...(thinkingEnabled
-        ? [
-            {
-              title: t('windsock_thinking'),
-              icon: MdiLightbulbOn20,
-              path: '/thinking',
-            },
-          ]
-        : []),
-      ...(projectsEnabled
-        ? [
-            {
-              title: t('windsock_projects'),
-              icon: MdiFlask,
-              path: '/projects',
-            },
-          ]
-        : []),
-      ...(saysEnabled
+      ...(saysEnabled !== false
         ? [
             {
               title: t('windsock_says'),
@@ -116,7 +128,52 @@ export const Windsock = () => {
             },
           ]
         : []),
-      ...(travelEnabled
+      ...(thinkingEnabled !== false
+        ? [
+            {
+              title: t('windsock_thinking'),
+              icon: MdiLightbulbOn20,
+              path: '/thinking',
+            },
+          ]
+        : []),
+      ...(projectsEnabled !== false
+        ? [
+            {
+              title: t('windsock_projects'),
+              icon: MdiFlask,
+              path: '/projects',
+            },
+          ]
+        : []),
+      ...(noteTopicsEnabled !== false
+        ? [
+            {
+              title: t('windsock_topics'),
+              path: '/notes/series',
+              icon: FaSolidHashtag,
+            },
+          ]
+        : []),
+      ...(timelineEnabled !== false
+        ? [
+            {
+              title: t('windsock_memories'),
+              path: '/timeline?memory=1',
+              icon: FaSolidBrain,
+            },
+          ]
+        : []),
+      ...(friendsEnabled !== false
+        ? [
+            {
+              title: t('windsock_friends'),
+              icon: FaSolidUserFriends,
+              path: '/friends',
+            },
+          ]
+        : []),
+      ...(travelEnabled !== false
         ? [
             {
               title: t('windsock_travel'),
@@ -125,18 +182,21 @@ export const Windsock = () => {
             },
           ]
         : []),
-    ],
-    [
-      t,
-      travelEnabled,
-      friendsEnabled,
-      projectsEnabled,
-      thinkingEnabled,
-      saysEnabled,
-      notesEnabled,
-      timelineEnabled,
-    ],
-  )
+    ]
+  }, [
+    t,
+    travelEnabled,
+    friendsEnabled,
+    projectsEnabled,
+    thinkingEnabled,
+    saysEnabled,
+    notesEnabled,
+    timelineEnabled,
+    noteTopicsEnabled,
+    windsockItems,
+    windsockAutoFromNav,
+    navItems,
+  ])
   const likeQueryKey = ['site-like']
   const { data: count } = useQuery({
     queryKey: likeQueryKey,
@@ -185,7 +245,8 @@ export const Windsock = () => {
                 className="flex items-center gap-4 text-neutral duration-200 group-hover:text-accent! dark:text-neutral-200 group-hover:-translate-y-2!"
                 onClick={preventDefault}
               >
-                {createElement(item.icon, { className: 'w-6 h-6' })}
+                {item.icon &&
+                  createElement(item.icon, { className: 'w-6 h-6' })}
                 <span>{item.title}</span>
               </Link>
 

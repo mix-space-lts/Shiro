@@ -22,7 +22,8 @@ export default function Page() {
   const projectsEnabled = useAppConfigSelector(
     (config) => config.module?.projects?.enable ?? true,
   )
-  if (projectsEnabled === false) notFound()
+  const navItems = useAppConfigSelector((config) => config.module?.nav?.items)
+  if (projectsEnabled === false && !navItems?.length) notFound()
   const { data, isLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {

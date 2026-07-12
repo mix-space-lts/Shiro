@@ -41,6 +41,18 @@ const filterDisabledModules = (
         : item.subMenu,
     }))
 
+/** 将用户自定义 NavItemConfig[] 转为内部 IHeaderMenu[] */
+const convertNavItems = (items: NavItemConfig[]): IHeaderMenu[] =>
+  items.map((item) => ({
+    title: item.title || '',
+    titleKey: item.titleKey,
+    path: item.path,
+    type: item.type,
+    subMenu: item.subMenu
+      ? (convertNavItems(item.subMenu) as IHeaderMenu['subMenu'])
+      : undefined,
+  }))
+
 export const HeaderDataConfigureProvider: Component = ({ children }) => {
   const pageMeta = useAggregationSelector(
     (aggregationData) => aggregationData.pageMeta,
@@ -75,8 +87,48 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
   const noteTopicsEnabled = useAppConfigSelector(
     (appConfig) => appConfig.module?.noteTopics?.enable ?? true,
   )
+  const navItems = useAppConfigSelector(
+    (appConfig) => appConfig.module?.nav?.items,
+  )
+  const autoInjectCategories = useAppConfigSelector(
+    (appConfig) => appConfig.module?.nav?.autoInjectCategories ?? true,
+  )
 
   const headerMenuConfig = useMemo(() => {
+    // 自定义 nav 覆写
+    if (navItems?.length) {
+      if (
+        travelEnabled === false ||
+        friendsEnabled === false ||
+        projectsEnabled === false ||
+        saysEnabled === false ||
+        thinkingEnabled === false ||
+        notesEnabled === false ||
+        timelineEnabled === false ||
+        noteTopicsEnabled === false
+      ) {
+        console.warn(
+          '[Shiro] nav.items 已设置，module 下的 enable 开关已失效。路由访问由自定义 nav 结构决定。',
+        )
+      }
+
+      const config = convertNavItems(navItems)
+
+      // 仅当 autoInjectCategories 为 true 时注入分类
+      if (autoInjectCategories && categories?.length) {
+        const postIndex = config.findIndex((item) => item.type === 'Post')
+        if (postIndex !== -1) {
+          config[postIndex].subMenu = categories.map((cat) => ({
+            path: `/posts?category=${cat.slug}`,
+            title: cat.name,
+          }))
+        }
+      }
+
+      return config
+    }
+
+    // 默认流程
     let config = cloneHeaderMenuConfig(baseHeaderMenuConfig)
 
     // 注入独立页面到"首页"子菜单
@@ -146,6 +198,8 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
     notesEnabled,
     timelineEnabled,
     noteTopicsEnabled,
+    navItems,
+    autoInjectCategories,
   ])
 
   return (

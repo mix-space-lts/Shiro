@@ -100,6 +100,7 @@ config:
       enable: true             # 是否在导航栏显示 "跃迁" 入口，默认 true
 
     # -- 各板块开关（设为 false 时从导航栏隐藏，对应页面返回 404） --
+    # 注意：若 nav.items 已设置，则以下 enable 开关全部失效，仅 console.warn
     friends:
       enable: true             # 友链，默认 true
     projects:
@@ -114,6 +115,36 @@ config:
       enable: true             # 时光/时间线，默认 true
     noteTopics:
       enable: true             # 专栏/笔记系列，默认 true
+
+    # -- 自定义导航栏（完全覆写，可选） --
+    # 设置 items 后完全替换默认 nav，module 下的 enable 开关全部失效
+    # nav:
+    #   autoInjectCategories: true   # Post 类型菜单自动注入分类下拉，默认 true
+    #   items:
+    #     - titleKey: nav_home
+    #       path: /
+    #     - titleKey: nav_posts
+    #       path: /posts
+    #       type: Post
+    #     - titleKey: nav_notes
+    #       path: /notes
+    #     - title: 关于
+    #       path: /about
+    #     - titleKey: nav_more
+    #       path: '#'
+    #       subMenu:
+    #         - titleKey: nav_friends
+    #           path: /friends
+    #         - title: GitHub
+    #           path: https://github.com/xxx
+
+    # -- 首页风向标（可选） --
+    # 不设置则使用内置默认
+    # windsock:
+    #   autoFromNav: true    # 自动从 nav 顶级项生成
+    #   items:               # 或手动指定
+    #     - titleKey: windsock_posts
+    #       path: /posts
 
   # ===== Powered by（可选） =====
   poweredBy:
