@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import { notFound } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 import { GitHubBrandIcon } from '~/components/icons/platform/GitHubBrandIcon'
@@ -10,11 +11,18 @@ import { Loading } from '~/components/ui/loading'
 import { BottomToUpTransitionView } from '~/components/ui/transition'
 import { noopArr } from '~/lib/noop'
 import { apiClient } from '~/lib/request'
-import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
+import {
+  useAggregationSelector,
+  useAppConfigSelector,
+} from '~/providers/root/aggregation-data-provider'
 
 export default function Page() {
   const t = useTranslations('projects')
   const tCommon = useTranslations('common')
+  const projectsEnabled = useAppConfigSelector(
+    (config) => config.module?.projects?.enable ?? true,
+  )
+  if (projectsEnabled === false) notFound()
   const { data, isLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {

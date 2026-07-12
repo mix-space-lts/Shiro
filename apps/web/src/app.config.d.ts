@@ -97,6 +97,41 @@ declare global {
     travel?: {
       enable?: boolean
     }
+
+    /** 友链页面，默认显示 */
+    friends?: {
+      enable?: boolean
+    }
+
+    /** 项目页面，默认显示 */
+    projects?: {
+      enable?: boolean
+    }
+
+    /** 一言页面，默认显示 */
+    says?: {
+      enable?: boolean
+    }
+
+    /** 思考页面，默认显示 */
+    thinking?: {
+      enable?: boolean
+    }
+
+    /** 手记板块，默认显示 */
+    notes?: {
+      enable?: boolean
+    }
+
+    /** 时光（时间线）页面，默认显示 */
+    timeline?: {
+      enable?: boolean
+    }
+
+    /** 专栏（笔记系列），默认显示 */
+    noteTopics?: {
+      enable?: boolean
+    }
   }
   export interface Donate {
     enable: boolean

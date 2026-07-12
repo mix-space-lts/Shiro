@@ -74,21 +74,14 @@ export const headerMenuConfig: IHeaderMenu[] = [
         icon: h(IonBook),
         path: '/timeline?type=post',
       },
-      {
-        title: '回忆',
-        titleKey: 'nav_memories',
-        icon: h(FaSolidCircle),
-        path: '/timeline?memory=1',
-      },
-      {
-        title: '专栏',
-        titleKey: 'nav_topics',
-        path: '/notes/series',
-        icon: h('i', {
-          className: 'i-mingcute-align-bottom-fill flex center',
-        }),
-      },
     ],
+  },
+
+  {
+    title: '一言',
+    titleKey: 'nav_says',
+    icon: h(FaSolidComments),
+    path: '/says',
   },
 
   {
@@ -105,22 +98,30 @@ export const headerMenuConfig: IHeaderMenu[] = [
     path: '#',
     subMenu: [
       {
-        title: '友链',
-        titleKey: 'nav_friends',
-        icon: h(FaSolidUserFriends),
-        path: '/friends',
-      },
-      {
         title: '项目',
         titleKey: 'nav_projects',
         icon: h(MdiFlask),
         path: '/projects',
       },
       {
-        title: '一言',
-        titleKey: 'nav_says',
-        path: '/says',
-        icon: h(FaSolidComments),
+        title: '专栏',
+        titleKey: 'nav_topics',
+        path: '/notes/series',
+        icon: h('i', {
+          className: 'i-mingcute-align-bottom-fill flex center',
+        }),
+      },
+      {
+        title: '回忆',
+        titleKey: 'nav_memories',
+        icon: h(FaSolidCircle),
+        path: '/timeline?memory=1',
+      },
+      {
+        title: '友链',
+        titleKey: 'nav_friends',
+        icon: h(FaSolidUserFriends),
+        path: '/friends',
       },
       {
         title: '跃迁',

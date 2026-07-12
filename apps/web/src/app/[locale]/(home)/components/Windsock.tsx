@@ -30,6 +30,24 @@ export const Windsock = () => {
   const travelEnabled = useAppConfigSelector(
     (appConfig) => appConfig.module?.travel?.enable ?? true,
   )
+  const friendsEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.friends?.enable ?? true,
+  )
+  const projectsEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.projects?.enable ?? true,
+  )
+  const thinkingEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.thinking?.enable ?? true,
+  )
+  const saysEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.says?.enable ?? true,
+  )
+  const notesEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.notes?.enable ?? true,
+  )
+  const timelineEnabled = useAppConfigSelector(
+    (appConfig) => appConfig.module?.timeline?.enable ?? true,
+  )
 
   const windsock = useMemo(
     () => [
@@ -43,37 +61,61 @@ export const Windsock = () => {
           window.__POST_LIST_ANIMATED__ = true
         },
       },
-      {
-        title: t('windsock_notes'),
-        type: 'Note',
-        path: '/notes',
-        icon: FaSolidFeatherAlt,
-      },
-      {
-        title: t('windsock_timeline'),
-        icon: FaSolidHistory,
-        path: '/timeline',
-      },
-      {
-        title: t('windsock_friends'),
-        icon: FaSolidUserFriends,
-        path: '/friends',
-      },
-      {
-        title: t('windsock_thinking'),
-        icon: MdiLightbulbOn20,
-        path: '/thinking',
-      },
-      {
-        title: t('windsock_projects'),
-        icon: MdiFlask,
-        path: '/projects',
-      },
-      {
-        title: t('windsock_says'),
-        path: '/says',
-        icon: FaSolidComments,
-      },
+      ...(notesEnabled
+        ? [
+            {
+              title: t('windsock_notes'),
+              type: 'Note',
+              path: '/notes',
+              icon: FaSolidFeatherAlt,
+            },
+          ]
+        : []),
+      ...(timelineEnabled
+        ? [
+            {
+              title: t('windsock_timeline'),
+              icon: FaSolidHistory,
+              path: '/timeline',
+            },
+          ]
+        : []),
+      ...(friendsEnabled
+        ? [
+            {
+              title: t('windsock_friends'),
+              icon: FaSolidUserFriends,
+              path: '/friends',
+            },
+          ]
+        : []),
+      ...(thinkingEnabled
+        ? [
+            {
+              title: t('windsock_thinking'),
+              icon: MdiLightbulbOn20,
+              path: '/thinking',
+            },
+          ]
+        : []),
+      ...(projectsEnabled
+        ? [
+            {
+              title: t('windsock_projects'),
+              icon: MdiFlask,
+              path: '/projects',
+            },
+          ]
+        : []),
+      ...(saysEnabled
+        ? [
+            {
+              title: t('windsock_says'),
+              path: '/says',
+              icon: FaSolidComments,
+            },
+          ]
+        : []),
       ...(travelEnabled
         ? [
             {
@@ -84,7 +126,16 @@ export const Windsock = () => {
           ]
         : []),
     ],
-    [t, travelEnabled],
+    [
+      t,
+      travelEnabled,
+      friendsEnabled,
+      projectsEnabled,
+      thinkingEnabled,
+      saysEnabled,
+      notesEnabled,
+      timelineEnabled,
+    ],
   )
   const likeQueryKey = ['site-like']
   const { data: count } = useQuery({

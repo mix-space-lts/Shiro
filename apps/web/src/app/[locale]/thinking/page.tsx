@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-query'
 import { produce } from 'immer'
 import { stagger, useAnimate } from 'motion/react'
+import { notFound } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 
@@ -20,12 +21,17 @@ import { Loading } from '~/components/ui/loading'
 import { usePrevious } from '~/hooks/common/use-previous'
 import { preventDefault } from '~/lib/dom'
 import { apiClient } from '~/lib/request'
+import { useAppConfigSelector } from '~/providers/root/aggregation-data-provider'
 
 import { FETCH_SIZE, QUERY_KEY } from './constants'
 import { ThinkingItem } from './item'
 
 export default function Page() {
   const t = useTranslations('thinking')
+  const thinkingEnabled = useAppConfigSelector(
+    (config) => config.module?.thinking?.enable ?? true,
+  )
+  if (thinkingEnabled === false) notFound()
   return (
     <div>
       <header className="prose">

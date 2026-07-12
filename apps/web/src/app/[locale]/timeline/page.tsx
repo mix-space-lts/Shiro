@@ -5,7 +5,7 @@ import { TimelineType } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { m } from 'motion/react'
-import { useSearchParams } from 'next/navigation'
+import { notFound,useSearchParams  } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { memo, useEffect } from 'react'
 
@@ -20,6 +20,7 @@ import { BottomToUpSoftScaleTransitionView } from '~/components/ui/transition'
 import { useRouter } from '~/i18n/navigation'
 import { apiClient } from '~/lib/request'
 import { springScrollToElement } from '~/lib/scroller'
+import { useAppConfigSelector } from '~/providers/root/aggregation-data-provider'
 
 enum ArticleType {
   Post,
@@ -82,6 +83,10 @@ const useJumpTo = () => {
 
 export default function TimelinePage() {
   const t = useTranslations('home')
+  const timelineEnabled = useAppConfigSelector(
+    (config) => config.module?.timeline?.enable ?? true,
+  )
+  if (timelineEnabled === false) notFound()
   const search = useSearchParams()
 
   const year = search.get('year')
@@ -185,7 +190,14 @@ export default function TimelinePage() {
     .flat(2)
     .filter((i) => typeof i === 'object').length
 
-  const subtitle = `${t('timeline_total')}${postCount}${t('timeline_posts')}${!memory ? t('timeline_keep_going') : t('timeline_look_back')}`
+  const postsUnitKey =
+    type === 'post'
+      ? ('timeline_posts_unit_post' as const)
+      : type === 'note'
+        ? ('timeline_posts_unit_note' as const)
+        : ('timeline_posts_unit_mixed' as const)
+
+  const subtitle = `${t('timeline_total')}${postCount}${t(postsUnitKey)}${!memory ? t('timeline_keep_going') : t('timeline_look_back')}`
 
   return (
     <NormalContainer>
