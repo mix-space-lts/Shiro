@@ -42,4 +42,6 @@ jobs:
         with:
           name: shiro-web-build
           path: apps/web/.next
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 7
