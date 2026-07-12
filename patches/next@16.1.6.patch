@@ -1,0 +1,80 @@
+diff --git a/dist/server/image-optimizer.js b/dist/server/image-optimizer.js
+index 7c8df2a96a447e4f050bc5a3f9fdb419bde777ee..d9275c79554e985782957bc54de80c74b599cdfd 100644
+--- a/dist/server/image-optimizer.js
++++ b/dist/server/image-optimizer.js
+@@ -788,32 +788,52 @@ function isRedirect(statusCode) {
+         308
+     ].includes(statusCode);
+ }
++function matchImageWhitelist(hostname, patterns) {
++    for (const pattern of patterns){
++        const trimmed = pattern.trim();
++        if (!trimmed) continue;
++        if (trimmed === hostname) return true;
++        if (trimmed.startsWith('*.')) {
++            const suffix = trimmed.slice(1);
++            if (hostname.endsWith(suffix)) return true;
++        }
++    }
++    return false;
++}
++function getImagePrivateIpWhitelist() {
++    const raw = process.env.NEXT_IMAGE_PRIVATE_IP_WHITELIST;
++    if (!raw) return [];
++    return raw.split(',').map((p)=>p.trim()).filter(Boolean);
++}
+ async function fetchExternalImage(href, dangerouslyAllowLocalIP, maximumResponseBody, count = 3) {
+     if (!dangerouslyAllowLocalIP) {
+         const { hostname } = new URL(href);
+-        let ips = [
+-            hostname
+-        ];
+-        if (!(0, _net.isIP)(hostname)) {
+-            const records = await (0, _promises.lookup)(hostname, {
+-                family: 0,
+-                all: true,
+-                hints: _dns.ALL
+-            }).catch((_)=>[
+-                    {
+-                        address: hostname
+-                    }
+-                ]);
+-            ips = records.map((record)=>record.address);
+-        }
+-        const privateIps = ips.filter((ip)=>(0, _isprivateip.isPrivateIp)(ip));
+-        if (privateIps.length > 0) {
+-            _log.error('upstream image', href, 'resolved to private ip', JSON.stringify(privateIps));
+-            throw Object.defineProperty(new ImageError(400, '"url" parameter is not allowed'), "__NEXT_ERROR_CODE", {
+-                value: "E394",
+-                enumerable: false,
+-                configurable: true
+-            });
++        const whitelist = getImagePrivateIpWhitelist();
++        if (!matchImageWhitelist(hostname, whitelist)) {
++            let ips = [
++                hostname
++            ];
++            if (!(0, _net.isIP)(hostname)) {
++                const records = await (0, _promises.lookup)(hostname, {
++                    family: 0,
++                    all: true,
++                    hints: _dns.ALL
++                }).catch((_)=>[
++                        {
++                            address: hostname
++                        }
++                    ]);
++                ips = records.map((record)=>record.address);
++            }
++            const privateIps = ips.filter((ip)=>(0, _isprivateip.isPrivateIp)(ip));
++            if (privateIps.length > 0) {
++                _log.error('upstream image', href, 'resolved to private ip', JSON.stringify(privateIps));
++                throw Object.defineProperty(new ImageError(400, '"url" parameter is not allowed'), "__NEXT_ERROR_CODE", {
++                    value: "E394",
++                    enumerable: false,
++                    configurable: true
++                });
++            }
+         }
+     }
+     const res = await fetch(href, {
