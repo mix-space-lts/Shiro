@@ -14,7 +14,7 @@ export default definePrerenderPage<{ locale: Locale }>()({
     return latest?.data
   },
   Component: async ({ data: nullableData, params }) => {
-    if (!nullableData || nullableData.hide) {
+    if (!nullableData || !!nullableData.password) {
       notFound()
     }
     const { locale } = params

@@ -26,9 +26,6 @@ const SafeModelDataProvider: FC<PropsWithChildren<{ data: PageModel }>> = ({
   const setData = useSetModelData()
   useEffect(() => {
     setData(data)
-    return () => {
-      setData(null)
-    }
   }, [data, setData])
   return <>{children}</>
 }

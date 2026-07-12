@@ -31,9 +31,6 @@ const SafeModelDataProvider: FC<
   const setData = useSetModelData()
   useEffect(() => {
     setData(data)
-    return () => {
-      setData(null)
-    }
   }, [data, setData])
   return <>{children}</>
 }

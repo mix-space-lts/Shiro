@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { m } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import type { ReactElement, SVGProps } from 'react'
 import { createElement, useMemo } from 'react'
 
 import {
@@ -26,6 +27,13 @@ import { preventDefault } from '~/lib/dom'
 import { apiClient } from '~/lib/request'
 import { toast } from '~/lib/toast'
 import { useAppConfigSelector } from '~/providers/root/aggregation-data-provider'
+
+interface WindsockItem {
+  title: string
+  path: string
+  icon?: (props: SVGProps<SVGSVGElement>) => ReactElement
+  do?: () => void
+}
 
 export const Windsock = () => {
   const t = useTranslations('common')
@@ -63,7 +71,7 @@ export const Windsock = () => {
     (appConfig) => appConfig.module?.nav?.items,
   )
 
-  const windsock = useMemo(() => {
+  const windsock = useMemo<WindsockItem[]>(() => {
     // 从 nav 自动生成
     if (windsockAutoFromNav && navItems?.length) {
       return navItems
