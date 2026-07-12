@@ -1,3 +1,11 @@
+/**
+ * Shiro 主题配置类型定义
+ *
+ * ⚠️ 新增/修改/删除配置字段时，需同步改以下文件：
+ *   1. app.default.theme-config.ts  —— 默认值（也是 deepMerge 做未知键告警的 schema）
+ *   2. docs/shiro-theme-config.example.yaml —— 用户配置示例文档
+ *   3. 消费该配置的组件代码
+ */
 import type { ScriptProps } from 'next/script'
 
 declare global {
