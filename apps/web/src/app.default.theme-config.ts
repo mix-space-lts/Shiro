@@ -27,7 +27,7 @@ export const defaultThemeConfig: AppThemeConfig = {
             type: 'code',
             text: '<Developer />',
             class:
-              'font-medium mx-2 text-3xl rounded p-1 bg-gray-200 dark:bg-gray-800/0',
+              'font-medium mx-2 text-3xl rounded p-1 bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-900 transition-colors duration-200',
           },
         ],
       },
