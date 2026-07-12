@@ -27,16 +27,30 @@ const EmojiPicker = dynamic(() =>
 export const OwnerStatus = () => {
   const t = useTranslations('common')
   const pageIsActive = usePageIsActive()
-  const { data: statusFromRequest, isLoading: statusLoading } = useQuery({
+  const {
+    data: statusFromRequest,
+    isLoading: statusLoading,
+    isError,
+  } = useQuery({
     queryKey: ['shiro-status'],
     queryFn: () => apiClient.proxy.fn.shiro.status.get<TOwnerStatus | null>(),
     refetchOnWindowFocus: 'always',
     refetchOnMount: 'always',
     enabled: pageIsActive,
+    retry: false,
     meta: {
       persist: false,
     },
   })
+
+  useEffect(() => {
+    if (isError) {
+      console.warn(
+        '[Shiro] owner status cloud function (fn/shiro/status) unreachable — ' +
+          'deploy the snippet from https://github.com/mix-space-lts/snippets/blob/main/shiro/functions/status.ts',
+      )
+    }
+  }, [isError])
 
   useEffect(() => {
     if (statusLoading) return
@@ -64,10 +78,17 @@ export const OwnerStatus = () => {
         isLogged
           ? (e) => {
               e.stopPropagation()
-              present({
-                title: t('status_set'),
-                content: SettingStatusModalContent,
-              })
+              if (isError) {
+                present({
+                  title: t('status_set'),
+                  content: StatusUnavailableModalContent,
+                })
+              } else {
+                present({
+                  title: t('status_set'),
+                  content: SettingStatusModalContent,
+                })
+              }
             }
           : stopPropagation
       }
@@ -124,6 +145,41 @@ const formatDatetime = (ts: number) => {
   }
 
   return date.toLocaleTimeString()
+}
+
+const StatusUnavailableModalContent = () => {
+  const t = useTranslations('common')
+  const { dismiss } = useCurrentModal()
+
+  return (
+    <div className="flex flex-col items-center gap-5 py-4">
+      <div className="rounded-full bg-amber-100 p-4 dark:bg-amber-900/30">
+        <i className="i-mingcute-warning-line block size-8 text-amber-500" />
+      </div>
+      <div className="space-y-2 text-center">
+        <p className="text-base font-medium">{t('status_unavailable')}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {t('status_unavailable_detail')}
+        </p>
+      </div>
+      <a
+        href="https://github.com/mix-space-lts/snippets/blob/main/shiro/functions/status.ts"
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-1.5 text-sm text-accent underline-offset-2 hover:underline"
+      >
+        <i className="i-mingcute-code-line" />
+        {t('status_unavailable_link')}
+      </a>
+      <StyledButton
+        variant="secondary"
+        onClick={dismiss}
+        className="min-w-[120px]"
+      >
+        {t('actions_close')}
+      </StyledButton>
+    </div>
+  )
 }
 
 const SettingStatusModalContent = () => {
