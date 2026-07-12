@@ -140,12 +140,32 @@ export const merge = <T extends object, U extends object>(
   return result
 }
 
+/**
+ * 深度合并配置 (defaultThemeConfig ← source)
+ *
+ * 规则：
+ *   - source 中存在于 target 的键 → 覆盖 / 递归合并
+ *   - source 中不存在于 target 的键 → dev 模式下 console.warn 告警（可能是用户拼写错误）
+ *
+ * ⚠️ 此函数依赖 app.default.theme-config.ts 作为完整 schema。
+ *    新增配置字段时，需先在 app.default.theme-config.ts 中定义默认值。
+ */
 export const deepMerge = <T extends Record<string, any>>(
   target: T,
   source: Partial<T>,
+  _path = '',
 ): T => {
   const result = { ...target }
   for (const key in source) {
+    const currentPath = _path ? `${_path}.${key}` : key
+
+    // 仅在开发模式下告警：source 有 target 不认识的键 → 可能是用户拼写错误
+    if (process.env.NODE_ENV === 'development' && !(key in target)) {
+      console.warn(
+        `[Shiro Config] Unknown config key: "${currentPath}" — this key does not exist in the default theme config. Check your theme snippet for typos or removed fields.`,
+      )
+    }
+
     if (
       source[key] &&
       typeof source[key] === 'object' &&
@@ -154,7 +174,10 @@ export const deepMerge = <T extends Record<string, any>>(
       typeof target[key] === 'object' &&
       !Array.isArray(target[key])
     ) {
-      result[key] = deepMerge(target[key], source[key])
+      result[key] =
+        source[key] !== undefined
+          ? deepMerge(target[key], source[key], currentPath)
+          : target[key]
     } else if (source[key] !== undefined) {
       result[key] = source[key] as T[Extract<keyof T, string>]
     }
