@@ -3,14 +3,13 @@
 import { m } from 'motion/react'
 import { useCallback } from 'react'
 
-import { isOwnerLogged } from '~/atoms/hooks/owner'
 import { useResolveAdminUrl } from '~/atoms/hooks/url'
 import { useViewport } from '~/atoms/hooks/viewport'
+import { API_URL } from '~/constants/env'
 import { useIsClient } from '~/hooks/common/use-is-client'
 import { useSingleAndDoubleClick } from '~/hooks/common/use-single-double-click'
 import { useRouter } from '~/i18n/navigation'
 import { noopObj } from '~/lib/noop'
-import { Routes } from '~/lib/route-builder'
 import { useAppConfigSelector } from '~/providers/root/aggregation-data-provider'
 
 import { SiteOwnerAvatar } from './SiteOwnerAvatar'
@@ -31,20 +30,28 @@ const TapableLogo = () => {
 
   const resolveAdminUrl = useResolveAdminUrl()
 
+  const getAdminLoginUrl = useCallback(() => {
+    const configured = resolveAdminUrl()
+    if (configured && configured !== '') {
+      return `${configured}#/login?from=${encodeURIComponent(location.href)}`
+    }
+    // Fallback: derive from API_URL (usually Core and admin share same origin)
+    try {
+      const apiOrigin = new URL(API_URL, location.origin).origin
+      return `${apiOrigin}/proxy/qaqdmin#/login?from=${encodeURIComponent(location.href)}`
+    } catch {
+      return ''
+    }
+  }, [resolveAdminUrl])
+
   const fn = useSingleAndDoubleClick(
     () => {
       if (isLiving) return goLive()
-      router.push(Routes.Home)
+      router.push('/')
     },
     () => {
-      if (isOwnerLogged()) {
-        location.href = resolveAdminUrl()
-
-        return
-      }
-      router.push(
-        `${Routes.Login}?redirect=${encodeURIComponent(location.pathname)}`,
-      )
+      const url = getAdminLoginUrl()
+      if (url) location.href = url
     },
   )
 

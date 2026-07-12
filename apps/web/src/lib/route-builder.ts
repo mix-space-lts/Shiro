@@ -11,8 +11,6 @@ export const enum Routes {
 
   Timelime = '/timeline',
 
-  Login = '/login',
-
   Page = '/',
 
   Projects = '/projects',
