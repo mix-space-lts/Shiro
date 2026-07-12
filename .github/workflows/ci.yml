@@ -36,10 +36,3 @@ jobs:
         run: |
           set -o pipefail
           cd apps/web && pnpm run build:ci 2>&1 | tail -80
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: shiro-web-build
-          path: apps/web/.next
-          retention-days: 7
