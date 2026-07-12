@@ -5,7 +5,7 @@ import { TimelineType } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { m } from 'motion/react'
-import { notFound,useSearchParams  } from 'next/navigation'
+import { notFound, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { memo, useEffect } from 'react'
 
@@ -86,7 +86,8 @@ export default function TimelinePage() {
   const timelineEnabled = useAppConfigSelector(
     (config) => config.module?.timeline?.enable ?? true,
   )
-  if (timelineEnabled === false) notFound()
+  const navItems = useAppConfigSelector((config) => config.module?.nav?.items)
+  if (timelineEnabled === false && !navItems?.length) notFound()
   const search = useSearchParams()
 
   const year = search.get('year')

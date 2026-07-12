@@ -132,6 +132,41 @@ declare global {
     noteTopics?: {
       enable?: boolean
     }
+
+    /** 自定义导航栏。设置 items 后完全替换默认 nav，module 下的 enable 开关全部失效 */
+    nav?: {
+      /** 完全自定义的导航项列表。未设置时使用内置默认 nav */
+      items?: NavItemConfig[]
+      /** Post 类型菜单是否自动注入分类子菜单，默认 true */
+      autoInjectCategories?: boolean
+    }
+
+    /** 首页风向标。不设置则使用内置默认（与 nav 独立） */
+    windsock?: {
+      /** 手动指定风向标项。未设置则使用内置默认 */
+      items?: WindsockItemConfig[]
+      /** 设为 true 时自动从 nav 顶级项生成 windsock 列表（忽略 items） */
+      autoFromNav?: boolean
+    }
+  }
+
+  /** 自定义导航项 */
+  export interface NavItemConfig {
+    /** i18n key，优先于 title */
+    titleKey?: string
+    /** 硬编码标题 */
+    title?: string
+    path: string
+    /** 'Home' | 'Post' | 'Note' 等，标记特殊行为（如 Post 自动注入分类） */
+    type?: string
+    subMenu?: NavItemConfig[]
+  }
+
+  /** 风向标项 */
+  export interface WindsockItemConfig {
+    titleKey?: string
+    title?: string
+    path: string
   }
   export interface Donate {
     enable: boolean

@@ -63,25 +63,18 @@ export const headerMenuConfig: IHeaderMenu[] = [
     path: '/timeline',
     subMenu: [
       {
-        title: '手记',
-        titleKey: 'nav_notes',
-        icon: h(FaSolidFeatherAlt),
-        path: '/timeline?type=note',
-      },
-      {
         title: '文稿',
         titleKey: 'nav_posts',
         icon: h(IonBook),
         path: '/timeline?type=post',
       },
+      {
+        title: '手记',
+        titleKey: 'nav_notes',
+        icon: h(FaSolidFeatherAlt),
+        path: '/timeline?type=note',
+      },
     ],
-  },
-
-  {
-    title: '一言',
-    titleKey: 'nav_says',
-    icon: h(FaSolidComments),
-    path: '/says',
   },
 
   {
@@ -89,6 +82,13 @@ export const headerMenuConfig: IHeaderMenu[] = [
     titleKey: 'nav_thinking',
     icon: h(MdiLightbulbOn20),
     path: '/thinking',
+  },
+
+  {
+    title: '一言',
+    titleKey: 'nav_says',
+    icon: h(FaSolidComments),
+    path: '/says',
   },
 
   {
