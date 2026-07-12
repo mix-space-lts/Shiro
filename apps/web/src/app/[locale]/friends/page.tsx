@@ -4,6 +4,7 @@ import type { LinkModel } from '@mix-space-lts/api-client'
 import { LinkState, LinkType, RequestError } from '@mix-space-lts/api-client'
 import { useQuery } from '@tanstack/react-query'
 import Markdown from 'markdown-to-jsx'
+import { notFound } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import type { FC } from 'react'
 import { useCallback, useRef } from 'react'
@@ -23,7 +24,10 @@ import { shuffle } from '~/lib/lodash'
 import { apiClient } from '~/lib/request'
 import { getErrorMessageFromRequestError } from '~/lib/request.shared'
 import { toast } from '~/lib/toast'
-import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
+import {
+  useAggregationSelector,
+  useAppConfigSelector,
+} from '~/providers/root/aggregation-data-provider'
 
 const renderTitle = (text: string) => (
   <h1 className="my-12! text-xl! font-bold">{text}</h1>
@@ -31,6 +35,10 @@ const renderTitle = (text: string) => (
 
 export default function Page() {
   const t = useTranslations('friends')
+  const friendsEnabled = useAppConfigSelector(
+    (config) => config.module?.friends?.enable ?? true,
+  )
+  if (friendsEnabled === false) notFound()
   const { data, isLoading } = useQuery({
     queryKey: ['friends'],
     queryFn: async () => {

@@ -26,7 +26,7 @@ export const MenuPopover: Component<{
         'select-none rounded-xl bg-white/60 outline-hidden dark:bg-neutral-900/60',
         'border border-zinc-900/5 shadow-lg shadow-zinc-800/5 backdrop-blur-md',
         'dark:border-zinc-100/10 dark:from-zinc-900/70 dark:to-zinc-800/90',
-        'relative flex w-[130px] flex-col',
+        'relative flex min-w-[130px] flex-col',
         'focus-visible:ring-0!',
       ])}
       triggerElement={<>{children}</>}

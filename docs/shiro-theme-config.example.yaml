@@ -99,6 +99,22 @@ config:
     travel:
       enable: true             # 是否在导航栏显示 "跃迁" 入口，默认 true
 
+    # -- 各板块开关（设为 false 时从导航栏隐藏，对应页面返回 404） --
+    friends:
+      enable: true             # 友链，默认 true
+    projects:
+      enable: true             # 项目，默认 true
+    says:
+      enable: true             # 一言，默认 true
+    thinking:
+      enable: true             # 思考，默认 true
+    notes:
+      enable: true             # 手记，默认 true
+    timeline:
+      enable: true             # 时光/时间线，默认 true
+    noteTopics:
+      enable: true             # 专栏/笔记系列，默认 true
+
   # ===== Powered by（可选） =====
   poweredBy:
     vercel: false              # 部署在 Vercel 且为 true 时显示 "Powered by Vercel"
