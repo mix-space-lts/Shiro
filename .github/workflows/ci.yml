@@ -33,11 +33,6 @@ jobs:
 
       - name: Build web
         id: buildweb
-        continue-on-error: true
-        run: cd apps/web && pnpm run build:ci 2>&1 | tail -80
-
-      - name: Check build result
-        if: steps.buildweb.outcome == 'failure'
         run: |
-          echo "::error::Build failed! Check the 'Build web' step for details."
-          exit 1
+          set -o pipefail
+          cd apps/web && pnpm run build:ci 2>&1 | tail -80
