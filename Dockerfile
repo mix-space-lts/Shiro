@@ -24,7 +24,9 @@ COPY --from=deps /app/ .
 # Reuse pnpm installed in deps stage to avoid network flakiness
 COPY --from=deps /usr/local/lib/node_modules/pnpm /usr/local/lib/node_modules/pnpm
 RUN ln -sf ../lib/node_modules/pnpm/bin/pnpm.cjs /usr/local/bin/pnpm \
-  && ln -sf ../lib/node_modules/pnpm/bin/pnpx.cjs /usr/local/bin/pnpx
+  && ln -sf ../lib/node_modules/pnpm/bin/pnpx.cjs /usr/local/bin/pnpx \
+  && chmod +x /usr/local/lib/node_modules/pnpm/bin/pnpm.cjs \
+    /usr/local/lib/node_modules/pnpm/bin/pnpx.cjs
 
 ENV NODE_ENV=production
 ARG BASE_URL
