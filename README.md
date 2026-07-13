@@ -11,14 +11,6 @@
 
 专为 [Mix Space LTS](https://github.com/mix-space-lts) 生态系统设计的现代化个人站点前端。
 
-## :sparkles: 示例站点
-
-以下是一些使用 Shiro 主题的精美站点：
-
-- [静かな森](https://innei.in)
-- [可愛い松](https://blog.wibus.ren/)
-
-
 欢迎体验 Shiro 带来的极简之美！
 
 ## :rocket: 核心特性
@@ -49,33 +41,47 @@
 
 ## 📖 部署指南
 
-详细的部署教程请参考：https://mx-space.js.org/docs/themes/shiro/deploy
+### 前提要求
 
-感谢 @wibus-wee、@wuhang2003 等社区贡献者编写的详细文档。
+* 你已安装 Mix Space 后端并且已启动
+* （选择 Vercel 部署）已注册 [Vercel](https://vercel.com/) 和 [GitHub](https://github.com/) 账号
 
-## :camera: 界面预览
+### 准备步骤
 
-<img width="1471" alt="Live Demo" src="https://github.com/mix-space-lts/Shiro/assets/41265413/bf8af4ec-0f0c-441a-8c06-4b44e1649597">
+#### 设置主题配置
 
-<details>
-<summary>
-点击查看更多完整页面截图
-</summary>
+进入 Mix Space 后台，进入「附加功能 - 配置与云函数」页面，点击新增按钮，在编辑页面中，填入以下设置：
 
-![页面截图 1](https://github.com/mix-space-lts/Shiro/assets/41265413/1b85c9be-0cd3-46b5-a089-a9ab97fdfecb)
-![页面截图 2](https://github.com/mix-space-lts/Shiro/assets/41265413/d808d288-c022-42f2-8d74-ad057a588771)
+* 引用：`theme`
+* 名称：`shiro`
+* 数据类型：`YAML`
+* 数据：(https://github.com/mix-space-lts/Shiro/blob/main/docs/shiro-theme-config.example.yaml)
 
-</details>
+> 请注意，配置需要根据需求自行修改。只配置需要覆写的字段即可，缺失字段会自动使用缺省默认值。
+>
+> 此外，配置也可写成 json 格式，此时数据类型应选择 `JSON`。
 
-## :zap: 性能测试
+点击按钮保存配置，随后继续进行下面的步骤。
 
-在 M2 MacBook Air 环境下对重负载页面的性能测试结果：
 
-![性能测试结果](https://github.com/mix-space-lts/Shiro/assets/41265413/f76152af-4a52-46a2-9b83-20567800ba75)
+#### 配置环境变量
 
-## :whale: 快速开始
+`NEXT_PUBLIC_API_URL` 和 `NEXT_PUBLIC_GATEWAY_URL` 为必填项，填入你的后端 API 地址和网关地址。其余配置请参考 [环境变量模板](https://github.com/mix-space-lts/Shiro/blob/main/apps/web/.env.template)。
 
-### :package: 预构建版本
+#### 通过 Vercel 部署
+
+
+1. 登陆 GitHub 账号，打开 [mix-space-lts/Shiro](https://github.com/mix-space-lts/Shiro)，点击右上角的 Fork 按钮，将仓库克隆到你的账号下。
+2. 修改你 Fork 的 Shiro 仓库中的 public 文件夹内容以使用你自己的 Favicon 。
+3. 登陆 Vercel 账号，点击右上角的 Add New 按钮，选择 Project， 在 Import Git Repository 表单中选择你刚刚 Fork 的仓库，点击 Import 按钮，点击 Environment Variables 填入环境变量粘贴到输入框中，然后点击 Deploy 按钮，等待部署完成。
+
+有关配置自定义域名的教程，请参考 [Vercel 文档](https://vercel.com/docs/custom-domains)。
+
+
+#### 本地部署
+
+
+##### :package: 预构建版本 [WIP]
 
 从 [Releases](https://github.com/mix-space-lts/Shiro/releases) 页面下载最新的 `release.zip` 压缩包并解压：
 
@@ -86,7 +92,7 @@ export PORT=2323
 node server.js
 ```
 
-### :docker: Docker Compose（推荐）
+##### :docker: Docker Compose
 
 ```bash
 mkdir shiro && cd shiro
@@ -97,9 +103,20 @@ vim .env # 配置环境变量
 mkdir public # 放置自定义 Favicon
 docker compose up -d
 
-# 后续更新
-docker compose pull
 ```
+
+##### 反向代理
+参考 (https://mx-space.js.org/docs/deploy/reverse-proxy)
+
+#### 完成！ [#完成]
+
+至此，你已完成了 Shiro 主题的部署，你可以访问你的博客了。
+
+#### 更新主题 [#更新主题]
+
+使用 Vercel 托管的话，只需要在自己 Fork 的项目上 Sync Fork 即可。如果自己有魔改某些内容的话不要点击 Discard Changes，如果有冲突需要你手动解决。
+
+本地部署的话，只需要删除预构建或拉取最新镜像即可。
 
 ## :memo: Markdown 扩展
 
@@ -165,10 +182,8 @@ docker compose pull
 
 使用本项目需要遵循 [附加条款和条件](ADDITIONAL_TERMS.md)。
 
----
-
-> [个人网站](https://innei.in/) · GitHub [@Innei](https://github.com/innei/)
 
 ---
 
 > **LTS 维护**: This fork is maintained by [mix-space-lts](https://github.com/mix-space-lts)
+
