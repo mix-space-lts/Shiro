@@ -70,11 +70,18 @@ export const HeaderDrawerContent = () => {
 
 const LinkInternal: typeof Link = memo(function LinkInternal({
   children,
+  onClick,
   ...rest
 }) {
   const { dismiss } = useSheetContext()
   return (
-    <Link {...rest} onClick={dismiss}>
+    <Link
+      {...rest}
+      onClick={(e) => {
+        onClick?.(e)
+        dismiss()
+      }}
+    >
       {children}
     </Link>
   )
