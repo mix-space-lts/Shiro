@@ -129,31 +129,33 @@ const RoomsInfo = () => {
       }[]
       const morphArticleIdToRoomName = (id: string) => `article_${id}`
       data.objects.notes.forEach((note) => {
+        const count = data.roomCount[morphArticleIdToRoomName(note.id)]
+        if (!count) return
         result.push({
-          path: routeBuilder(Routes.Note, {
-            id: note.nid,
-          }),
+          path: routeBuilder(Routes.Note, { id: note.nid }),
           title: note.title,
-          count: data.roomCount[morphArticleIdToRoomName(note.id)],
+          count,
         })
       })
       data.objects.posts.forEach((post) => {
+        const count = data.roomCount[morphArticleIdToRoomName(post.id)]
+        if (!count) return
         result.push({
           path: routeBuilder(Routes.Post, {
             category: post.category.slug,
             slug: post.slug,
           }),
           title: post.title,
-          count: data.roomCount[morphArticleIdToRoomName(post.id)],
+          count,
         })
       })
       data.objects.pages.forEach((page) => {
+        const count = data.roomCount[morphArticleIdToRoomName(page.id)]
+        if (!count) return
         result.push({
-          path: routeBuilder(Routes.Page, {
-            slug: page.slug,
-          }),
+          path: routeBuilder(Routes.Page, { slug: page.slug }),
           title: page.title,
-          count: data.roomCount[morphArticleIdToRoomName(page.id)],
+          count,
         })
       })
       return result.sort((a, b) => b.count - a.count)
@@ -177,11 +179,10 @@ const RoomsInfo = () => {
             <PeekLink href={room.path} className="hover:underline">
               {room.title}
             </PeekLink>
-            {!!room.count && (
-              <span className="ml-5 inline-flex items-center text-sm text-zinc-500">
-                <i className="i-mingcute-user-visible-line" /> {room.count}
-              </span>
-            )}
+            <span className="ml-5 inline-flex items-center text-sm text-zinc-500">
+              <i className="i-mingcute-user-visible-line mr-0.5" />
+              {t('n_readers', { count: room.count })}
+            </span>
           </li>
         ))}
       </ul>
