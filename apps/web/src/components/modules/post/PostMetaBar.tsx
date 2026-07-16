@@ -63,7 +63,7 @@ export const PostMetaBar: Component<{
           <span className="min-w-0 truncate">
             <span
               className="shiro-link--underline cursor-pointer"
-              onClick={() => router.push(`/posts/${meta.category.slug}`)}
+              onClick={() => router.push(`/posts/${meta.category!.slug}`)}
             >
               {meta.category?.name}
             </span>
