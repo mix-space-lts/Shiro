@@ -9,6 +9,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
 import { AckRead } from '~/components/common/AckRead'
+import { ArticleRoom } from '~/components/common/ArticleRoom'
 import { ClientOnly } from '~/components/common/ClientOnly'
 import { CommentAreaRootLazy } from '~/components/modules/comment'
 import {
@@ -77,6 +78,7 @@ function PageInner({
   return (
     <>
       <AckRead id={data.id} type="note" />
+      <ArticleRoom id={data.id} />
 
       <NoteHeadCover image={data.meta?.cover} />
 

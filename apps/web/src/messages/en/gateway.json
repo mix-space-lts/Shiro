@@ -8,5 +8,6 @@
   "being_viewed": "Currently viewed by ",
   "viewers": " people",
   "no_readers": "Nobody is reading anything right now~",
-  "popular_content": "The following content is getting a lot of attention:"
+  "popular_content": "The following content is getting a lot of attention:",
+  "n_readers": "{count} reader(s)"
 }

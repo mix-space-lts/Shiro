@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import type { Article, WithContext } from 'schema-dts'
 
 import { AckRead } from '~/components/common/AckRead'
+import { ArticleRoom } from '~/components/common/ArticleRoom'
 import { ClientOnly } from '~/components/common/ClientOnly'
 import { CommentAreaRootLazy } from '~/components/modules/comment'
 import {
@@ -123,6 +124,7 @@ const PostPage = ({ data }: { data: PostWithTranslation }) => {
   return (
     <div className="relative w-full min-w-0">
       <AckRead id={id} type="post" />
+      <ArticleRoom id={id} />
       <div>
         <div className="mb-8">
           <PostTitle />

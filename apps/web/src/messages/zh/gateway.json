@@ -8,5 +8,6 @@
   "being_viewed": "正在被",
   "viewers": "人看爆",
   "no_readers": "还没有小伙伴在阅览文章哦~",
-  "popular_content": "下面的内容正在被看爆："
+  "popular_content": "下面的内容正在被看爆：",
+  "n_readers": "{count} 人在阅读"
 }
