@@ -1,3 +1,4 @@
+import { ArticleRoom } from '~/components/common/ArticleRoom'
 import { PageActionAside } from '~/components/modules/page/PageActionAside'
 import { ArticleRightAside } from '~/components/modules/shared/ArticleRightAside'
 import { ReadIndicatorForMobile } from '~/components/modules/shared/ReadIndicator'
@@ -22,23 +23,26 @@ export default async function PageDetail({
   const data = await getData(slug)
 
   return (
-    <WrappedElementProvider eoaDetect>
-      <ReadIndicatorForMobile />
-      <FocusReadingEffect />
-      <MarkdownImageRecordProviderInternal>
-        <MarkdownSelection>
-          {data.meta?.style === 'equipment' ? (
-            <EquipmentPage />
-          ) : (
-            <PageContent contentFormat={data.contentFormat} />
-          )}
-        </MarkdownSelection>
-      </MarkdownImageRecordProviderInternal>
-      <LayoutRightSidePortal>
-        <ArticleRightAside>
-          <PageActionAside />
-        </ArticleRightAside>
-      </LayoutRightSidePortal>
-    </WrappedElementProvider>
+    <>
+      <ArticleRoom id={data.id} />
+      <WrappedElementProvider eoaDetect>
+        <ReadIndicatorForMobile />
+        <FocusReadingEffect />
+        <MarkdownImageRecordProviderInternal>
+          <MarkdownSelection>
+            {data.meta?.style === 'equipment' ? (
+              <EquipmentPage />
+            ) : (
+              <PageContent contentFormat={data.contentFormat} />
+            )}
+          </MarkdownSelection>
+        </MarkdownImageRecordProviderInternal>
+        <LayoutRightSidePortal>
+          <ArticleRightAside>
+            <PageActionAside />
+          </ArticleRightAside>
+        </LayoutRightSidePortal>
+      </WrappedElementProvider>
+    </>
   )
 }
