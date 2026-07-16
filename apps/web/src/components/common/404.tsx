@@ -25,7 +25,7 @@ export const NotFound404: React.FC<NotFound404Props> = ({
   return (
     <div className="min-h-[500px]">
       <div className="center fixed inset-0 flex flex-col space-y-6">
-        <$404SVG className="size-[400px]" />
+        <NotFoundSVG className="size-[400px]" />
         <p>
           <SafeDescription description={description} />
         </p>
@@ -35,7 +35,9 @@ export const NotFound404: React.FC<NotFound404Props> = ({
   )
 }
 
-const $404SVG: React.FC<{ className?: string }> = ({ className }) => (
+export const NotFoundSVG: React.FC<{ className?: string }> = ({
+  className,
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className={className}

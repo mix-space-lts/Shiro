@@ -3,6 +3,7 @@
 import { m } from 'motion/react'
 import { useTranslations } from 'next-intl'
 
+import { NothingFound } from '~/components/modules/shared/NothingFound'
 import { Divider } from '~/components/ui/divider'
 import { RelativeTime } from '~/components/ui/relative-time'
 import { Spring } from '~/constants/spring'
@@ -14,6 +15,9 @@ import { useHomeQueryData } from '../query'
 export const ActivityPostList = () => {
   const t = useTranslations('post')
   const { notes, posts } = useHomeQueryData()
+
+  if (posts.length === 0 && notes.length === 0) return <NothingFound />
+
   return (
     <m.section
       initial={{ opacity: 0.0001, y: 50 }}

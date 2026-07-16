@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
 
-import { NotFound404 } from '~/components/common/404'
+import { NothingFound } from '~/components/modules/shared/NothingFound'
 import { Loading } from '~/components/ui/loading'
 import { useRouter } from '~/i18n/navigation'
 import { apiClient } from '~/lib/request'
@@ -32,7 +32,7 @@ export default function Page() {
   }
 
   if (!data) {
-    return <NotFound404 />
+    return <NothingFound />
   }
 
   return null

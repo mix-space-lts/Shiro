@@ -1,11 +1,15 @@
 'use client'
 
-import type { NoteTopicListItem, PaginateResult } from '@mix-space-lts/api-client'
+import type {
+  NoteTopicListItem,
+  PaginateResult,
+} from '@mix-space-lts/api-client'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 
 import { LoadMoreIndicator } from '~/components/modules/shared/LoadMoreIndicator'
+import { NothingFound } from '~/components/modules/shared/NothingFound'
 import { TimelineList } from '~/components/ui/list/TimelineList'
 import { Loading } from '~/components/ui/loading'
 import {
@@ -59,6 +63,9 @@ export default function Page() {
   const { name } = data
 
   if (isLoading) return <Loading useDefaultLoadingText />
+
+  const hasNotes = notes?.pages.some((page) => page.data.length > 0)
+
   return (
     <BottomToUpSoftScaleTransitionView>
       <header className="prose">
@@ -66,38 +73,42 @@ export default function Page() {
       </header>
 
       <main className="mt-10 text-zinc-950/80 dark:text-zinc-50/80">
-        <TimelineList>
-          {notes?.pages.map((page) =>
-            page.data.map((child, i) => {
-              const date = new Date(child.created)
+        {!hasNotes ? (
+          <NothingFound />
+        ) : (
+          <TimelineList>
+            {notes?.pages.map((page) =>
+              page.data.map((child, i) => {
+                const date = new Date(child.created)
 
-              return (
-                <BottomToUpTransitionView
-                  key={child.id}
-                  delay={700 + 50 * i}
-                  as="li"
-                  className="flex min-w-0 items-center justify-between leading-loose"
-                >
-                  <Link
-                    href={routeBuilder(Routes.Note, {
-                      id: child.nid,
-                    })}
-                    className="min-w-0 truncate"
+                return (
+                  <BottomToUpTransitionView
+                    key={child.id}
+                    delay={700 + 50 * i}
+                    as="li"
+                    className="flex min-w-0 items-center justify-between leading-loose"
                   >
-                    {child.title}
-                  </Link>
-                  <span className="opacity-60">
-                    {(date.getMonth() + 1).toString().padStart(2, '0')}/
-                    {date.getDate().toString().padStart(2, '0')}/
-                    {date.getFullYear()}
-                  </span>
-                </BottomToUpTransitionView>
-              )
-            }),
-          )}
+                    <Link
+                      href={routeBuilder(Routes.Note, {
+                        id: child.nid,
+                      })}
+                      className="min-w-0 truncate"
+                    >
+                      {child.title}
+                    </Link>
+                    <span className="opacity-60">
+                      {(date.getMonth() + 1).toString().padStart(2, '0')}/
+                      {date.getDate().toString().padStart(2, '0')}/
+                      {date.getFullYear()}
+                    </span>
+                  </BottomToUpTransitionView>
+                )
+              }),
+            )}
 
-          {hasNextPage && <LoadMoreIndicator onLoading={fetchNextPage} />}
-        </TimelineList>
+            {hasNextPage && <LoadMoreIndicator onLoading={fetchNextPage} />}
+          </TimelineList>
+        )}
       </main>
     </BottomToUpSoftScaleTransitionView>
   )

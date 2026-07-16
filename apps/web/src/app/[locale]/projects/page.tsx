@@ -9,7 +9,6 @@ import { ProjectList } from '~/components/modules/project/ProjectList'
 import { NothingFound } from '~/components/modules/shared/NothingFound'
 import { Loading } from '~/components/ui/loading'
 import { BottomToUpTransitionView } from '~/components/ui/transition'
-import { noopArr } from '~/lib/noop'
 import { apiClient } from '~/lib/request'
 import {
   useAggregationSelector,
@@ -40,8 +39,6 @@ export default function Page() {
     return <Loading useDefaultLoadingText />
   }
 
-  if (!data) return <NothingFound />
-
   return (
     <div className="mt-10">
       <header className="prose my-12 flex items-center">
@@ -61,9 +58,13 @@ export default function Page() {
         </h1>
       </header>
       <main>
-        <BottomToUpTransitionView>
-          <ProjectList projects={data || noopArr} />
-        </BottomToUpTransitionView>
+        {!data?.length ? (
+          <NothingFound />
+        ) : (
+          <BottomToUpTransitionView>
+            <ProjectList projects={data} />
+          </BottomToUpTransitionView>
+        )}
       </main>
     </div>
   )

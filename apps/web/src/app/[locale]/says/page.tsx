@@ -25,7 +25,7 @@ export default function Page() {
     return <FullPageLoading />
   }
 
-  if (!data || data.pages.length === 0) return <NothingFound />
+  const hasData = data && data.pages.some((page) => page.data.length > 0)
 
   return (
     <div>
@@ -45,7 +45,7 @@ export default function Page() {
       </header>
 
       <main className="mt-10">
-        <SayMasonry />
+        {hasData ? <SayMasonry /> : <NothingFound />}
       </main>
     </div>
   )

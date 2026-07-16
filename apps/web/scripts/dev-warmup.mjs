@@ -6,11 +6,15 @@
  * 用法: node scripts/dev-warmup.mjs [port] [baseUrl]
  * 默认: port=2323, baseUrl=http://localhost
  *
- * 等 server 就绪后依次请求主要路由，触发编译缓存。
+ * 环境变量:
+ *   WARMUP_SERIAL=0    并行预热（默认串行，避免 Turbopack 并发编译竞态）
+ *
+ * 等 server 就绪后请求主要路由，触发编译缓存。
  */
 
 const PORT = Number.parseInt(process.argv[2] || '2323', 10)
 const BASE = process.argv[3] || `http://localhost:${PORT}`
+const SERIAL = process.env.WARMUP_SERIAL !== '0'
 
 const ROUTES = [
   '/',
@@ -56,25 +60,51 @@ async function warmup() {
   const ready = await waitForServer()
   if (!ready) return
 
-  console.log(`[warmup] server ready, warming ${ROUTES.length} routes …`)
+  const mode = SERIAL ? 'serial' : 'parallel'
+  console.log(`[warmup] server ready, warming ${ROUTES.length} routes (${mode}) …`)
 
-  const results = await Promise.allSettled(
-    ROUTES.map(async (path) => {
+  const okCount = { value: 0 }
+
+  if (SERIAL) {
+    for (const path of ROUTES) {
       const started = Date.now()
       const url = `${BASE}${path}`
       try {
         const res = await fetch(url, { signal: AbortSignal.timeout(30_000) })
         const ms = Date.now() - started
-        console.log(`[warmup] %s %s %dms`, res.status, path, ms)
+        const bad = res.status >= 500
+        console.log(
+          `[warmup] %s %s %dms${bad ? ' ⚠️' : ''}`,
+          res.status, path, ms,
+        )
+        if (!bad) okCount.value++
       } catch (err) {
         const ms = Date.now() - started
         console.warn(`[warmup] ERR %s %dms: %s`, path, ms, err.message)
       }
-    }),
-  )
+    }
+  } else {
+    const results = await Promise.allSettled(
+      ROUTES.map(async (path) => {
+        const started = Date.now()
+        const url = `${BASE}${path}`
+        const res = await fetch(url, { signal: AbortSignal.timeout(30_000) })
+        const ms = Date.now() - started
+        const bad = res.status >= 500
+        console.log(
+          `[warmup] %s %s %dms${bad ? ' ⚠️' : ''}`,
+          res.status, path, ms,
+        )
+        return { ok: !bad, path }
+      }),
+    )
+    okCount.value = results.filter(
+      (r) => r.status === 'fulfilled' && r.value?.ok,
+    ).length
+  }
 
-  const ok = results.filter((r) => r.status === 'fulfilled').length
-  const fail = results.length - ok
+  const ok = okCount.value
+  const fail = ROUTES.length - ok
   const emoji = fail ? '⚠️' : '✅'
   const line = '═'.repeat(42)
   console.log(`\n\x1b[1;32m  ${line}\n  ║  ${emoji}  warmup done: ${ok} ok, ${fail} failed  ║\n  ${line}\x1b[0m\n`)

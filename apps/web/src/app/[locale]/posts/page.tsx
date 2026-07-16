@@ -8,7 +8,7 @@ import { PostPagination } from '~/components/modules/post'
 import { PostsSettingFab } from '~/components/modules/post/fab/PostsSettingsFab'
 import { PostTagsFAB } from '~/components/modules/post/fab/PostTagsFAB'
 import { PostItemComposer } from '~/components/modules/post/PostItemComposer'
-import { NothingFound } from '~/components/modules/shared/NothingFound'
+import { EmptyPage } from '~/components/modules/shared/EmptyPage'
 import { SearchFAB } from '~/components/modules/shared/SearchFAB'
 import { BackToTopFAB } from '~/components/ui/fab'
 import { OnlyDesktop } from '~/components/ui/viewport'
@@ -65,7 +65,11 @@ export default definePrerenderPage<Props>()({
     const currentPage = page ? Number.parseInt(page) : 1
 
     if (!data?.length) {
-      return <NothingFound />
+      return (
+        <NormalContainer>
+          <EmptyPage />
+        </NormalContainer>
+      )
     }
 
     return (
