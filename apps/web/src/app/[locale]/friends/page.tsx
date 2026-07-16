@@ -84,8 +84,20 @@ export default function Page() {
   })
 
   if (isLoading) return <FullPageLoading />
-  if (!data) return null
-  const { banned, collections, friends, outdated } = data
+
+  const {
+    banned = [],
+    collections = [],
+    friends = [],
+    outdated = [],
+  } = data || {}
+
+  const hasAnyContent =
+    friends.length > 0 ||
+    collections.length > 0 ||
+    outdated.length > 0 ||
+    banned.length > 0
+
   return (
     <div>
       <header className="prose prose-p:my-2">
@@ -94,39 +106,45 @@ export default function Page() {
       </header>
 
       <main className="mt-10 flex w-full flex-col">
-        {friends.length > 0 && (
+        {!hasAnyContent ? null : (
           <>
-            {collections.length > 0 && renderTitle(t('section_friends'))}
-            <FriendSection data={friends} />
-          </>
-        )}
-        {collections.length > 0 && (
-          <>
-            {friends.length > 0 && renderTitle(t('section_collections'))}
-            <FavoriteSection data={collections} />
-          </>
-        )}
+            {friends.length > 0 && (
+              <>
+                {collections.length > 0 && renderTitle(t('section_friends'))}
+                <FriendSection data={friends} />
+              </>
+            )}
+            {collections.length > 0 && (
+              <>
+                {friends.length > 0 && renderTitle(t('section_collections'))}
+                <FavoriteSection data={collections} />
+              </>
+            )}
 
-        {outdated.length > 0 && (
-          <>
-            <Collapse
-              title={
-                <div className="mt-8 font-bold">{t('section_outdated')}</div>
-              }
-            >
-              <OutdateSection data={outdated} />
-            </Collapse>
-          </>
-        )}
-        {banned.length > 0 && (
-          <>
-            <Collapse
-              title={
-                <div className="mt-8 font-bold">{t('section_banned')}</div>
-              }
-            >
-              <BannedSection data={banned} />
-            </Collapse>
+            {outdated.length > 0 && (
+              <>
+                <Collapse
+                  title={
+                    <div className="mt-8 font-bold">
+                      {t('section_outdated')}
+                    </div>
+                  }
+                >
+                  <OutdateSection data={outdated} />
+                </Collapse>
+              </>
+            )}
+            {banned.length > 0 && (
+              <>
+                <Collapse
+                  title={
+                    <div className="mt-8 font-bold">{t('section_banned')}</div>
+                  }
+                >
+                  <BannedSection data={banned} />
+                </Collapse>
+              </>
+            )}
           </>
         )}
       </main>

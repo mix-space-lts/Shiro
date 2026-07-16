@@ -6,6 +6,7 @@ import { m } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
+import { NothingFound } from '~/components/modules/shared/NothingFound'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { softBouncePreset } from '~/constants/spring'
 import { apiClient } from '~/lib/request'
@@ -71,6 +72,8 @@ export const ActivityRecent = () => {
               ))}
           </ul>
         </div>
+      ) : flatData.length === 0 ? (
+        <NothingFound />
       ) : (
         <ScrollArea.ScrollArea
           mask

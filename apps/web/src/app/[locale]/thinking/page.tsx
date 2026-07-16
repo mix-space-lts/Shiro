@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react'
 import { useIsOwnerLogged } from '~/atoms/hooks/owner'
 import { TiltedSendIcon } from '~/components/icons/TiltedSendIcon'
 import { LoadMoreIndicator } from '~/components/modules/shared/LoadMoreIndicator'
+import { NothingFound } from '~/components/modules/shared/NothingFound'
 import { MotionButtonBase } from '~/components/ui/button'
 import { Loading } from '~/components/ui/loading'
 import { usePrevious } from '~/hooks/common/use-previous'
@@ -52,7 +53,6 @@ export default function Page() {
         <h3>{t('page_subtitle')}</h3>
       </header>
       <main className="-mt-12">
-        <PostBox />
         <List />
       </main>
     </div>
@@ -147,7 +147,7 @@ const List = () => {
 
   const getPrevData = usePrevious(data)
   useEffect(() => {
-    if (!data) return
+    if (!data || !scope.current) return
     const pages = getPrevData()?.pages
     const count = pages?.reduce((acc, cur) => acc + cur.length, 0)
 
@@ -171,28 +171,27 @@ const List = () => {
 
   const hasData = data && data.pages.some((page) => page.length > 0)
   if (!hasData) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-gray-500">
-        <p>暂无内容</p>
-      </div>
-    )
+    return <NothingFound />
   }
 
   return (
-    <ul ref={scope}>
-      {data?.pages.map((page) =>
-        page.map((item) => <ThinkingItem item={item} key={item.id} />),
-      )}
+    <div>
+      <PostBox />
+      <ul ref={scope}>
+        {data?.pages.map((page) =>
+          page.map((item) => <ThinkingItem item={item} key={item.id} />),
+        )}
 
-      {hasNext && (
-        <LoadMoreIndicator
-          onLoading={() => {
-            if (!isFetchingNextPage) {
-              fetchNextPage()
-            }
-          }}
-        />
-      )}
-    </ul>
+        {hasNext && (
+          <LoadMoreIndicator
+            onLoading={() => {
+              if (!isFetchingNextPage) {
+                fetchNextPage()
+              }
+            }}
+          />
+        )}
+      </ul>
+    </div>
   )
 }
