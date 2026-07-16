@@ -74,6 +74,12 @@ export const headerMenuConfig: IHeaderMenu[] = [
         icon: h(FaSolidFeatherAlt),
         path: '/timeline?type=note',
       },
+      {
+        title: '回忆',
+        titleKey: 'nav_memories',
+        icon: h(FaSolidCircle),
+        path: '/timeline?memory=1',
+      },
     ],
   },
 
@@ -110,12 +116,6 @@ export const headerMenuConfig: IHeaderMenu[] = [
         icon: h('i', {
           className: 'i-mingcute-align-bottom-fill flex center',
         }),
-      },
-      {
-        title: '回忆',
-        titleKey: 'nav_memories',
-        icon: h(FaSolidCircle),
-        path: '/timeline?memory=1',
       },
       {
         title: '友链',

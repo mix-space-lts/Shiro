@@ -1,23 +1,64 @@
-import type { Locale } from '~/i18n/config'
-import { redirect } from '~/i18n/navigation'
+import '~/components/modules/post/PostItem'
+
+import type { Metadata } from 'next'
+
+import { NormalContainer } from '~/components/layout/container/Normal'
+import { PostPagination } from '~/components/modules/post'
+import { PostItemComposer } from '~/components/modules/post/PostItemComposer'
+import { NothingFound } from '~/components/modules/shared/NothingFound'
+import { BackToTopFAB } from '~/components/ui/fab'
+import { OnlyDesktop } from '~/components/ui/viewport'
 import { apiClient } from '~/lib/request'
 import { definePrerenderPage } from '~/lib/request.server'
 
+import { fetchAggregationData } from '../../../api'
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ category: string }>
+}): Promise<Metadata> => {
+  const { category } = await params
+  return { title: `分类：${category}` }
+}
+
 export default definePrerenderPage<{
   category: string
-  locale: Locale
+  page?: string
+  size?: string
 }>()({
-  fetcher({ category }) {
-    return apiClient.post.getFullUrl(category)
+  async fetcher({ category, page, size }) {
+    const agg = await fetchAggregationData()
+    const cat = agg.categories.find((c) => c.slug === category)
+
+    return apiClient.post.getList(
+      page ? Number.parseInt(page) : 1,
+      size ? Number.parseInt(size) : 10,
+      {
+        categoryIds: cat ? [cat.id] : undefined,
+        truncate: 310,
+      },
+    )
   },
   async Component({ data, params }) {
-    const { locale } = params
-    redirect({ href: `/posts${data.path}`, locale })
+    const { data: posts, pagination } = data
+
+    if (!posts?.length) return <NothingFound />
 
     return (
-      <div>
-        正在重定向到 <pre>{`/posts${data.path}`}</pre>
-      </div>
+      <NormalContainer>
+        <ul>
+          {posts.map((item, index) => (
+            <PostItemComposer key={item.id} data={item} index={index} />
+          ))}
+        </ul>
+
+        {pagination.totalPage > 1 && <PostPagination pagination={pagination} />}
+
+        <OnlyDesktop>
+          <BackToTopFAB />
+        </OnlyDesktop>
+      </NormalContainer>
     )
   },
 })

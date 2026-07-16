@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import * as React from 'react'
 import { memo } from 'react'
 
-import { FloatPopover } from '~/components/ui/float-popover'
+import { FloatPopover, usePopoverAction } from '~/components/ui/float-popover'
 import { Link } from '~/i18n/navigation'
 import { clsxm } from '~/lib/helper'
 
@@ -21,6 +21,7 @@ export const MenuPopover: Component<{
       placement="bottom"
       offset={10}
       headless
+      trigger="both"
       popoverWrapperClassNames="z-[19] relative"
       popoverClassNames={clsxm([
         'select-none rounded-xl bg-white/60 outline-hidden dark:bg-neutral-900/60',
@@ -40,6 +41,7 @@ MenuPopover.displayName = 'MenuPopover'
 const Item = memo(function Item(props: IHeaderMenu) {
   const { title, titleKey, path, icon } = props
   const t = useTranslations('common')
+  const { close } = usePopoverAction()
 
   const displayTitle = titleKey ? t(titleKey as any) : title
 
@@ -56,6 +58,7 @@ const Item = memo(function Item(props: IHeaderMenu) {
         centered ? 'justify-around' : 'justify-start gap-4',
       )}
       role="button"
+      onClick={close}
     >
       {!!icon && <span>{icon}</span>}
       <span>{displayTitle}</span>

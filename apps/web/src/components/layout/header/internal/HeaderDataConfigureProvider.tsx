@@ -119,7 +119,7 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
         const postIndex = config.findIndex((item) => item.type === 'Post')
         if (postIndex !== -1) {
           config[postIndex].subMenu = categories.map((cat) => ({
-            path: `/posts?category=${cat.slug}`,
+            path: `/posts/${cat.slug}`,
             title: cat.name,
           }))
         }
@@ -147,7 +147,7 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
       const postIndex = config.findIndex((item) => item.type === 'Post')
       if (postIndex !== -1) {
         config[postIndex].subMenu = categories.map((cat) => ({
-          path: `/posts?category=${cat.slug}`,
+          path: `/posts/${cat.slug}`,
           title: cat.name,
         }))
       }

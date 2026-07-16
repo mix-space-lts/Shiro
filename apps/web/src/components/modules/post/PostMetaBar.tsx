@@ -11,6 +11,7 @@ import { useModalStack } from '~/components/ui/modal'
 import { NumberSmoothTransition } from '~/components/ui/number-transition/NumberSmoothTransition'
 import { RelativeTime } from '~/components/ui/relative-time'
 import { useIsClient } from '~/hooks/common/use-is-client'
+import { useRouter } from '~/i18n/navigation'
 import { clsxm } from '~/lib/helper'
 
 import { TagDetailModal } from './fab/PostTagsFAB'
@@ -22,6 +23,7 @@ export const PostMetaBar: Component<{
 }> = ({ className, meta, children }) => {
   const { present } = useModalStack()
   const isClient = useIsClient()
+  const router = useRouter()
   return (
     <div
       className={clsxm(
@@ -59,7 +61,12 @@ export const PostMetaBar: Component<{
         <div className="flex min-w-0 items-center space-x-1">
           <FeHash className="translate-y-[0.5px]" />
           <span className="min-w-0 truncate">
-            <span>{meta.category?.name}</span>
+            <span
+              className="shiro-link--underline cursor-pointer"
+              onClick={() => router.push(`/posts/${meta.category.slug}`)}
+            >
+              {meta.category?.name}
+            </span>
 
             {meta.tags?.length ? (
               <>
