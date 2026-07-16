@@ -56,10 +56,20 @@ const TapableLogo = () => {
   )
 
   return (
-    <button onClick={fn}>
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={fn}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          fn()
+        }
+      }}
+    >
       <SiteOwnerAvatar className="cursor-pointer" />
       <span className="sr-only">Owner Avatar</span>
-    </button>
+    </div>
   )
 }
 export const AnimatedLogo = () => {
