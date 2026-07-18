@@ -10,6 +10,7 @@ import { setWebUrl } from '~/atoms'
 import { useBeforeMounted } from '~/hooks/common/use-before-mounted'
 import { isDev } from '~/lib/env'
 import { jotaiStore } from '~/lib/store'
+import { useAggregationQuery } from '~/queries/aggregation'
 
 export type { AggregateRoot }
 
@@ -22,6 +23,10 @@ export const AggregationProvider: FC<
     appConfig: AppConfig
   }>
 > = ({ children, aggregationData, appConfig }) => {
+  // 客户端侧查询，保持数据新鲜度（refetchOnMount / refetchOnWindowFocus）
+  const { data: clientData } = useAggregationQuery()
+  const prevClientRef = useRef<AggregateRoot | null>(null)
+
   useBeforeMounted(() => {
     if (!aggregationData) return
     jotaiStore.set(aggregationDataAtom, aggregationData)
@@ -51,6 +56,19 @@ export const AggregationProvider: FC<
     jotaiStore.set(aggregationDataAtom, aggregationData)
     setWebUrl(aggregationData.url.webUrl)
   }, [aggregationData])
+
+  // 客户端 query 返回更新 → 覆盖 atom（跳过首次与 props 相同的数据）
+  useEffect(() => {
+    if (!clientData) return
+    if (prevClientRef.current === clientData) return
+    prevClientRef.current = clientData
+
+    jotaiStore.set(aggregationDataAtom, clientData)
+
+    if (clientData.theme?.config) {
+      jotaiStore.set(appConfigAtom, clientData.theme.config)
+    }
+  }, [clientData])
 
   const callOnceRef = useRef(false)
 
