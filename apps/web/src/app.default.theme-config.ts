@@ -101,6 +101,107 @@ export const defaultThemeConfig: AppThemeConfig = {
       noteTopics: {
         enable: true,
       },
+      nav: {
+        items: [
+          {
+            titleKey: 'nav_home',
+            path: '/',
+            icon: 'home',
+            injectPages: true,
+            subMenu: [],
+          },
+          {
+            titleKey: 'nav_posts',
+            path: '/posts',
+            icon: 'posts',
+            injectCategories: true,
+            subMenu: [],
+          },
+          {
+            titleKey: 'nav_notes',
+            path: '/notes',
+            icon: 'notes',
+            exclude: ['/notes/series'],
+            subMenu: [{ titleKey: 'nav_topics', path: '/notes/series' }],
+          },
+          {
+            titleKey: 'nav_timeline',
+            path: '/timeline',
+            icon: 'timeline',
+            subMenu: [
+              {
+                titleKey: 'nav_posts',
+                path: '/timeline?type=post',
+                icon: 'timeline-post',
+              },
+              {
+                titleKey: 'nav_notes',
+                path: '/timeline?type=note',
+                icon: 'timeline-note',
+              },
+              {
+                titleKey: 'nav_memories',
+                path: '/timeline?memory=1',
+                icon: 'memories',
+              },
+            ],
+          },
+          { titleKey: 'nav_thinking', path: '/thinking', icon: 'thinking' },
+          { titleKey: 'nav_says', path: '/says', icon: 'says' },
+          {
+            titleKey: 'nav_more',
+            path: '#',
+            icon: 'more',
+            subMenu: [
+              { titleKey: 'nav_projects', path: '/projects', icon: 'projects' },
+              { titleKey: 'nav_friends', path: '/friends', icon: 'friends' },
+              {
+                titleKey: 'nav_travel',
+                path: 'https://travel.moe/go.html',
+                icon: 'travel',
+              },
+            ],
+          },
+        ],
+      },
+      windsock: {
+        items: [
+          { titleKey: 'windsock_posts', path: '/posts', icon: 'posts' },
+          { titleKey: 'windsock_notes', path: '/notes', icon: 'notes' },
+          {
+            titleKey: 'windsock_timeline',
+            path: '/timeline',
+            icon: 'timeline',
+          },
+          { titleKey: 'windsock_says', path: '/says', icon: 'says' },
+          {
+            titleKey: 'windsock_thinking',
+            path: '/thinking',
+            icon: 'thinking',
+          },
+          {
+            titleKey: 'windsock_projects',
+            path: '/projects',
+            icon: 'projects',
+          },
+          {
+            titleKey: 'windsock_topics',
+            path: '/notes/series',
+            icon: 'topics',
+          },
+          {
+            titleKey: 'windsock_memories',
+            path: '/timeline?memory=1',
+            icon: 'memories',
+          },
+          { titleKey: 'windsock_friends', path: '/friends', icon: 'friends' },
+          {
+            titleKey: 'windsock_travel',
+            path: 'https://travel.moe/go.html',
+            icon: 'travel',
+          },
+        ],
+      },
     },
   },
   footer: {

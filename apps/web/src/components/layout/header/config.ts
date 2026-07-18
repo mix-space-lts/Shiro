@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { createElement as h } from 'react'
+import { createElement } from 'react'
 
 import {
   FaSolidCircle,
@@ -7,6 +7,7 @@ import {
   FaSolidComments,
   FaSolidDotCircle,
   FaSolidFeatherAlt,
+  FaSolidHashtag,
   FaSolidHistory,
   FaSolidUserFriends,
   IcTwotoneSignpost,
@@ -15,6 +16,48 @@ import {
   MdiLightbulbOn20,
   RMixPlanet,
 } from '~/components/icons/menu-collection'
+
+/** 共享图标映射（navbar + windsock 共用） */
+export const NAV_ICON_MAP = {
+  home: FaSolidDotCircle,
+  posts: IcTwotoneSignpost,
+  notes: FaSolidFeatherAlt,
+  timeline: FaSolidHistory,
+  'timeline-post': IonBook,
+  'timeline-note': FaSolidFeatherAlt,
+  memories: FaSolidCircle,
+  thinking: MdiLightbulbOn20,
+  says: FaSolidComments,
+  more: FaSolidCircleNotch,
+  projects: MdiFlask,
+  topics: FaSolidHashtag,
+  friends: FaSolidUserFriends,
+  travel: RMixPlanet,
+} as const
+
+export type NavIconKey = keyof typeof NAV_ICON_MAP
+
+function isImageSrc(s: string) {
+  return s.startsWith('data:') || s.startsWith('http')
+}
+
+/**
+ * 将 icon 字符串解析为 React 元素。
+ * 优先级：内置 key → base64/外链 → 原样文本（兜底）。
+ */
+export function resolveNavIcon(icon: string): ReactNode {
+  if (icon in NAV_ICON_MAP) {
+    return createElement(NAV_ICON_MAP[icon as NavIconKey])
+  }
+  if (isImageSrc(icon)) {
+    return createElement('img', {
+      src: icon,
+      alt: '',
+      className: 'size-4',
+    })
+  }
+  return icon
+}
 
 export interface IHeaderMenu {
   title: string
@@ -31,110 +74,3 @@ export interface IHeaderMenu {
   /** 将独立页列表注入到此项的子菜单（合并），默认 false */
   injectPages?: boolean
 }
-export const headerMenuConfig: IHeaderMenu[] = [
-  {
-    title: '首页',
-    titleKey: 'nav_home',
-    path: '/',
-    type: 'Home',
-    icon: h(FaSolidDotCircle),
-    injectPages: true,
-    subMenu: [],
-  },
-  {
-    title: '文稿',
-    titleKey: 'nav_posts',
-    path: '/posts',
-    type: 'Post',
-    injectCategories: true,
-    subMenu: [],
-    icon: h(IcTwotoneSignpost),
-    do() {
-      window.__POST_LIST_ANIMATED__ = true
-    },
-  },
-  {
-    title: '手记',
-    titleKey: 'nav_notes',
-    type: 'Note',
-    path: '/notes',
-    icon: h(FaSolidFeatherAlt),
-    exclude: ['/notes/series'],
-  },
-
-  {
-    title: '时光',
-    titleKey: 'nav_timeline',
-    icon: h(FaSolidHistory),
-    path: '/timeline',
-    subMenu: [
-      {
-        title: '文稿',
-        titleKey: 'nav_posts',
-        icon: h(IonBook),
-        path: '/timeline?type=post',
-      },
-      {
-        title: '手记',
-        titleKey: 'nav_notes',
-        icon: h(FaSolidFeatherAlt),
-        path: '/timeline?type=note',
-      },
-      {
-        title: '回忆',
-        titleKey: 'nav_memories',
-        icon: h(FaSolidCircle),
-        path: '/timeline?memory=1',
-      },
-    ],
-  },
-
-  {
-    title: '思考',
-    titleKey: 'nav_thinking',
-    icon: h(MdiLightbulbOn20),
-    path: '/thinking',
-  },
-
-  {
-    title: '一言',
-    titleKey: 'nav_says',
-    icon: h(FaSolidComments),
-    path: '/says',
-  },
-
-  {
-    title: '更多',
-    titleKey: 'nav_more',
-    icon: h(FaSolidCircleNotch),
-    path: '#',
-    subMenu: [
-      {
-        title: '项目',
-        titleKey: 'nav_projects',
-        icon: h(MdiFlask),
-        path: '/projects',
-      },
-      {
-        title: '专栏',
-        titleKey: 'nav_topics',
-        path: '/notes/series',
-        icon: h('i', {
-          className: 'i-mingcute-align-bottom-fill flex center',
-        }),
-      },
-      {
-        title: '友链',
-        titleKey: 'nav_friends',
-        icon: h(FaSolidUserFriends),
-        path: '/friends',
-      },
-      {
-        title: '跃迁',
-        titleKey: 'nav_travel',
-        icon: h(RMixPlanet),
-        path: 'https://travel.moe/go.html',
-      },
-    ],
-  },
-]

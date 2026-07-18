@@ -141,7 +141,7 @@ declare global {
       enable?: boolean
     }
 
-    /** 自定义导航栏。设置 items 后完全替换默认 nav，enable 开关仍对路由访问生效 */
+    /** 自定义导航栏。设置 items 后直接替换默认 list（deepMerge 对数组天然替换） */
     nav?: {
       /** 完全自定义的导航项列表。未设置时使用内置默认 nav */
       items?: NavItemConfig[]
@@ -161,11 +161,17 @@ declare global {
     /** 硬编码标题 */
     title?: string
     path: string
-    /** 预留标识，不再控制注入行为 */
+    /** 预留标识 */
     type?: string
-    /** 将分类列表注入到此项的子菜单（与已有 subMenu 合并），默认 false */
+    /** 图标 key / base64 / 外链 */
+    icon?: string
+    /** 路由排除列表 */
+    exclude?: string[]
+    /** 搜索参数 */
+    search?: Record<string, string>
+    /** 将分类列表注入到此项的子菜单（与已有 subMenu 合并） */
     injectCategories?: boolean
-    /** 将独立页列表注入到此项的子菜单（与已有 subMenu 合并），默认 false */
+    /** 将独立页列表注入到此项的子菜单（与已有 subMenu 合并） */
     injectPages?: boolean
     subMenu?: NavItemConfig[]
   }
