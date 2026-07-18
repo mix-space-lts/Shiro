@@ -31,8 +31,7 @@ export default function Page() {
   const thinkingEnabled = useAppConfigSelector(
     (config) => config.module?.thinking?.enable ?? true,
   )
-  const navItems = useAppConfigSelector((config) => config.module?.nav?.items)
-  if (thinkingEnabled === false && !navItems?.length) notFound()
+  if (thinkingEnabled === false) notFound()
   return (
     <div>
       <header className="prose">

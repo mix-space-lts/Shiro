@@ -39,7 +39,7 @@ export default function Page() {
     (config) => config.module?.friends?.enable ?? true,
   )
   const navItems = useAppConfigSelector((config) => config.module?.nav?.items)
-  if (friendsEnabled === false && !navItems?.length) notFound()
+  if (friendsEnabled === false) notFound()
   const { data, isLoading } = useQuery({
     queryKey: ['friends'],
     queryFn: async () => {
