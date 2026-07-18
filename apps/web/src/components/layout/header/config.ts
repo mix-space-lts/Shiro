@@ -26,6 +26,10 @@ export interface IHeaderMenu {
   exclude?: string[]
   search?: Record<string, string>
   do?: () => void
+  /** 将分类列表注入到此项的子菜单（合并），默认 false */
+  injectCategories?: boolean
+  /** 将独立页列表注入到此项的子菜单（合并），默认 false */
+  injectPages?: boolean
 }
 export const headerMenuConfig: IHeaderMenu[] = [
   {
@@ -34,6 +38,7 @@ export const headerMenuConfig: IHeaderMenu[] = [
     path: '/',
     type: 'Home',
     icon: h(FaSolidDotCircle),
+    injectPages: true,
     subMenu: [],
   },
   {
@@ -41,6 +46,7 @@ export const headerMenuConfig: IHeaderMenu[] = [
     titleKey: 'nav_posts',
     path: '/posts',
     type: 'Post',
+    injectCategories: true,
     subMenu: [],
     icon: h(IcTwotoneSignpost),
     do() {

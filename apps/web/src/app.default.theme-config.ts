@@ -29,6 +29,11 @@ export const defaultThemeConfig: AppThemeConfig = {
             class:
               'font-medium mx-2 text-3xl rounded p-1 bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-900 transition-colors duration-200',
           },
+          {
+            type: 'span',
+            class:
+              'inline-block w-[1px] h-8 -bottom-2 relative bg-zinc-800/80 dark:bg-zinc-200/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 group-hover:animation-blink',
+          },
         ],
       },
       description: 'A personal space for writing and sharing.',
