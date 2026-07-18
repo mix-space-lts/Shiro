@@ -299,7 +299,7 @@ function deepMergeImpl<T extends Record<string, any>>(
   _path: string,
   idKey: string,
 ): T {
-  const result = { ...target }
+  const result = { ...target } as Record<string, any>
   for (const key in source) {
     if (key === 'replace') continue
 
@@ -330,7 +330,7 @@ function deepMergeImpl<T extends Record<string, any>>(
       result[key] = sv as any
     }
   }
-  return result
+  return result as T
 }
 export function uniqBy<T, K>(array: T[], iteratee: (item: T) => K): T[] {
   const seen = new Set<K>()

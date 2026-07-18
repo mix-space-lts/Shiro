@@ -24,6 +24,7 @@ export const fetchAggregationData = async () => {
       .then((res) => res.json())
       .then(simpleCamelcaseKeys)) as AggregateRoot & {
       theme: AppThemeConfig
+      module: AppConfig['module']
     }
 
     return {

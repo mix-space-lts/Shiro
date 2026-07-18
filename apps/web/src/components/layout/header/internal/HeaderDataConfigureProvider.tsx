@@ -116,7 +116,7 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
   )
 
   const config = useMemo(() => {
-    let items = navItems.map(
+    let items = (navItems ?? []).map(
       (item): IHeaderMenu => ({
         title: item.title || '',
         titleKey: item.titleKey,
