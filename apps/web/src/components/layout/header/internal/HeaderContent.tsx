@@ -74,7 +74,7 @@ const ForDesktop: Component<{
   shouldHideNavBg?: boolean
   animatedIcon?: boolean
 }> = ({ className, shouldHideNavBg, animatedIcon = true }) => {
-  const { config: headerMenuConfig } = useHeaderConfig()
+  const headerMenuConfig = useHeaderConfig()
   const pathname = usePathname()
 
   const mouseX = useMotionValue(0)
@@ -127,7 +127,7 @@ const ForDesktop: Component<{
             <HeaderMenuItem
               iconLayout={animatedIcon}
               section={section}
-              key={section.path}
+              key={section.titleKey || section.path}
               subItemActive={section.subMenu?.[subItemActive]}
               isActive={
                 pathname === section.path ||

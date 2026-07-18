@@ -12,7 +12,7 @@ import type { IHeaderMenu } from '../config'
 import { useHeaderConfig } from './HeaderDataConfigureProvider'
 
 export const HeaderDrawerContent = () => {
-  const { config } = useHeaderConfig()
+  const config = useHeaderConfig()
   const t = useTranslations('common')
 
   const getTitle = useCallback(
