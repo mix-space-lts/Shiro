@@ -102,56 +102,122 @@ config:
       mode: loose              # loose=宽松（大图卡片） | compact=紧凑（小图列表）
       outdated_days: 60        # 文章过期提示阈值（天）。超过此天数显示 "这篇文章上次修改于 xxx" 警告。填 0 永不显示。默认 60
 
-    # -- 跃迁导航（博客聚合跳转） --
-    travel:
-      enable: true             # 是否在导航栏显示 "跃迁" 入口，默认 true
+    # -- 各板块开关（设为 false 时从导航栏移除该项，对应页面返回 404） --
+    # enable 始终生效，无论是否自定义 nav.items：
+    #   - 未自定义 nav: enable 同时控制 navbar 渲染 + 路由访问
+    #   - 已自定义 nav: enable 仅控制路由访问（navbar 按 items 渲染，但禁用项的
+    #     titleKey 仍被过滤器剔除）
+    #
+    # 默认导航栏结构（与下方开关一一对应）：
+    #   首页   ← auto: pageMeta 独立页自动注入子菜单
+    #   文稿   ← auto: categories 分类自动注入子菜单
+    #   手记   ← subMenu: 专栏 (/notes/series)
+    #   时光   ← subMenu: 文稿 / 手记 / 回忆
+    #   思考
+    #   一言
+    #   更多   ← subMenu: 项目 / 友链 / 跃迁
 
-    # -- 各板块开关（设为 false 时从导航栏隐藏，对应页面返回 404） --
-    # 注意：若 nav.items 已设置，则以下 enable 开关全部失效，仅 console.warn
-    friends:
-      enable: true             # 友链，默认 true
-    projects:
-      enable: true             # 项目，默认 true
-    says:
-      enable: true             # 一言，默认 true
-    thinking:
-      enable: true             # 思考，默认 true
     notes:
       enable: true             # 手记，默认 true
-    timeline:
-      enable: true             # 时光/时间线，默认 true
     noteTopics:
-      enable: true             # 专栏/笔记系列，默认 true
+      enable: true             # 专栏（手记下子菜单），默认 true
+    timeline:
+      enable: true             # 时光 / 回忆，默认 true
+    thinking:
+      enable: true             # 思考，默认 true
+    says:
+      enable: true             # 一言，默认 true
+    friends:
+      enable: true             # 友链（更多下子菜单），默认 true
+    projects:
+      enable: true             # 项目（更多下子菜单），默认 true
+    travel:
+      enable: true             # 跃迁（更多下子菜单），默认 true
 
-    # -- 自定义导航栏（完全覆写，可选） --
-    # 设置 items 后完全替换默认 nav，module 下的 enable 开关全部失效
+    # -- 自定义导航栏（可选） --
+    # 数组默认按 path 合并（覆盖匹配项，追加新项）。
+    # replace: true 放任意层级清除默认值后合并：
+    #   nav:
+    #     replace: true       ← 清除整个默认 nav（含子菜单），从头定义
+    #     items: [...]
+    #   nav:
+    #     items:
+    #       - path: /posts
+    #         replace: true   ← 只清除这一项的默认值（含子菜单）
+    #         title: Blog
+    #
+    # inject 注入（默认 false）：
+    #   injectCategories: true  → 将分类列表合并到该项子菜单
+    #   injectPages: true       → 将独立页列表合并到该项子菜单
+    #   按 YAML key 声明顺序排列
+    #
+    # 以下是默认 nav 的完整结构：
     # nav:
-    #   autoInjectCategories: true   # Post 类型菜单自动注入分类下拉，默认 true
     #   items:
     #     - titleKey: nav_home
     #       path: /
+    #       icon: home
+    #       injectPages: true
+    #       subMenu: []
     #     - titleKey: nav_posts
     #       path: /posts
-    #       type: Post
+    #       icon: posts
+    #       injectCategories: true
+    #       subMenu: []
     #     - titleKey: nav_notes
     #       path: /notes
-    #     - title: 关于
-    #       path: /about
+    #       icon: notes
+    #       exclude:
+    #         - /notes/series
+    #       subMenu:
+    #         - titleKey: nav_topics
+    #           path: /notes/series
+    #     - titleKey: nav_timeline
+    #       path: /timeline
+    #       icon: timeline
+    #       subMenu:
+    #         - titleKey: nav_posts
+    #           path: /timeline?type=post
+    #           icon: timeline-post
+    #         - titleKey: nav_notes
+    #           path: /timeline?type=note
+    #           icon: timeline-note
+    #         - titleKey: nav_memories
+    #           path: /timeline?memory=1
+    #           icon: memories
+    #     - titleKey: nav_thinking
+    #       path: /thinking
+    #       icon: thinking
+    #     - titleKey: nav_says
+    #       path: /says
+    #       icon: says
     #     - titleKey: nav_more
     #       path: '#'
+    #       icon: more
     #       subMenu:
+    #         - titleKey: nav_projects
+    #           path: /projects
+    #           icon: projects
     #         - titleKey: nav_friends
     #           path: /friends
-    #         - title: GitHub
-    #           path: https://github.com/xxx
+    #           icon: friends
+    #         - titleKey: nav_travel
+    #           path: https://travel.moe/go.html
+    #           icon: travel
 
     # -- 首页风向标（可选） --
-    # 不设置则使用内置默认
+    # 数组默认按 path 合并。不设置 items 时自动从 nav 顶级项生成。
+    # 图标 icon 支持三种形式：内置 key / base64 / 外链
+    # 文本优先级：titleKey（i18n key）→ title（字面量）→ path（兜底）
+    # --- 示例 ---
     # windsock:
-    #   autoFromNav: true    # 自动从 nav 顶级项生成
-    #   items:               # 或手动指定
+    #   items:
     #     - titleKey: windsock_posts
+    #       icon: posts
     #       path: /posts
+    #     - title: 友链
+    #       icon: friends
+    #       path: /friends
 
   # ===== Powered by（可选） =====
   poweredBy:

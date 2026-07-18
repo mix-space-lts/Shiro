@@ -8,17 +8,9 @@ import type { ReactElement, SVGProps } from 'react'
 import { createElement, useMemo } from 'react'
 
 import {
-  FaSolidBrain,
-  FaSolidComments,
-  FaSolidFeatherAlt,
-  FaSolidHashtag,
-  FaSolidHistory,
-  FaSolidUserFriends,
-  IcTwotoneSignpost,
-  MdiFlask,
-  MdiLightbulbOn20,
-  RMixPlanet,
-} from '~/components/icons/menu-collection'
+  NAV_ICON_MAP,
+  type NavIconKey,
+} from '~/components/layout/header/config'
 import { usePresentSubscribeModal } from '~/components/modules/subscribe'
 import { StyledButton } from '~/components/ui/button'
 import { NumberSmoothTransition } from '~/components/ui/number-transition/NumberSmoothTransition'
@@ -27,6 +19,26 @@ import { preventDefault } from '~/lib/dom'
 import { apiClient } from '~/lib/request'
 import { toast } from '~/lib/toast'
 import { useAppConfigSelector } from '~/providers/root/aggregation-data-provider'
+
+function isImageSrc(s: string) {
+  return s.startsWith('data:') || s.startsWith('http')
+}
+
+function resolveIcon(icon: string | undefined): WindsockItem['icon'] {
+  if (!icon) return undefined
+  if (icon in NAV_ICON_MAP) return NAV_ICON_MAP[icon as NavIconKey]
+  if (isImageSrc(icon)) {
+    return function ImgIcon(props: SVGProps<SVGSVGElement>) {
+      return createElement('img', {
+        ...props,
+        src: icon,
+        alt: '',
+        className: 'w-6 h-6',
+      })
+    }
+  }
+  return undefined
+}
 
 interface WindsockItem {
   title: string
@@ -37,174 +49,40 @@ interface WindsockItem {
 
 export const Windsock = () => {
   const t = useTranslations('common')
-  const travelEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.travel?.enable ?? true,
-  )
-  const friendsEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.friends?.enable ?? true,
-  )
-  const projectsEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.projects?.enable ?? true,
-  )
-  const thinkingEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.thinking?.enable ?? true,
-  )
-  const noteTopicsEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.noteTopics?.enable ?? true,
-  )
-  const saysEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.says?.enable ?? true,
-  )
-  const notesEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.notes?.enable ?? true,
-  )
-  const timelineEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.timeline?.enable ?? true,
-  )
-  const windsockItems = useAppConfigSelector(
-    (appConfig) => appConfig.module?.windsock?.items,
-  )
-  const windsockAutoFromNav = useAppConfigSelector(
-    (appConfig) => appConfig.module?.windsock?.autoFromNav ?? false,
-  )
-  const navItems = useAppConfigSelector(
-    (appConfig) => appConfig.module?.nav?.items,
-  )
+  const windsockItems = useAppConfigSelector((c) => c.module?.windsock?.items)
+  const navItems = useAppConfigSelector((c) => c.module?.nav?.items)
 
   const windsock = useMemo<WindsockItem[]>(() => {
-    // 从 nav 自动生成
-    if (windsockAutoFromNav && navItems?.length) {
-      return navItems
-        .filter(
-          (item) =>
-            !item.subMenu?.length &&
-            item.path !== '/' &&
-            !item.path.startsWith('#'),
-        )
-        .map((item) => ({
-          title: item.titleKey
-            ? t(item.titleKey as any)
-            : item.title || item.path,
-          path: item.path,
-        }))
-    }
-
-    // 手动指定
+    // 从 config 拿 items（deepMerge 已合并默认/自定义）
     if (windsockItems?.length) {
       return windsockItems.map((item) => ({
         title: item.titleKey
           ? t(item.titleKey as any)
           : item.title || item.path,
         path: item.path,
+        icon: resolveIcon(item.icon),
       }))
     }
 
-    // 默认
-    return [
-      {
-        title: t('windsock_posts'),
-        path: '/posts',
-        icon: IcTwotoneSignpost,
-        do() {
-          window.__POST_LIST_ANIMATED__ = true
-        },
-      },
-      ...(notesEnabled !== false
-        ? [
-            {
-              title: t('windsock_notes'),
-              path: '/notes',
-              icon: FaSolidFeatherAlt,
-            },
-          ]
-        : []),
-      ...(timelineEnabled !== false
-        ? [
-            {
-              title: t('windsock_timeline'),
-              icon: FaSolidHistory,
-              path: '/timeline',
-            },
-          ]
-        : []),
-      ...(saysEnabled !== false
-        ? [
-            {
-              title: t('windsock_says'),
-              path: '/says',
-              icon: FaSolidComments,
-            },
-          ]
-        : []),
-      ...(thinkingEnabled !== false
-        ? [
-            {
-              title: t('windsock_thinking'),
-              icon: MdiLightbulbOn20,
-              path: '/thinking',
-            },
-          ]
-        : []),
-      ...(projectsEnabled !== false
-        ? [
-            {
-              title: t('windsock_projects'),
-              icon: MdiFlask,
-              path: '/projects',
-            },
-          ]
-        : []),
-      ...(noteTopicsEnabled !== false
-        ? [
-            {
-              title: t('windsock_topics'),
-              path: '/notes/series',
-              icon: FaSolidHashtag,
-            },
-          ]
-        : []),
-      ...(timelineEnabled !== false
-        ? [
-            {
-              title: t('windsock_memories'),
-              path: '/timeline?memory=1',
-              icon: FaSolidBrain,
-            },
-          ]
-        : []),
-      ...(friendsEnabled !== false
-        ? [
-            {
-              title: t('windsock_friends'),
-              icon: FaSolidUserFriends,
-              path: '/friends',
-            },
-          ]
-        : []),
-      ...(travelEnabled !== false
-        ? [
-            {
-              title: t('windsock_travel'),
-              icon: RMixPlanet,
-              path: 'https://travel.moe/go.html',
-            },
-          ]
-        : []),
-    ]
-  }, [
-    t,
-    travelEnabled,
-    friendsEnabled,
-    projectsEnabled,
-    thinkingEnabled,
-    saysEnabled,
-    notesEnabled,
-    timelineEnabled,
-    noteTopicsEnabled,
-    windsockItems,
-    windsockAutoFromNav,
-    navItems,
-  ])
+    // 有自定义 nav → 从 nav 顶级项生成
+    if (navItems?.length) {
+      return navItems
+        .filter(
+          (item) =>
+            !!item.path && item.path !== '/' && !item.path.startsWith('#'),
+        )
+        .map((item) => ({
+          title: item.titleKey
+            ? t(item.titleKey as any)
+            : item.title || item.path,
+          path: item.path,
+          icon: resolveIcon(item.icon),
+        }))
+    }
+
+    return []
+  }, [windsockItems, navItems, t])
+
   const likeQueryKey = ['site-like']
   const { data: count } = useQuery({
     queryKey: likeQueryKey,
