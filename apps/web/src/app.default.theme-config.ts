@@ -29,6 +29,11 @@ export const defaultThemeConfig: AppThemeConfig = {
             class:
               'font-medium mx-2 text-3xl rounded p-1 bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-900 transition-colors duration-200',
           },
+          {
+            type: 'span',
+            class:
+              'inline-block w-[1px] h-8 -bottom-2 relative bg-zinc-800/80 dark:bg-zinc-200/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 group-hover:animation-blink',
+          },
         ],
       },
       description: 'A personal space for writing and sharing.',
@@ -95,6 +100,107 @@ export const defaultThemeConfig: AppThemeConfig = {
       },
       noteTopics: {
         enable: true,
+      },
+      nav: {
+        items: [
+          {
+            titleKey: 'nav_home',
+            path: '/',
+            icon: 'home',
+            injectPages: true,
+            subMenu: [],
+          },
+          {
+            titleKey: 'nav_posts',
+            path: '/posts',
+            icon: 'posts',
+            injectCategories: true,
+            subMenu: [],
+          },
+          {
+            titleKey: 'nav_notes',
+            path: '/notes',
+            icon: 'notes',
+            exclude: ['/notes/series'],
+            subMenu: [{ titleKey: 'nav_topics', path: '/notes/series' }],
+          },
+          {
+            titleKey: 'nav_timeline',
+            path: '/timeline',
+            icon: 'timeline',
+            subMenu: [
+              {
+                titleKey: 'nav_posts',
+                path: '/timeline?type=post',
+                icon: 'timeline-post',
+              },
+              {
+                titleKey: 'nav_notes',
+                path: '/timeline?type=note',
+                icon: 'timeline-note',
+              },
+              {
+                titleKey: 'nav_memories',
+                path: '/timeline?memory=1',
+                icon: 'memories',
+              },
+            ],
+          },
+          { titleKey: 'nav_thinking', path: '/thinking', icon: 'thinking' },
+          { titleKey: 'nav_says', path: '/says', icon: 'says' },
+          {
+            titleKey: 'nav_more',
+            path: '#',
+            icon: 'more',
+            subMenu: [
+              { titleKey: 'nav_projects', path: '/projects', icon: 'projects' },
+              { titleKey: 'nav_friends', path: '/friends', icon: 'friends' },
+              {
+                titleKey: 'nav_travel',
+                path: 'https://travel.moe/go.html',
+                icon: 'travel',
+              },
+            ],
+          },
+        ],
+      },
+      windsock: {
+        items: [
+          { titleKey: 'windsock_posts', path: '/posts', icon: 'posts' },
+          { titleKey: 'windsock_notes', path: '/notes', icon: 'notes' },
+          {
+            titleKey: 'windsock_timeline',
+            path: '/timeline',
+            icon: 'timeline',
+          },
+          { titleKey: 'windsock_says', path: '/says', icon: 'says' },
+          {
+            titleKey: 'windsock_thinking',
+            path: '/thinking',
+            icon: 'thinking',
+          },
+          {
+            titleKey: 'windsock_projects',
+            path: '/projects',
+            icon: 'projects',
+          },
+          {
+            titleKey: 'windsock_topics',
+            path: '/notes/series',
+            icon: 'topics',
+          },
+          {
+            titleKey: 'windsock_memories',
+            path: '/timeline?memory=1',
+            icon: 'memories',
+          },
+          { titleKey: 'windsock_friends', path: '/friends', icon: 'friends' },
+          {
+            titleKey: 'windsock_travel',
+            path: 'https://travel.moe/go.html',
+            icon: 'travel',
+          },
+        ],
       },
     },
   },

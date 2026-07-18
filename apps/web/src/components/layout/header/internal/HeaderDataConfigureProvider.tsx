@@ -8,169 +8,155 @@ import {
 } from '~/providers/root/aggregation-data-provider'
 
 import type { IHeaderMenu } from '../config'
-import { headerMenuConfig as baseHeaderMenuConfig } from '../config'
+import { resolveNavIcon } from '../config'
 
-const HeaderMenuConfigContext = createContext({
-  config: baseHeaderMenuConfig,
-})
+const HeaderMenuConfigContext = createContext<IHeaderMenu[]>([])
 
 export const useHeaderConfig = () => use(HeaderMenuConfigContext)
-const cloneHeaderMenuConfig = (items: IHeaderMenu[]): IHeaderMenu[] =>
-  items.map((item) => ({
-    ...item,
-    icon: item.icon,
-    titleKey: item.titleKey,
-    search: item.search ? { ...item.search } : undefined,
-    exclude: item.exclude ? [...item.exclude] : undefined,
-    subMenu: item.subMenu
-      ? cloneHeaderMenuConfig(item.subMenu as IHeaderMenu[])
-      : undefined,
-  }))
 
-/** 递归过滤掉 titleKey 在 disabledKeys 中的菜单项（含子菜单） */
-const filterDisabledModules = (
+/** 递归过滤掉 titleKey 在 disabledKeys 中的菜单项，并移除子菜单已清空的父级 */
+export function filterDisabledModules(
   items: IHeaderMenu[],
   disabledKeys: Set<string>,
-): IHeaderMenu[] =>
-  items
+): IHeaderMenu[] {
+  return items
     .filter((item) => !item.titleKey || !disabledKeys.has(item.titleKey))
-    .map((item) => ({
-      ...item,
-      subMenu: item.subMenu
-        ? filterDisabledModules(item.subMenu as IHeaderMenu[], disabledKeys)
-        : item.subMenu,
-    }))
+    .map((item) => {
+      const subMenu =
+        item.subMenu && item.subMenu.length > 0
+          ? filterDisabledModules(item.subMenu as IHeaderMenu[], disabledKeys)
+          : item.subMenu
+      return { ...item, subMenu }
+    })
+    .filter((item) => {
+      if (!item.subMenu) return true
+      if (item.subMenu.length === 0 && item.path === '#') return false
+      return true
+    })
+}
 
-/** 将用户自定义 NavItemConfig[] 转为内部 IHeaderMenu[] */
-const convertNavItems = (items: NavItemConfig[]): IHeaderMenu[] =>
-  items.map((item) => ({
-    title: item.title || '',
-    titleKey: item.titleKey,
-    path: item.path,
-    type: item.type,
-    subMenu: item.subMenu
-      ? (convertNavItems(item.subMenu) as IHeaderMenu['subMenu'])
-      : undefined,
-  }))
+/** 根据 injectCategories/injectPages 将动态内容按声明顺序合并到子菜单 */
+export function injectDynamicSubMenus(
+  items: IHeaderMenu[],
+  categories: import('@mix-space-lts/api-client').CategoryModel[] | null,
+  pageMeta: { slug: string; title: string }[] | null,
+): IHeaderMenu[] {
+  return items.map((item) => {
+    const hasCats = item.injectCategories && categories?.length
+    const hasPages = item.injectPages && pageMeta
 
-export const HeaderDataConfigureProvider: Component = ({ children }) => {
-  const pageMeta = useAggregationSelector(
-    (aggregationData) => aggregationData.pageMeta,
-  )
-  const categories = useAggregationSelector(
-    (aggregationData) => aggregationData.categories,
-  )
-  const postListViewMode = useAppConfigSelector(
-    (appConfig) => appConfig.module?.posts?.mode,
-  )
-  const travelEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.travel?.enable ?? true,
-  )
-  const friendsEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.friends?.enable ?? true,
-  )
-  const projectsEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.projects?.enable ?? true,
-  )
-  const saysEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.says?.enable ?? true,
-  )
-  const thinkingEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.thinking?.enable ?? true,
-  )
-  const notesEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.notes?.enable ?? true,
-  )
-  const timelineEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.timeline?.enable ?? true,
-  )
-  const noteTopicsEnabled = useAppConfigSelector(
-    (appConfig) => appConfig.module?.noteTopics?.enable ?? true,
-  )
-  const navItems = useAppConfigSelector(
-    (appConfig) => appConfig.module?.nav?.items,
-  )
-  const autoInjectCategories = useAppConfigSelector(
-    (appConfig) => appConfig.module?.nav?.autoInjectCategories ?? true,
-  )
+    if (!hasCats && !hasPages) return item
 
-  const headerMenuConfig = useMemo(() => {
-    // 自定义 nav 覆写
-    if (navItems?.length) {
-      if (
-        travelEnabled === false ||
-        friendsEnabled === false ||
-        projectsEnabled === false ||
-        saysEnabled === false ||
-        thinkingEnabled === false ||
-        notesEnabled === false ||
-        timelineEnabled === false ||
-        noteTopicsEnabled === false
-      ) {
-        console.warn(
-          '[Shiro] nav.items 已设置，module 下的 enable 开关已失效。路由访问由自定义 nav 结构决定。',
-        )
-      }
-
-      const config = convertNavItems(navItems)
-
-      // 仅当 autoInjectCategories 为 true 时注入分类
-      if (autoInjectCategories && categories?.length) {
-        const postIndex = config.findIndex((item) => item.type === 'Post')
-        if (postIndex !== -1) {
-          config[postIndex].subMenu = categories.map((cat) => ({
+    const result: IHeaderMenu[] = []
+    for (const key of Object.keys(item)) {
+      if (key === 'subMenu') {
+        result.push(...(item.subMenu ?? []))
+      } else if (key === 'injectCategories' && hasCats) {
+        result.push(
+          ...categories!.map((cat) => ({
             path: `/posts/${cat.slug}`,
             title: cat.name,
-          }))
-        }
-      }
-
-      return config
-    }
-
-    // 默认流程
-    let config = cloneHeaderMenuConfig(baseHeaderMenuConfig)
-
-    // 注入独立页面到"首页"子菜单
-    if (pageMeta) {
-      const homeIndex = config.findIndex((item) => item.type === 'Home')
-      if (homeIndex !== -1) {
-        config[homeIndex].subMenu = pageMeta.map((page) => ({
-          path: `/${page.slug}`,
-          title: page.title,
-        }))
+          })),
+        )
+      } else if (key === 'injectPages' && hasPages) {
+        result.push(
+          ...pageMeta!.map((page) => ({
+            path: `/${page.slug}`,
+            title: page.title,
+          })),
+        )
       }
     }
 
-    // 注入分类列表到"文稿"子菜单
-    if (categories?.length) {
-      const postIndex = config.findIndex((item) => item.type === 'Post')
-      if (postIndex !== -1) {
-        config[postIndex].subMenu = categories.map((cat) => ({
-          path: `/posts/${cat.slug}`,
-          title: cat.name,
-        }))
-      }
-    }
+    return result.length ? { ...item, subMenu: result } : item
+  })
+}
 
-    // 注入文章列表视图模式
+/** 递归解析所有 string icon → React 元素 */
+export function resolveIcons(items: IHeaderMenu[]): IHeaderMenu[] {
+  return items.map((item) => ({
+    ...item,
+    icon: typeof item.icon === 'string' ? resolveNavIcon(item.icon) : item.icon,
+    subMenu: item.subMenu
+      ? resolveIcons(item.subMenu as IHeaderMenu[])
+      : undefined,
+  }))
+}
+
+export const HeaderDataConfigureProvider: Component = ({ children }) => {
+  const pageMeta = useAggregationSelector((a) => a.pageMeta)
+  const categories = useAggregationSelector((a) => a.categories)
+  const postListViewMode = useAppConfigSelector((c) => c.module?.posts?.mode)
+  const travelEnabled = useAppConfigSelector(
+    (c) => c.module?.travel?.enable ?? true,
+  )
+  const friendsEnabled = useAppConfigSelector(
+    (c) => c.module?.friends?.enable ?? true,
+  )
+  const projectsEnabled = useAppConfigSelector(
+    (c) => c.module?.projects?.enable ?? true,
+  )
+  const saysEnabled = useAppConfigSelector(
+    (c) => c.module?.says?.enable ?? true,
+  )
+  const thinkingEnabled = useAppConfigSelector(
+    (c) => c.module?.thinking?.enable ?? true,
+  )
+  const notesEnabled = useAppConfigSelector(
+    (c) => c.module?.notes?.enable ?? true,
+  )
+  const timelineEnabled = useAppConfigSelector(
+    (c) => c.module?.timeline?.enable ?? true,
+  )
+  const noteTopicsEnabled = useAppConfigSelector(
+    (c) => c.module?.noteTopics?.enable ?? true,
+  )
+  const navItems = useAppConfigSelector(
+    (c) => (c.module?.nav?.items ?? []) as NavItemConfig[],
+  )
+
+  const config = useMemo(() => {
+    let items = navItems.map(
+      (item): IHeaderMenu => ({
+        title: item.title || '',
+        titleKey: item.titleKey,
+        path: item.path,
+        type: item.type,
+        exclude: item.exclude,
+        search: item.search,
+        injectCategories: item.injectCategories,
+        injectPages: item.injectPages,
+        icon: item.icon,
+        subMenu: item.subMenu
+          ? (item.subMenu.map((sub) => ({
+              title: sub.title || '',
+              titleKey: sub.titleKey,
+              path: sub.path,
+              icon: sub.icon,
+            })) as IHeaderMenu['subMenu'])
+          : undefined,
+      }),
+    )
+
+    // 动态注入
+    items = injectDynamicSubMenus(items, categories, pageMeta)
+
+    // 文章列表视图模式
     if (postListViewMode) {
-      const postIndex = config.findIndex((item) => item.type === 'Post')
-      if (postIndex !== -1) {
-        config = config.map((item, index) => {
-          if (index !== postIndex) return item
-          return {
-            ...item,
-            search: {
-              ...item.search,
-              view_mode: postListViewMode,
-            },
-          }
-        })
+      const postIdx = items.findIndex((i) => i.titleKey === 'nav_posts')
+      if (postIdx !== -1) {
+        items = items.map((item, idx) =>
+          idx !== postIdx
+            ? item
+            : {
+                ...item,
+                search: { ...item.search, view_mode: postListViewMode },
+              },
+        )
       }
     }
 
-    // 根据配置过滤禁用板块的 menu 项（=== false 确保仅在明确禁用时过滤，加载中 null 不过滤）
+    // 过滤禁用模块
     const disabledKeys = new Set<string>()
     if (travelEnabled === false) disabledKeys.add('nav_travel')
     if (friendsEnabled === false) disabledKeys.add('nav_friends')
@@ -182,10 +168,10 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
     if (noteTopicsEnabled === false) disabledKeys.add('nav_topics')
 
     if (disabledKeys.size > 0) {
-      config = filterDisabledModules(config, disabledKeys)
+      items = filterDisabledModules(items, disabledKeys)
     }
 
-    return config
+    return resolveIcons(items)
   }, [
     pageMeta,
     categories,
@@ -199,14 +185,9 @@ export const HeaderDataConfigureProvider: Component = ({ children }) => {
     timelineEnabled,
     noteTopicsEnabled,
     navItems,
-    autoInjectCategories,
   ])
 
   return (
-    <HeaderMenuConfigContext
-      value={useMemo(() => ({ config: headerMenuConfig }), [headerMenuConfig])}
-    >
-      {children}
-    </HeaderMenuConfigContext>
+    <HeaderMenuConfigContext value={config}>{children}</HeaderMenuConfigContext>
   )
 }

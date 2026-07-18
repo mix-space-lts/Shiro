@@ -88,7 +88,7 @@ export default function TimelinePage() {
     (config) => config.module?.timeline?.enable ?? true,
   )
   const navItems = useAppConfigSelector((config) => config.module?.nav?.items)
-  if (timelineEnabled === false && !navItems?.length) notFound()
+  if (timelineEnabled === false) notFound()
   const search = useSearchParams()
 
   const year = search.get('year')

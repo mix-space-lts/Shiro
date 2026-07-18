@@ -144,22 +144,169 @@ export const merge = <T extends object, U extends object>(
  * 深度合并配置 (defaultThemeConfig ← source)
  *
  * 规则：
- *   - source 中存在于 target 的键 → 覆盖 / 递归合并
- *   - source 中不存在于 target 的键 → dev 模式下 console.warn 告警（可能是用户拼写错误）
+ *   - replace: true → 清除 target 对应键后继续合并（递归处理嵌套 replace）
+ *   - 对象：逐键深度合并
+ *   - 数组：按 idKey 字段匹配合并（匹配覆盖，无匹配追加，默认 idKey='path'）
+ *   - 标量 / target 不存在的键 → 覆盖
  *
  * ⚠️ 此函数依赖 app.default.theme-config.ts 作为完整 schema。
  *    新增配置字段时，需先在 app.default.theme-config.ts 中定义默认值。
  */
 export const deepMerge = <T extends Record<string, any>>(
   target: T,
-  source: Partial<T>,
-  _path = '',
+  source: Record<string, any>,
+  opts?: string | { idKey?: string },
 ): T => {
+  const idKey = typeof opts === 'string' ? opts : (opts?.idKey ?? 'path')
+  const cleaned = stripReplace(target, source, '', idKey)
+  return deepMergeImpl(target, cleaned, '', idKey)
+}
+
+/** 合并两个对象数组：source 中带 idKey 的元素覆盖 target 中同 idKey 项，多余项追加 */
+function mergeArrays(
+  target: Record<string, unknown>[],
+  source: Record<string, unknown>[],
+  idKey: string,
+): Record<string, unknown>[] {
+  const result = [...target]
+  for (const item of source) {
+    const id = item[idKey]
+    if (id != null && (typeof id === 'string' || typeof id === 'number')) {
+      const idx = result.findIndex((d) => d[idKey] === id)
+      if (idx !== -1) {
+        result[idx] = { ...result[idx], ...item }
+        continue
+      }
+    }
+    result.push(item)
+  }
+  return result
+}
+
+/** 处理 replace 标记：删除 target 中对应 key，递归清理 source 中的 replace */
+function stripReplace(
+  target: Record<string, any>,
+  source: Record<string, any>,
+  _path: string,
+  idKey: string,
+  _parentReplaced = false,
+): Record<string, any> {
+  // source 自身有 replace: true → 清除 target 所有键
+  if (source.replace === true) {
+    for (const k of Object.keys(target)) delete target[k]
+  }
+
+  const result: Record<string, any> = {}
+  for (const key in source) {
+    if (key === 'replace') continue
+
+    const sv = source[key]
+    const nobj = sv && typeof sv === 'object' && !Array.isArray(sv)
+
+    if (_parentReplaced && nobj && sv.replace === false) {
+      console.warn(
+        `[Shiro Config] Conflicting "replace: false" at "${_path ? `${_path}.${key}` : key}" — ancestor already has "replace: true". This key will be merged against already-removed defaults, which may produce unexpected results.`,
+      )
+      const rest = { ...sv }
+      delete rest.replace
+      result[key] = stripReplace(
+        target[key] ?? {},
+        rest,
+        _path ? `${_path}.${key}` : key,
+        idKey,
+        _parentReplaced,
+      )
+      continue
+    }
+
+    if (nobj && sv.replace === true) {
+      if (_parentReplaced) {
+        console.info(
+          `[Shiro Config] Redundant "replace: true" at "${_path ? `${_path}.${key}` : key}" — ancestor already has "replace: true", safely ignored.`,
+        )
+        const rest = { ...sv }
+        delete rest.replace
+        result[key] = stripReplace(
+          target[key] ?? {},
+          rest,
+          _path ? `${_path}.${key}` : key,
+          idKey,
+          true,
+        )
+      } else {
+        delete target[key]
+        const rest = { ...sv }
+        delete rest.replace
+        result[key] = stripReplace(
+          target[key] ?? {},
+          rest,
+          _path ? `${_path}.${key}` : key,
+          idKey,
+          true,
+        )
+      }
+    } else if (Array.isArray(sv)) {
+      result[key] = sv.map((elem: any) => {
+        if (
+          elem &&
+          typeof elem === 'object' &&
+          !Array.isArray(elem) &&
+          elem.replace === true
+        ) {
+          const eid = elem[idKey]
+          if (eid != null && Array.isArray(target[key])) {
+            const match = (target[key] as any[]).find(
+              (d: any) => d[idKey] === eid,
+            )
+            if (match) {
+              for (const k of Object.keys(match)) {
+                if (k !== idKey && typeof match[k] === 'object') {
+                  delete match[k]
+                }
+              }
+            }
+          }
+          const rest = { ...elem }
+          delete rest.replace
+          return rest
+        }
+        return elem
+      })
+    } else if (
+      nobj &&
+      target[key] &&
+      typeof target[key] === 'object' &&
+      !Array.isArray(target[key])
+    ) {
+      result[key] = stripReplace(
+        target[key],
+        sv,
+        _path ? `${_path}.${key}` : key,
+        idKey,
+        _parentReplaced,
+      )
+    } else {
+      result[key] = sv
+    }
+  }
+  return result
+}
+
+/** 纯深度合并（无 replace 语义） */
+function deepMergeImpl<T extends Record<string, any>>(
+  target: T,
+  source: Record<string, any>,
+  _path: string,
+  idKey: string,
+): T {
   const result = { ...target }
   for (const key in source) {
-    const currentPath = _path ? `${_path}.${key}` : key
+    if (key === 'replace') continue
 
-    // 仅在开发模式下告警：source 有 target 不认识的键 → 可能是用户拼写错误
+    const currentPath = _path ? `${_path}.${key}` : key
+    const sv = source[key]
+    const nobj = sv && typeof sv === 'object' && !Array.isArray(sv)
+
     if (process.env.NODE_ENV === 'development' && !(key in target)) {
       console.warn(
         `[Shiro Config] Unknown config key: "${currentPath}" — this key does not exist in the default theme config. Check your theme snippet for typos or removed fields.`,
@@ -167,24 +314,24 @@ export const deepMerge = <T extends Record<string, any>>(
     }
 
     if (
-      source[key] &&
-      typeof source[key] === 'object' &&
-      !Array.isArray(source[key]) &&
+      nobj &&
       target[key] &&
       typeof target[key] === 'object' &&
       !Array.isArray(target[key])
     ) {
-      result[key] =
-        source[key] !== undefined
-          ? deepMerge(target[key], source[key], currentPath)
-          : target[key]
-    } else if (source[key] !== undefined) {
-      result[key] = source[key] as T[Extract<keyof T, string>]
+      result[key] = deepMergeImpl(target[key], sv, currentPath, idKey)
+    } else if (Array.isArray(sv) && Array.isArray(target[key])) {
+      result[key] = mergeArrays(
+        target[key] as Record<string, unknown>[],
+        sv as Record<string, unknown>[],
+        idKey,
+      ) as any
+    } else if (sv !== undefined) {
+      result[key] = sv as any
     }
   }
   return result
 }
-
 export function uniqBy<T, K>(array: T[], iteratee: (item: T) => K): T[] {
   const seen = new Set<K>()
   return array.filter((item) => {

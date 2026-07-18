@@ -141,20 +141,16 @@ declare global {
       enable?: boolean
     }
 
-    /** 自定义导航栏。设置 items 后完全替换默认 nav，module 下的 enable 开关全部失效 */
+    /** 自定义导航栏。设置 items 后直接替换默认 list（deepMerge 对数组天然替换） */
     nav?: {
       /** 完全自定义的导航项列表。未设置时使用内置默认 nav */
       items?: NavItemConfig[]
-      /** Post 类型菜单是否自动注入分类子菜单，默认 true */
-      autoInjectCategories?: boolean
     }
 
-    /** 首页风向标。不设置则使用内置默认（与 nav 独立） */
+    /** 首页风向标。不设置则使用内置默认（有自定义 nav 时自动从 nav 顶级项生成） */
     windsock?: {
-      /** 手动指定风向标项。未设置则使用内置默认 */
+      /** 手动指定风向标项。未设置则自动从 nav 或内置默认生成 */
       items?: WindsockItemConfig[]
-      /** 设为 true 时自动从 nav 顶级项生成 windsock 列表（忽略 items） */
-      autoFromNav?: boolean
     }
   }
 
@@ -165,15 +161,33 @@ declare global {
     /** 硬编码标题 */
     title?: string
     path: string
-    /** 'Home' | 'Post' | 'Note' 等，标记特殊行为（如 Post 自动注入分类） */
+    /** 预留标识 */
     type?: string
+    /** 图标 key / base64 / 外链 */
+    icon?: string
+    /** 路由排除列表 */
+    exclude?: string[]
+    /** 搜索参数 */
+    search?: Record<string, string>
+    /** 将分类列表注入到此项的子菜单（与已有 subMenu 合并） */
+    injectCategories?: boolean
+    /** 将独立页列表注入到此项的子菜单（与已有 subMenu 合并） */
+    injectPages?: boolean
     subMenu?: NavItemConfig[]
   }
 
-  /** 风向标项 */
+  /** 风向标项。
+   * 文本优先级：titleKey（i18n key，翻译缺失时原样显示 key）→ title（硬编码）→ path（兜底）
+   */
   export interface WindsockItemConfig {
+    /** i18n key，如 "windsock_posts"。找不到翻译时原样显示 key */
     titleKey?: string
+    /** 硬编码文本，如 "My Blog"。titleKey 不为空时忽略 */
     title?: string
+    /** 图标：内置 key（posts/notes/timeline/says/thinking/projects/topics/memories/friends/travel）
+     *  或 base64 data URI（"data:image/svg+xml;base64,..."）
+     *  或外链 URL（"https://..."） */
+    icon?: string
     path: string
   }
   export interface Donate {

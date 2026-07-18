@@ -17,7 +17,7 @@ export default function Page() {
     (config) => config.module?.says?.enable ?? true,
   )
   const navItems = useAppConfigSelector((config) => config.module?.nav?.items)
-  if (saysEnabled === false && !navItems?.length) notFound()
+  if (saysEnabled === false) notFound()
   const { data, isLoading, status } = useSayListQuery()
   const isLogged = useIsOwnerLogged()
 
