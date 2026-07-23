@@ -9,6 +9,7 @@ import type { InfiniteData } from '@tanstack/react-query'
 import { useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { produce } from 'immer'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import type { FC } from 'react'
 import { memo, useMemo, useState } from 'react'
@@ -98,8 +99,11 @@ export const ThinkingItem: FC<{
   return (
     <li key={item.id} className="group mb-8 mt-[50px] flex flex-col gap-2">
       <div className="flex gap-4">
-        <img
+        <Image
           src={owner.avatar}
+          alt={owner.name ?? 'avatar'}
+          width={40}
+          height={40}
           className="size-[40px] rounded-full ring-2 ring-slate-200 dark:ring-zinc-800"
         />
 

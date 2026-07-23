@@ -58,6 +58,10 @@ let nextConfig = {
         protocol: 'https',
         hostname: '**',
       },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy:

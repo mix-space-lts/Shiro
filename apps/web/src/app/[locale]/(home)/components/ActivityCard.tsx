@@ -2,6 +2,7 @@
 
 import { CollectionRefTypes } from '@mix-space-lts/api-client'
 import clsx from 'clsx'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
 import { useMemo } from 'react'
@@ -66,8 +67,11 @@ export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
             <div className="flex items-center gap-2 pl-8">
               <div className="space-x-2">
                 {activity.avatar && (
-                  <img
+                  <Image
                     src={activity.avatar}
+                    alt={activity.author}
+                    width={16}
+                    height={16}
                     className="inline size-[16px] rounded-full ring-2 ring-slate-200 dark:ring-zinc-800"
                   />
                 )}
@@ -141,10 +145,15 @@ export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
             </div>
 
             <div className="flex gap-2 pl-8">
-              <img
-                src={siteOwner?.avatar}
-                className="mt-4 hidden size-6 rounded-full lg:inline"
-              />
+              {siteOwner?.avatar && (
+                <Image
+                  src={siteOwner.avatar}
+                  alt={siteOwner.name ?? 'avatar'}
+                  width={24}
+                  height={24}
+                  className="mt-4 hidden size-6 rounded-full lg:inline"
+                />
+              )}
               <div
                 className={clsx(
                   'relative inline-block rounded-xl p-3 text-zinc-800 dark:text-zinc-200',

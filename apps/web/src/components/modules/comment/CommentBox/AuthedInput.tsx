@@ -2,6 +2,7 @@
 
 import { Avatar } from '@base-ui/react/avatar'
 import clsx from 'clsx'
+import Image from 'next/image'
 import { useEffect } from 'react'
 
 import { useSessionReader } from '~/atoms/hooks/reader'
@@ -52,6 +53,7 @@ export const CommentBoxAuthedInput: Component<{ autoFocus?: boolean }> = ({
               height={28}
               src={reader.image}
               width={28}
+              render={<Image alt="" height={28} width={28} src={reader.image || ''} />}
             />
             <Avatar.Fallback
               className="block size-7 shrink-0 rounded-full"
@@ -85,6 +87,7 @@ export const CommentBoxAuthedInput: Component<{ autoFocus?: boolean }> = ({
             height={48}
             src={reader.image}
             width={48}
+            render={<Image alt="" height={48} width={48} src={reader.image || ''} />}
           />
           <Avatar.Fallback
             className="block size-[48px] shrink-0 rounded-full"

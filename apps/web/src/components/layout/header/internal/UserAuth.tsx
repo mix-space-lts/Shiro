@@ -104,8 +104,11 @@ export function UserAuth() {
                     </DropdownMenuLabel>
                     <DropdownMenuLabel className="min-w-0">
                       <div className="-mt-1 flex min-w-0 items-center gap-2">
-                        <img
-                          src={session.image}
+                        <Image
+                          src={session.image ?? ''}
+                          alt={session.name ?? 'avatar'}
+                          width={32}
+                          height={32}
                           className="size-8 rounded-full"
                         />
                         <div className="min-w-0 max-w-40 leading-none">

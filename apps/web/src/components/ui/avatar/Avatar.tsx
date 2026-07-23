@@ -1,6 +1,7 @@
 'use client'
 
 import * as RadixAvatar from '@radix-ui/react-avatar'
+import Image from 'next/image'
 import type { DetailedHTMLProps, FC, ImgHTMLAttributes, JSX } from 'react'
 import * as React from 'react'
 import { createElement, useMemo, useRef, useState } from 'react'
@@ -95,7 +96,7 @@ export const Avatar: FC<
         imageUrl && !loadError ? (
           <div
             className={clsxm(
-              'bg-cover bg-center bg-no-repeat transition-opacity duration-300',
+              'relative bg-cover bg-center bg-no-repeat transition-opacity duration-300',
               className,
             )}
             style={{
@@ -103,10 +104,15 @@ export const Avatar: FC<
             }}
           >
             <RadixAvatar.Root>
-              <RadixAvatar.Image
+              <Image
                 src={imageUrl}
+                alt={(imageProps.alt as string) || text || 'avatar'}
+                {...(size
+                  ? { width: size, height: size }
+                  : { fill: true, sizes: '100px' })}
                 style={{
                   opacity: loaded ? 1 : 0,
+                  objectFit: 'cover',
                   ...(radius
                     ? {
                         borderRadius:
@@ -114,12 +120,9 @@ export const Avatar: FC<
                       }
                     : undefined),
                 }}
-                height={size}
-                width={size}
                 onLoad={() => setLoaded(true)}
                 onError={() => setLoadError(true)}
                 loading={lazy ? 'lazy' : 'eager'}
-                {...imageProps}
                 className={clsxm(
                   'aspect-square duration-200',
                   imageProps.className,
@@ -128,8 +131,8 @@ export const Avatar: FC<
               <RadixAvatar.Fallback
                 delayMs={600}
                 style={{
-                  height: `${size}px`,
-                  width: `${size}px`,
+                  height: size ? `${size}px` : '100%',
+                  width: size ? `${size}px` : '100%',
                   borderRadius: radius === 'full' ? '100%' : `${radius}px`,
                 }}
                 className={clsxm(
