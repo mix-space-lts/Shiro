@@ -5,8 +5,25 @@ services:
     container_name: shiro
     image: ghcr.io/mix-space-lts/shiro:latest
     volumes:
-      - ./.env:/app/apps/web/.env
       - ./public:/app/apps/web/public
     restart: always
     ports:
       - 2323:2323
+    environment:
+      NEXT_PUBLIC_API_URL: https://innei.ren/api/v2
+      NEXT_PUBLIC_GATEWAY_URL: https://api.innei.ren
+      # 服务端 aggregation 缓存 TTL（秒），默认 300（5 分钟）
+      # 过期后先用旧缓存返回，异步触发更新
+      # NEXT_PUBLIC_AGGREGATION_CACHE_TTL: 300
+      # 客户端 aggregation 数据刷新策略（SPA 导航时导航栏等数据新鲜度）
+      # NEXT_PUBLIC_AGGREGATION_STALE_TIME: 30
+      # NEXT_PUBLIC_AGGREGATION_REFRESH_ON_MOUNT: true
+      # NEXT_PUBLIC_AGGREGATION_REFRESH_ON_FOCUS: true
+      # TMDB API 密钥（用于影视/媒体信息展示，留空则禁用相关功能）
+      TMDB_API_KEY: ''
+      # GitHub Token（用于 GitHub API 代理，如获取仓库信息等）
+      GH_TOKEN: ''
+      # CDN 域名（用于图片等静态资源加速）
+      # NEXT_PUBLIC_CDN_HOST: cdn.innei.ren
+      # Webhook 密钥（用于接收服务端推送通知）
+      # WEBHOOK_SECRET: ''
