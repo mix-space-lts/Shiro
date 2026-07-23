@@ -21,6 +21,13 @@ import type { ReactActivityType } from './types'
 export const iconClassName =
   'rounded-full border shrink-0 border-accent/30 text-xs center inline-flex size-6 text-accent'
 
+/** 拼接文章链接，优先使用分类 slug，缺失时回退到分类列表页 */
+const buildPostLink = (slug?: string, categorySlug?: string) => {
+  if (slug && categorySlug) return `/posts/${categorySlug}/${slug}`
+  if (categorySlug) return `/posts/${categorySlug}`
+  return '/posts'
+}
+
 export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
   const t = useTranslations('common')
   const siteOwner = useAggregationSelector((state) => state.user)
@@ -30,7 +37,7 @@ export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
         let toLink = ''
         switch (activity.type) {
           case CollectionRefTypes.Post: {
-            toLink = `/posts/${activity.slug}`
+            toLink = buildPostLink(activity.slug, activity.categorySlug)
             break
           }
           case CollectionRefTypes.Note: {
@@ -114,7 +121,7 @@ export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
             </div>
             <div className="space-x-2">
               <small>{t('published')}</small>{' '}
-              <Link href={`/posts/${activity.slug}`}>
+              <Link href={buildPostLink(activity.slug, activity.categorySlug)}>
                 <b>{activity.title}</b>
               </Link>
             </div>
@@ -156,7 +163,7 @@ export const ActivityCard = ({ activity }: { activity: ReactActivityType }) => {
         switch (activity.type) {
           case CollectionRefTypes.Post: {
             TitleLink = (
-              <Link href={`/posts/${activity.slug}`}>
+              <Link href={buildPostLink(activity.slug, activity.categorySlug)}>
                 <b>{activity.title}</b>
               </Link>
             )
