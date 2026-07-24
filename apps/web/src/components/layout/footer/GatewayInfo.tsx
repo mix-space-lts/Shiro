@@ -2,8 +2,9 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
+import { useEffect } from 'react'
 
-import { useOnlineCount } from '~/atoms'
+import { setOnlineCount, useOnlineCount } from '~/atoms'
 import { useSocketIsConnect } from '~/atoms/hooks/socket'
 import { ImpressionView } from '~/components/common/ImpressionTracker'
 import { PeekLink } from '~/components/modules/peek/PeekLink'
@@ -85,6 +86,25 @@ export const GatewayInfo = () => {
   const t = useTranslations('gateway')
   const isActive = usePageIsActive()
   const count = useOnlineCount()
+  const socketConnected = useSocketIsConnect()
+
+  // Fallback: fetch the initial online count via REST API when the socket
+  // connects. The WebSocket VISITOR_ONLINE broadcast may be missed in
+  // production (proxy/CDN/SharedWorker timing), leaving the count stuck at 0.
+  useEffect(() => {
+    if (!socketConnected) return
+    apiClient.activity
+      .getOnlineCount()
+      .then((res) => {
+        const data = res.$serialized
+        if (typeof data.total === 'number') {
+          setOnlineCount(data.total)
+        }
+      })
+      .catch(() => {
+        // Non-critical: the WebSocket broadcast will update the count later.
+      })
+  }, [socketConnected])
 
   if (!isActive) return null
   return (

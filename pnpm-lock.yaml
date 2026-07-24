@@ -92,8 +92,8 @@ importers:
         specifier: ^0.41.0
         version: 0.41.0
       '@mix-space-lts/api-client':
-        specifier: 2.4.4-rc.0
-        version: 2.4.4-rc.0
+        specifier: 2.4.6
+        version: 2.4.6
       '@radix-ui/react-avatar':
         specifier: 1.1.11
         version: 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.9))(@types/react@19.2.9)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1952,8 +1952,8 @@ packages:
   '@mermaid-js/parser@1.0.1':
     resolution: {integrity: sha512-opmV19kN1JsK0T6HhhokHpcVkqKpF+x2pPDKKM2ThHtZAB5F4PROopk0amuVYK5qMrIA4erzpNm8gmPNJgMDxQ==}
 
-  '@mix-space-lts/api-client@2.4.4-rc.0':
-    resolution: {integrity: sha512-A0WHX5OtHIKpe/F8AxWRTgbj3nLAmEnSWh8wzQLWPW270B1bWOsGSjFXDcpTbX/JTFSTixzJZhvKLlXf4XrD9Q==}
+  '@mix-space-lts/api-client@2.4.6':
+    resolution: {integrity: sha512-nQxJAdJOnWj9OZNNBOZp900yAi60x5e2YwPw2IrwatUwcGXSebQXcMNYCQRW1puCCzhlf7VIzArH+fGP3oMDMA==}
     engines: {node: '>=22'}
 
   '@mix-space-lts/webhook@0.8.2':
@@ -9271,7 +9271,7 @@ snapshots:
     dependencies:
       langium: 4.2.1
 
-  '@mix-space-lts/api-client@2.4.4-rc.0': {}
+  '@mix-space-lts/api-client@2.4.6': {}
 
   '@mix-space-lts/webhook@0.8.2': {}
 
