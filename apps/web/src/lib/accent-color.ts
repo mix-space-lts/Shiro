@@ -3,11 +3,23 @@ import 'server-only'
 import chroma from 'chroma-js'
 import Color from 'colorjs.io'
 
+/** 颜色格式校验：合法的 hex / rgb / hsl / oklch / named color */
+const VALID_COLOR_RE = /^(?:#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}|[a-z]+)$/i
+
+/** 兜底色（浅葱），避免空/非法颜色导致渲染 500 */
+const FALLBACK_COLOR = '#33A6B8'
 
 /**
  * 将十六进制颜色转换为OKLCH字符串
+ * 非法/空输入回退到 FALLBACK_COLOR，不再抛异常。
  */
-export const hexToOklchString = (hex: string) => new Color(hex).oklch
+export const hexToOklchString = (hex: string) => {
+  const safe =
+    typeof hex === 'string' && VALID_COLOR_RE.test(hex.trim())
+      ? hex.trim()
+      : FALLBACK_COLOR
+  return new Color(safe).oklch
+}
 
 /**
  * 默认背景色

@@ -68,6 +68,16 @@ describe('defaultThemeConfig schema integrity', () => {
       expect(item.path).toEqual(expect.any(String))
     }
   })
+
+  test('默认 color 是成对数组（light/dark 一一对应）', () => {
+    const { color } = defaultThemeConfig.config
+    expect(Array.isArray(color)).toBe(true)
+    expect(color?.length).toBeGreaterThan(0)
+    for (const pair of color ?? []) {
+      expect(typeof pair.light).toBe('string')
+      expect(typeof pair.dark).toBe('string')
+    }
+  })
 })
 
 describe('deepMerge with defaultThemeConfig', () => {
@@ -87,10 +97,10 @@ describe('deepMerge with defaultThemeConfig', () => {
     expect(posts?.injectCategories).toBe(true)
   })
 
-  test('replace: true 清除整个 nav', () => {
+  test('$replace: true 清除整个 nav', () => {
     const source = {
       nav: {
-        replace: true,
+        $replace: true,
         items: [{ path: '/', title: 'Home Only' }],
       },
     }
@@ -111,9 +121,9 @@ describe('deepMerge with defaultThemeConfig', () => {
     expect(fri?.titleKey).toBe('windsock_friends')
   })
 
-  test('module 级 replace: true', () => {
+  test('module 级 $replace: true', () => {
     const source = {
-      replace: true,
+      $replace: true,
       nav: {
         items: [{ path: '/', titleKey: 'nav_home' }],
       },
@@ -122,5 +132,68 @@ describe('deepMerge with defaultThemeConfig', () => {
     // module 被完全替换，原有的 notes、timeline 等 enable 键消失
     expect(result.notes?.enable).toBeUndefined()
     expect(result.nav?.items).toHaveLength(1)
+  })
+})
+
+describe('deepMerge color (paired structure)', () => {
+  const base = defaultThemeConfig.config
+
+  test('color 按 light 合并：匹配项覆盖，无匹配追加', () => {
+    const source = {
+      color: [
+        { light: '#33A6B8', dark: '#NEW_DARK' },
+        { light: '#NEW_LIGHT', dark: '#NEW_DARK2' },
+      ],
+    }
+    const result = deepMerge(base, source)
+    const color = result.color as AccentColor[]
+    expect(color).toHaveLength(4) // 3 默认 + 1 新增
+    // 第一项 dark 被覆盖
+    expect(color[0]).toEqual({ light: '#33A6B8', dark: '#NEW_DARK' })
+    // 新增项
+    expect(color[3]).toEqual({ light: '#NEW_LIGHT', dark: '#NEW_DARK2' })
+  })
+
+  test('color $replace: true 清除整个默认数组', () => {
+    const source = {
+      color: [
+        { $replace: true },
+        { light: '#AAA', dark: '#BBB' },
+        { light: '#CCC', dark: '#DDD' },
+      ],
+    }
+    const result = deepMerge(base, source)
+    const color = result.color as AccentColor[]
+    expect(color).toEqual([
+      { light: '#AAA', dark: '#BBB' },
+      { light: '#CCC', dark: '#DDD' },
+    ])
+  })
+
+  test('color 单项 $replace: true 按 light 匹配清除后重建', () => {
+    const source = {
+      color: [{ $replace: true, light: '#33A6B8', dark: '#REPLACED' }],
+    }
+    const result = deepMerge(base, source)
+    const color = result.color as AccentColor[]
+    expect(color).toHaveLength(3)
+    expect(color[0]).toEqual({ light: '#33A6B8', dark: '#REPLACED' })
+    // 其余默认项保留
+    expect(color[1]).toEqual({ light: '#FF6666', dark: '#A0A7D4' })
+  })
+
+  test('color 用户配置含重复 light 不会被去重（idKey 匹配覆盖）', () => {
+    // 用户故意重复 light 以影响随机概率 → 按 idKey 匹配，第二项覆盖第一项
+    const source = {
+      color: [
+        { light: '#33A6B8', dark: '#D1' },
+        { light: '#33A6B8', dark: '#D2' },
+      ],
+    }
+    const result = deepMerge(base, source)
+    const color = result.color as AccentColor[]
+    // 两次都匹配默认第一项 → 第二次覆盖第一次
+    expect(color[0]).toEqual({ light: '#33A6B8', dark: '#D2' })
+    expect(color).toHaveLength(3)
   })
 })

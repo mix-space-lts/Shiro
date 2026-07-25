@@ -4,6 +4,12 @@
 # 使用方法：粘贴到 Mix Space 后台「附加功能 → 配置与云函数 → 引用：theme → 名称：shiro」
 # 只写需要覆盖的字段，未写的字段自动使用默认值。
 #
+# 本文件可直接整体应用，效果与留空（完全使用默认值）一致。
+# 需要自定义时，参考各字段注释和 $replace 用法示例进行修改。
+#
+# 以 $ 开头的键（$replace / $idkey）是保留元键，用户配置请勿用 $ 自定义键。
+# 旧语法 replace / idkey 仍被接受，但会 console.warn deprecation。
+#
 # ⚠️ 新增配置字段时，需同步改以下文件：
 #   1. apps/web/src/app.config.d.ts —— TypeScript 类型
 #   2. apps/web/src/app.default.theme-config.ts —— 默认值（schema）
@@ -18,11 +24,12 @@ config:
 
   # ===== 首页 Hero 区域 =====
   hero:
-    # ---- 标题模板 ----
     # type 是 HTML 标签名：h1 h2 h3 h4 h5 h6 span code br div p ...
     # text 是标签内的文本内容
     # class 是 Tailwind CSS / 自定义 CSS 类名
     title:
+      # $replace: true 清除默认 template，完全自定义标题
+      $replace: true
       template:
         - type: h1
           text: "Hi, I'm "
@@ -40,42 +47,41 @@ config:
         - type: span
           class: inline-block w-[1px] h-8 -bottom-2 relative bg-zinc-800/80 dark:bg-zinc-200/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 group-hover:animation-blink
 
-    # Hero 下方的简短描述
     description: A personal space for writing and sharing.
 
     # 一言（hitokoto），未配则用 description
     hitokoto:
       random: true             # true=随机一言 false=固定文本
-      custom: ""               # 自定义固定文本（random=false 时生效）
+      # custom: "自定义固定文本（random=false 时生效）"
 
   # ===== 主题色（可选，不配则用默认） =====
   # 用于文章标签、链接 hover 等装饰性元素的循环配色
+  # 成对结构：每个对象的 light/dark 一一对应
   color:
-    light:                     # 浅色模式
-      - "#33A6B8"
-      - "#FF6666"
-      - "#26A69A"
-    dark:                      # 深色模式
-      - "#F596AA"
-      - "#A0A7D4"
-      - "#ff7b7b"
+    - light: "#33A6B8"
+      dark: "#F596AA"
+    - light: "#FF6666"
+      dark: "#A0A7D4"
+    - light: "#26A69A"
+      dark: "#ff7b7b"
 
   # ===== 自定义 CSS / JS / 外部资源 =====
-  custom:
-    css: []                    # 外部 CSS 样式表链接（<link href="...">）
-    styles: []                 # 内联 <style> 标签中的 CSS 字符串
-    js: []                     # 内联 <script> 标签中的 JS 字符串
-    scripts: []                # 外部 <script> 标签，写法见 Next.js Script Props: https://nextjs.org/docs/app/api-reference/components/script#props
+  # 不写 custom 则不注入任何资源；写空数组会注入空标签，建议按需填写
+  # custom:
+  #   css: []                    # 外部 CSS 样式表链接（<link href="...">）
+  #   styles: []                 # 内联 <style> 标签中的 CSS 字符串
+  #   js: []                     # 内联 <script> 标签中的 JS 字符串
+  #   scripts: []                # 外部 <script> 标签，写法见 Next.js Script Props: https://nextjs.org/docs/app/api-reference/components/script#props
 
   # ===== 功能模块开关 =====
   module:
     # -- 订阅号召（可选） --
-    subscription:
-      tg: ""                   # Telegram 频道链接
+    # subscription:
+    #   tg: ""                   # Telegram 频道链接，留空不显示
 
     # -- OG 图片（可选） --
-    og:
-      avatar: ""               # 默认 OG 头像 URL，留空则用站点主人头像
+    # og:
+    #   avatar: ""               # 默认 OG 头像 URL，留空则用站点主人头像
 
     # -- 捐赠弹窗 --
     donate:
@@ -102,108 +108,47 @@ config:
       mode: loose              # loose=宽松（大图卡片） | compact=紧凑（小图列表）
       outdated_days: 60        # 文章过期提示阈值（天）。超过此天数显示 "这篇文章上次修改于 xxx" 警告。填 0 永不显示。默认 60
 
-    # -- 各板块开关（设为 false 时从导航栏移除该项，对应页面返回 404） --
-    # enable 始终生效，无论是否自定义 nav.items：
-    #   - 未自定义 nav: enable 同时控制 navbar 渲染 + 路由访问
-    #   - 已自定义 nav: enable 仅控制路由访问（navbar 按 items 渲染，但禁用项的
-    #     titleKey 仍被过滤器剔除）
-    #
-    # 默认导航栏结构（与下方开关一一对应）：
-    #   首页   ← auto: pageMeta 独立页自动注入子菜单
-    #   文稿   ← auto: categories 分类自动注入子菜单
-    #   手记   ← subMenu: 专栏 (/notes/series)
-    #   时光   ← subMenu: 文稿 / 手记 / 回忆
-    #   思考
-    #   一言
-    #   更多   ← subMenu: 项目 / 友链 / 跃迁
-
+    # 各板块开关（设为 false 时从导航栏移除该项，对应页面返回 404）
     notes:
-      enable: true             # 手记，默认 true
+      enable: true
     noteTopics:
-      enable: true             # 专栏（手记下子菜单），默认 true
+      enable: true
     timeline:
-      enable: true             # 时光 / 回忆，默认 true
+      enable: true
     thinking:
-      enable: true             # 思考，默认 true
+      enable: true
     says:
-      enable: true             # 一言，默认 true
+      enable: true
     friends:
-      enable: true             # 友链（更多下子菜单），默认 true
+      enable: true
     projects:
-      enable: true             # 项目（更多下子菜单），默认 true
+      enable: true
     travel:
-      enable: true             # 跃迁（更多下子菜单），默认 true
+      enable: true
 
     # -- 自定义导航栏（可选） --
-    # 数组默认按 path 合并（覆盖匹配项，追加新项）。
-    # replace: true 放任意层级清除默认值后合并：
-    #   nav:
-    #     replace: true       ← 清除整个默认 nav（含子菜单），从头定义
-    #     items: [...]
-    #   nav:
-    #     items:
-    #       - path: /posts
-    #         replace: true   ← 只清除这一项的默认值（含子菜单）
-    #         title: Blog
-    #
-    # inject 注入（默认 false）：
-    #   injectCategories: true  → 将分类列表合并到该项子菜单
-    #   injectPages: true       → 将独立页列表合并到该项子菜单
-    #   按 YAML key 声明顺序排列
-    #
-    # 以下是默认 nav 的完整结构：
-    # nav:
-    #   items:
-    #     - titleKey: nav_home
-    #       path: /
-    #       icon: home
-    #       injectPages: true
-    #       subMenu: []
-    #     - titleKey: nav_posts
-    #       path: /posts
-    #       icon: posts
-    #       injectCategories: true
-    #       subMenu: []
-    #     - titleKey: nav_notes
-    #       path: /notes
-    #       icon: notes
-    #       exclude:
-    #         - /notes/series
-    #       subMenu:
-    #         - titleKey: nav_topics
-    #           path: /notes/series
-    #     - titleKey: nav_timeline
-    #       path: /timeline
-    #       icon: timeline
-    #       subMenu:
-    #         - titleKey: nav_posts
-    #           path: /timeline?type=post
-    #           icon: timeline-post
-    #         - titleKey: nav_notes
-    #           path: /timeline?type=note
-    #           icon: timeline-note
-    #         - titleKey: nav_memories
-    #           path: /timeline?memory=1
-    #           icon: memories
-    #     - titleKey: nav_thinking
-    #       path: /thinking
-    #       icon: thinking
-    #     - titleKey: nav_says
-    #       path: /says
-    #       icon: says
-    #     - titleKey: nav_more
-    #       path: '#'
-    #       icon: more
-    #       subMenu:
-    #         - titleKey: nav_projects
-    #           path: /projects
-    #           icon: projects
-    #         - titleKey: nav_friends
-    #           path: /friends
-    #           icon: friends
-    #         - titleKey: nav_travel
-    #           path: https://travel.moe/go.html
-    #           icon: travel
+    # 默认按 path 合并（$idkey: path 在默认模板中声明）。
+    # $replace 用法（数组元素）：
+    #   用法 1：按 path 匹配默认项，$replace 清除该项默认值后重建
+    #     nav:
+    #       items:
+    #         - path: /posts
+    #           $replace: true
+    #           title: Blog
+    #           subMenu: []
+    #   用法 2：按 path 匹配默认项，部分覆盖（无 $replace 则递归合并）
+    #     nav:
+    #       items:
+    #         - path: /notes
+    #           subMenu:
+    #             - titleKey: nav_topics
+    #               path: /notes/series
+    #   用法 3：无匹配的 path → 追加为新项
+    #     nav:
+    #       items:
+    #         - title: 归档
+    #           path: /archive
+    #           icon: timeline
 
     # -- 首页风向标（可选） --
     # 数组默认按 path 合并。不设置 items 时自动从 nav 顶级项生成。
@@ -227,21 +172,33 @@ config:
 # 页脚配置
 # =============================================================================
 footer:
-  # ---- 页脚导航链接组 ----
+  # -- 页脚导航链接组 --
+  # 默认按 name 合并（$idkey: name 在默认模板中声明）。
+  # $replace 用法（数组元素）：
+  #   用法 1：纯标记 {$replace: true} → 清除整个默认数组，从头定义
+  #     linkSections:
+  #       - $replace: true
+  #       - name: 更多
+  #         links: [...]
+  #   用法 2：按 name 匹配默认项，$replace 清除该项默认 links 后重建
+  #     linkSections:
+  #       - name: 更多
+  #         $replace: true
+  #         links: [...]
   linkSections:
     - name: 更多
       links:
         - name: 时间线
           href: /timeline
+          external: false      # true=外链（新标签页打开） false=站内路由
         - name: 友链
           href: /friends
-        - name: 状态
-          href: https://stats.uptimerobot.com/xxxxx
-          external: true       # true=外链（新标签页打开） false=站内路由
+          external: false
     - name: 联系
       links:
         - name: 写留言
           href: /message
+          external: false
         - name: 发邮件
           href: mailto:me@example.com
           external: true
@@ -249,10 +206,11 @@ footer:
           href: https://github.com/you
           external: true
 
-  # ---- 页脚信息 ----
+  # -- 页脚信息 --
   otherInfo:
-    date: "2024-{{now}}"      # {{now}} 自动替换为当前年份
+    date: "1970-{{now}}"      # {{now}} 自动替换为当前年份
     motto: Stay hungry. Stay foolish.  # 页脚座右铭，留空则不显示
-    icp:                       # ICP 备案（中国大陆），不配则忽略
-      text: ""
-      link: ""
+    # icp 不写则不渲染 ICP 备案信息；写 {text:"",link:""} 会渲染空链接，请按需填写
+    # icp:
+    #   text: ""
+    #   link: ""

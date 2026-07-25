@@ -11,7 +11,6 @@ import { MarkdownLink } from '~/components/ui/link'
 import { Link } from '~/i18n/navigation'
 import { clsxm } from '~/lib/helper'
 
-import type { FooterConfig } from './config'
 import { defaultLinkSections } from './config'
 import { GatewayInfo } from './GatewayInfo'
 import { OwnerName } from './OwnerName'
@@ -32,9 +31,17 @@ const FooterLinkSection = async () => {
     linkSections: defaultLinkSections,
   }
 
+  // 防御性过滤：丢弃缺少 name 或 links 非数组的 section，避免渲染时崩溃
+  const linkSections = (footerConfig.linkSections ?? []).filter(
+    (section): section is LinkSection =>
+      !!section &&
+      typeof section.name === 'string' &&
+      Array.isArray(section.links),
+  )
+
   return (
     <div className="space-x-0 space-y-3 md:space-x-6 md:space-y-0">
-      {footerConfig.linkSections.map((section) => (
+      {linkSections.map((section) => (
         <div
           className="flex items-center gap-4 md:inline-flex"
           key={section.name}

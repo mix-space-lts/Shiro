@@ -5,10 +5,12 @@ export const defaultLinkSections: LinkSection[] = [
       {
         name: '关于本站',
         href: '/about-site',
+        external: false,
       },
       {
         name: '关于我',
         href: '/about-me',
+        external: false,
       },
       {
         name: '关于此项目',
@@ -23,10 +25,12 @@ export const defaultLinkSections: LinkSection[] = [
       {
         name: '时间线',
         href: '/timeline',
+        external: false,
       },
       {
         name: '友链',
         href: '/friends',
+        external: false,
       },
       {
         name: '监控',
@@ -41,6 +45,7 @@ export const defaultLinkSections: LinkSection[] = [
       {
         name: '写留言',
         href: '/message',
+        external: false,
       },
       {
         name: '发邮件',
@@ -55,8 +60,3 @@ export const defaultLinkSections: LinkSection[] = [
     ],
   },
 ]
-
-export interface FooterConfig {
-  linkSections: LinkSection[]
-  otherInfo: OtherInfo
-}

@@ -9,21 +9,39 @@
 import type { ScriptProps } from 'next/script'
 
 declare global {
+  /**
+   * 带合并元数据的数组类型。
+   * `$idkey` 仅应在默认模板（app.default.theme-config.ts）中声明，
+   * 用于告知 deepMerge 该数组按哪个字段进行 id 合并。
+   * 用户配置中不应使用 $ 开头的字段。
+   */
+  type MetaArray<T> = T[] & { $idkey?: string }
+
   export interface AppThemeConfig {
     config: AppConfig
     footer: FooterConfig
   }
 
+  /**
+   * 主题色对（浅色/深色一一对应）。
+   *
+   * ⚠️ Breaking change: 旧结构 `{ light: string[], dark: string[] }` 不再支持。
+   *    请迁移为成对数组 `[{ light, dark }, ...]`，确保每个主题色的浅色与深色
+   *    在数组中位置对应，不再依赖两个独立数组长度一致。
+   */
   export interface AccentColor {
-    light: string[]
-    dark: string[]
+    /** 浅色模式下的主题色（hex / rgb / named color） */
+    light: string
+    /** 深色模式下的主题色（hex / rgb / named color） */
+    dark: string
   }
 
   export interface AppConfig {
     site: Site
     hero: Hero
     module: Module
-    color?: AccentColor
+    /** 主题色对列表（浅色/深色一一对应）。用于文章标签、链接 hover 等装饰性元素的循环配色。 */
+    color?: MetaArray<AccentColor>
 
     custom?: Custom
 
@@ -33,12 +51,22 @@ declare global {
   }
 
   export interface LinkSection {
+    /** 仅用于默认模板声明数组 idKey；用户配置请勿使用 */
+    $idkey?: string
+    /** 清除默认同 name 分组后从头定义 */
+    $replace?: boolean
     name: string
-    links: {
+    links: MetaArray<{
       name: string
       href: string
       external?: boolean
-    }[]
+    }>
+  }
+
+  export interface FooterConfig {
+    /** 页脚链接分组。默认按 `name` 合并。 */
+    linkSections: MetaArray<LinkSection>
+    otherInfo: OtherInfo
   }
 
   export interface OtherInfo {
@@ -141,21 +169,25 @@ declare global {
       enable?: boolean
     }
 
-    /** 自定义导航栏。设置 items 后直接替换默认 list（deepMerge 对数组天然替换） */
+    /** 自定义导航栏。设置 items 后按 path 合并默认 nav */
     nav?: {
       /** 完全自定义的导航项列表。未设置时使用内置默认 nav */
-      items?: NavItemConfig[]
+      items?: MetaArray<NavItemConfig>
     }
 
     /** 首页风向标。不设置则使用内置默认（有自定义 nav 时自动从 nav 顶级项生成） */
     windsock?: {
       /** 手动指定风向标项。未设置则自动从 nav 或内置默认生成 */
-      items?: WindsockItemConfig[]
+      items?: MetaArray<WindsockItemConfig>
     }
   }
 
   /** 自定义导航项 */
   export interface NavItemConfig {
+    /** 仅用于默认模板声明数组 idKey；用户配置请勿使用 */
+    $idkey?: string
+    /** 清除默认同 path 项后从头定义 */
+    $replace?: boolean
     /** i18n key，优先于 title */
     titleKey?: string
     /** 硬编码标题 */
@@ -173,13 +205,17 @@ declare global {
     injectCategories?: boolean
     /** 将独立页列表注入到此项的子菜单（与已有 subMenu 合并） */
     injectPages?: boolean
-    subMenu?: NavItemConfig[]
+    subMenu?: MetaArray<NavItemConfig>
   }
 
   /** 风向标项。
    * 文本优先级：titleKey（i18n key，翻译缺失时原样显示 key）→ title（硬编码）→ path（兜底）
    */
   export interface WindsockItemConfig {
+    /** 仅用于默认模板声明数组 idKey；用户配置请勿使用 */
+    $idkey?: string
+    /** 清除默认同 path 项后从头定义 */
+    $replace?: boolean
     /** i18n key，如 "windsock_posts"。找不到翻译时原样显示 key */
     titleKey?: string
     /** 硬编码文本，如 "My Blog"。titleKey 不为空时忽略 */

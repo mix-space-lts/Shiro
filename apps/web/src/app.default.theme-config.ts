@@ -42,10 +42,14 @@ export const defaultThemeConfig: AppThemeConfig = {
         custom: undefined,
       },
     },
-    color: {
-      light: ['#33A6B8', '#FF6666', '#26A69A'],
-      dark: ['#F596AA', '#A0A7D4', '#ff7b7b'],
-    },
+    color: Object.assign(
+      [
+        { light: '#33A6B8', dark: '#F596AA' },
+        { light: '#FF6666', dark: '#A0A7D4' },
+        { light: '#26A69A', dark: '#ff7b7b' },
+      ],
+      { $idkey: 'light' },
+    ),
     custom: undefined,
     poweredBy: {
       vercel: false,
@@ -102,126 +106,162 @@ export const defaultThemeConfig: AppThemeConfig = {
         enable: true,
       },
       nav: {
-        items: [
-          {
-            titleKey: 'nav_home',
-            path: '/',
-            icon: 'home',
-            injectPages: true,
-            subMenu: [],
-          },
-          {
-            titleKey: 'nav_posts',
-            path: '/posts',
-            icon: 'posts',
-            injectCategories: true,
-            subMenu: [],
-          },
-          {
-            titleKey: 'nav_notes',
-            path: '/notes',
-            icon: 'notes',
-            exclude: ['/notes/series'],
-            subMenu: [{ titleKey: 'nav_topics', path: '/notes/series' }],
-          },
-          {
-            titleKey: 'nav_timeline',
-            path: '/timeline',
-            icon: 'timeline',
-            subMenu: [
-              {
-                titleKey: 'nav_posts',
-                path: '/timeline?type=post',
-                icon: 'timeline-post',
-              },
-              {
-                titleKey: 'nav_notes',
-                path: '/timeline?type=note',
-                icon: 'timeline-note',
-              },
-              {
-                titleKey: 'nav_memories',
-                path: '/timeline?memory=1',
-                icon: 'memories',
-              },
-            ],
-          },
-          { titleKey: 'nav_thinking', path: '/thinking', icon: 'thinking' },
-          { titleKey: 'nav_says', path: '/says', icon: 'says' },
-          {
-            titleKey: 'nav_more',
-            path: '#',
-            icon: 'more',
-            subMenu: [
-              { titleKey: 'nav_projects', path: '/projects', icon: 'projects' },
-              { titleKey: 'nav_friends', path: '/friends', icon: 'friends' },
-              {
-                titleKey: 'nav_travel',
-                path: 'https://travel.moe/go.html',
-                icon: 'travel',
-              },
-            ],
-          },
-        ],
+        items: Object.assign(
+          [
+            {
+              titleKey: 'nav_home',
+              path: '/',
+              icon: 'home',
+              injectPages: true,
+              subMenu: [],
+            },
+            {
+              titleKey: 'nav_posts',
+              path: '/posts',
+              icon: 'posts',
+              injectCategories: true,
+              subMenu: [],
+            },
+            {
+              titleKey: 'nav_notes',
+              path: '/notes',
+              icon: 'notes',
+              exclude: ['/notes/series'],
+              subMenu: Object.assign(
+                [{ titleKey: 'nav_topics', path: '/notes/series' }],
+                { $idkey: 'path' },
+              ),
+            },
+            {
+              titleKey: 'nav_timeline',
+              path: '/timeline',
+              icon: 'timeline',
+              subMenu: Object.assign(
+                [
+                  {
+                    titleKey: 'nav_posts',
+                    path: '/timeline?type=post',
+                    icon: 'timeline-post',
+                  },
+                  {
+                    titleKey: 'nav_notes',
+                    path: '/timeline?type=note',
+                    icon: 'timeline-note',
+                  },
+                  {
+                    titleKey: 'nav_memories',
+                    path: '/timeline?memory=1',
+                    icon: 'memories',
+                  },
+                ],
+                { $idkey: 'path' },
+              ),
+            },
+            { titleKey: 'nav_thinking', path: '/thinking', icon: 'thinking' },
+            { titleKey: 'nav_says', path: '/says', icon: 'says' },
+            {
+              titleKey: 'nav_more',
+              path: '#',
+              icon: 'more',
+              subMenu: Object.assign(
+                [
+                  {
+                    titleKey: 'nav_projects',
+                    path: '/projects',
+                    icon: 'projects',
+                  },
+                  {
+                    titleKey: 'nav_friends',
+                    path: '/friends',
+                    icon: 'friends',
+                  },
+                  {
+                    titleKey: 'nav_travel',
+                    path: 'https://travel.moe/go.html',
+                    icon: 'travel',
+                  },
+                ],
+                { $idkey: 'path' },
+              ),
+            },
+          ],
+          { $idkey: 'path' },
+        ),
       },
       windsock: {
-        items: [
-          { titleKey: 'windsock_posts', path: '/posts', icon: 'posts' },
-          { titleKey: 'windsock_notes', path: '/notes', icon: 'notes' },
-          {
-            titleKey: 'windsock_timeline',
-            path: '/timeline',
-            icon: 'timeline',
-          },
-          { titleKey: 'windsock_says', path: '/says', icon: 'says' },
-          {
-            titleKey: 'windsock_thinking',
-            path: '/thinking',
-            icon: 'thinking',
-          },
-          {
-            titleKey: 'windsock_projects',
-            path: '/projects',
-            icon: 'projects',
-          },
-          {
-            titleKey: 'windsock_topics',
-            path: '/notes/series',
-            icon: 'topics',
-          },
-          {
-            titleKey: 'windsock_memories',
-            path: '/timeline?memory=1',
-            icon: 'memories',
-          },
-          { titleKey: 'windsock_friends', path: '/friends', icon: 'friends' },
-          {
-            titleKey: 'windsock_travel',
-            path: 'https://travel.moe/go.html',
-            icon: 'travel',
-          },
-        ],
+        items: Object.assign(
+          [
+            { titleKey: 'windsock_posts', path: '/posts', icon: 'posts' },
+            { titleKey: 'windsock_notes', path: '/notes', icon: 'notes' },
+            {
+              titleKey: 'windsock_timeline',
+              path: '/timeline',
+              icon: 'timeline',
+            },
+            { titleKey: 'windsock_says', path: '/says', icon: 'says' },
+            {
+              titleKey: 'windsock_thinking',
+              path: '/thinking',
+              icon: 'thinking',
+            },
+            {
+              titleKey: 'windsock_projects',
+              path: '/projects',
+              icon: 'projects',
+            },
+            {
+              titleKey: 'windsock_topics',
+              path: '/notes/series',
+              icon: 'topics',
+            },
+            {
+              titleKey: 'windsock_memories',
+              path: '/timeline?memory=1',
+              icon: 'memories',
+            },
+            { titleKey: 'windsock_friends', path: '/friends', icon: 'friends' },
+            {
+              titleKey: 'windsock_travel',
+              path: 'https://travel.moe/go.html',
+              icon: 'travel',
+            },
+          ],
+          { $idkey: 'path' },
+        ),
       },
     },
   },
   footer: {
-    linkSections: [
-      {
-        name: '更多',
-        links: [
-          { name: '时间线', href: '/timeline' },
-          { name: '友链', href: '/friends' },
-        ],
-      },
-      {
-        name: '联系',
-        links: [
-          { name: '写留言', href: '/message' },
-          { name: '发邮件', href: 'mailto:me@example.com', external: true },
-          { name: 'GitHub', href: 'https://github.com/you', external: true },
-        ],
-      },
-    ],
+    linkSections: Object.assign(
+      [
+        {
+          name: '更多',
+          links: Object.assign(
+            [
+              { name: '时间线', href: '/timeline', external: false },
+              { name: '友链', href: '/friends', external: false },
+            ],
+            { $idkey: 'name' },
+          ),
+        },
+        {
+          name: '联系',
+          links: Object.assign(
+            [
+              { name: '写留言', href: '/message', external: false },
+              { name: '发邮件', href: 'mailto:me@example.com', external: true },
+              {
+                name: 'GitHub',
+                href: 'https://github.com/you',
+                external: true,
+              },
+            ],
+            { $idkey: 'name' },
+          ),
+        },
+      ],
+      { $idkey: 'name' },
+    ),
     otherInfo: {
       date: '1970-{{now}}',
       motto: 'Stay hungry. Stay foolish.',
