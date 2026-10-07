@@ -4,13 +4,13 @@ import { atom } from 'jotai'
 import type { FC } from 'react'
 import { useMemo } from 'react'
 
-import { NoteMarkdown } from '~/app/[locale]/notes/[id]/NoteMarkdown'
+import { NoteMarkdown } from '~/app/[locale]/notes/[...id]/NoteMarkdown'
 import {
   IndentArticleContainer,
   NoteHeaderDate,
   NoteMarkdownImageRecordProvider,
   NoteTitle,
-} from '~/app/[locale]/notes/[id]/pageExtra'
+} from '~/app/[locale]/notes/[...id]/pageExtra'
 import { AckRead } from '~/components/common/AckRead'
 import { ClientOnly } from '~/components/common/ClientOnly'
 import { Paper } from '~/components/layout/container/Paper'

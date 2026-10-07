@@ -5,6 +5,7 @@ import type { Locale } from '~/i18n/config'
 import { redirect } from '~/i18n/navigation'
 import { apiClient } from '~/lib/request'
 import { definePrerenderPage } from '~/lib/request.server'
+import { buildNoteHref } from '~/lib/url-builder'
 
 export default definePrerenderPage<{ locale: Locale }>()({
   async fetcher() {
@@ -18,7 +19,7 @@ export default definePrerenderPage<{ locale: Locale }>()({
       notFound()
     }
     const { locale } = params
-    redirect({ href: `/notes/${nullableData.nid}`, locale })
+    redirect({ href: buildNoteHref(nullableData), locale })
     return null
   },
 })
