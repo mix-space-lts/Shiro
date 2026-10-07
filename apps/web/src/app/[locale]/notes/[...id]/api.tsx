@@ -6,7 +6,8 @@ import { requestErrorHandler } from '~/lib/request.server'
 import { queries } from '~/queries/definition'
 
 export interface NoteParams extends LocaleParams {
-  id: string
+  /** catch-all："123"（nid 式）或 ["2026","10","5","<slug|nid>"]（日期式） */
+  id: string | string[]
   password?: string | string[] | null
   lang?: string
 }
@@ -23,7 +24,8 @@ const getNoteData = async (params: NoteParams, lang?: string) => {
     ? params.password[0]
     : (params.password ?? undefined)
 
-  const query = queries.note.byNid(id, password, lang)
+  const idOrPath = Array.isArray(id) ? id.join('/') : id
+  const query = queries.note.byId(idOrPath, password, lang)
 
   const data = await getQueryClient()
     .fetchQuery({

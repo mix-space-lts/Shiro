@@ -10,6 +10,7 @@ import { FaSolidFeatherAlt } from '~/components/icons/menu-collection'
 import { DOMCustomEvents } from '~/constants/event'
 import { routeBuilder, Routes } from '~/lib/route-builder'
 import { toast } from '~/lib/toast'
+import { buildNoteHref } from '~/lib/url-builder'
 import {
   getCurrentNoteData,
   setCurrentNoteData,
@@ -20,11 +21,12 @@ import type { EventHandler } from './types'
 import { trackerRealtimeEvent, updateMessage } from './types'
 
 export const noteCreateHandler: EventHandler = (data) => {
-  const { title, nid } = data as NoteModel
+  const noteModel = data as NoteModel
+  const { title } = noteModel
 
   toast.success(`有新的内容发布了：「${title}」`, {
     onClick: () => {
-      window.peek(`/notes/${nid}`)
+      window.peek(buildNoteHref(noteModel))
     },
     iconElement: React.createElement(FaSolidFeatherAlt),
     autoClose: false,

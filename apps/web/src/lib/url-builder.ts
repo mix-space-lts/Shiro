@@ -32,6 +32,29 @@ export function isNoteModel(model: any): model is NoteModel {
   return isDefined(model.title) && isDefined(model.nid)
 }
 
+/**
+ * 生成 note 的规范链接。
+ *
+ * 有 created + slug 时用日期式 `/notes/yyyy/m/d/<slug>`，与后端
+ * NoteService.buildSeoPath 完全一致（UTC、月/日不补零）；否则回退
+ * nid 式 `/notes/<nid>`。
+ */
+export function buildNoteHref(
+  note: Pick<NoteModel, 'nid' | 'slug' | 'created'>,
+) {
+  const {created} = note
+  if (created && note.slug) {
+    const d = new Date(created)
+    if (!Number.isNaN(d.getTime())) {
+      const y = d.getUTCFullYear()
+      const m = d.getUTCMonth() + 1
+      const day = d.getUTCDate()
+      return `/notes/${y}/${m}/${day}/${encodeURIComponent(note.slug)}`
+    }
+  }
+  return `/notes/${note.nid}`
+}
+
 function buildUrl(model: PostModel | NoteModel | PageModel) {
   if (isPostModel(model)) {
     // TODO
@@ -45,7 +68,7 @@ function buildUrl(model: PostModel | NoteModel | PageModel) {
   } else if (isPageModel(model)) {
     return `/${model.slug}`
   } else if (isNoteModel(model)) {
-    return `/notes/${model.nid}`
+    return buildNoteHref(model)
   }
 
   return '/'

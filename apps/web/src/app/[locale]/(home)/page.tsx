@@ -2,6 +2,7 @@
 
 import type { Blog, ItemList, WithContext } from 'schema-dts'
 
+import { buildNoteHref } from '~/lib/url-builder'
 import { useAggregationSelector } from '~/providers/root/aggregation-data-provider'
 
 import { useHomeQueryData } from './query'
@@ -61,7 +62,7 @@ export default function Home() {
           name: article.title,
           url:
             'nid' in article
-              ? `${config?.url.webUrl}/notes/${article.nid}`
+              ? `${config?.url.webUrl}${buildNoteHref(article)}`
               : `${config?.url.webUrl}/posts/${article.category.slug}/${article.slug}`,
           datePublished: article.created,
         },

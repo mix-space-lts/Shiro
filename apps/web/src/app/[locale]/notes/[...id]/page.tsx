@@ -6,6 +6,7 @@ import type {
   NoteModel,
 } from '@mix-space-lts/api-client'
 import type { Metadata } from 'next'
+import { permanentRedirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
 import { AckRead } from '~/components/common/AckRead'
@@ -40,6 +41,7 @@ import {
   buildLocalePrefixedPath,
   getSupportedLocalesFromTranslations,
 } from '~/lib/seo/hreflang'
+import { buildNoteHref } from '~/lib/url-builder'
 import {
   CurrentNoteDataProvider,
   SyncNoteDataAfterLoggedIn,
@@ -131,7 +133,8 @@ function PageInner({
 }
 
 type NoteDetailPageParams = LocaleParams & {
-  id: string
+  // catch-all："123"（nid 式）或 "2026/10/5/<slug|nid>"（日期式，join 后）
+  id: string | string[]
   password?: string
 }
 export const generateMetadata = async (props: {
@@ -156,15 +159,17 @@ export const generateMetadata = async (props: {
     const { data } = res
     const description = getSummaryFromMd(data.text ?? '')
 
+    // og 路由按数字 nid 取数（getNoteByNid(+nid)），必须传真实 nid
     const ogUrl = await getOgUrl(
       'note',
       {
-        nid: params.id,
+        nid: data.nid,
       },
       params.locale,
     )
 
-    const canonicalPathNoLocale = `/notes/${params.id}`
+    // 规范链接与访问形态解耦：有 slug 的笔记无论从哪种形态进来，canonical 都指向日期式
+    const canonicalPathNoLocale = buildNoteHref(data)
     const canonicalPath = buildLocalePrefixedPath(
       params.locale as any,
       canonicalPathNoLocale,
@@ -203,25 +208,46 @@ export const generateMetadata = async (props: {
 }
 
 export default definePrerenderPage<NoteDetailPageParams>()<NoteDataResult>({
-  fetcher: getData,
+  fetcher: async (params) => {
+    const res = await getData(params)
+
+    // 有 slug 的笔记：非规范入口（nid 式、日期式末段为 nid）→ 永久重定向到日期式。
+    // 无 slug 的笔记：nid 式 / 日期式两种形态都直接服务，不重定向。
+    const noteData = res.note.data
+    if (noteData?.slug && noteData?.created) {
+      const canonical = buildNoteHref(noteData)
+      const current = `/notes/${
+        Array.isArray(params.id) ? params.id.join('/') : params.id
+      }`
+      if (current !== canonical) {
+        permanentRedirect(
+          buildLocalePrefixedPath(params.locale as any, canonical),
+        )
+      }
+    }
+
+    return res
+  },
   requestErrorRenderer(_error, parsed, { id }) {
     const { status } = parsed
+
+    // catch-all 下 id 是路径段数组；provider 需要字符串
+    const nidForProvider =
+      typeof id === 'string' ? id : id.length === 1 ? id[0] : id.join('/')
 
     if (status === 403) {
       return (
         <Paper>
           <NotePasswordForm />
-          <CurrentNoteNidProvider nid={id} />
+          <CurrentNoteNidProvider nid={nidForProvider} />
         </Paper>
       )
     }
   },
-  async Component({
-    data: fetchedData,
-    params: { id: nid, locale },
-    fetchedAt,
-  }) {
+  async Component({ data: fetchedData, params: { locale }, fetchedAt }) {
     const { note: data } = fetchedData
+    // 真实数字 nid（日期式 URL 的 params.id 是路径段数组，不能当 nid 用）
+    const nid = String(data.data.nid)
     const t = await getTranslations({
       namespace: 'note',
       locale,
