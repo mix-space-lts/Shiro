@@ -99,6 +99,15 @@ export const definePrerenderPage =
           throw error
         }
 
+        // redirect()/permanentRedirect() 抛出的 NEXT_REDIRECT 必须继续上抛，
+        // 否则会落入下方错误渲染分支，表现为错误页而非 3xx
+        if (
+          typeof error?.digest === 'string' &&
+          error.digest.startsWith('NEXT_REDIRECT')
+        ) {
+          throw error
+        }
+
         if (error instanceof RequestError) {
           if (error.status === 404 && handleNotFound) {
             notFound()
